@@ -12,7 +12,7 @@ import butterknife.OnClick;
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
  * @time 2019/6/17
- * @des  根据当前ExcelStep的ExcelStyle显示不同的ExcelFragment
+ * @des 根据当前ExcelStep的ExcelStyle显示不同的ExcelFragment
  */
 public abstract class BaseExcelFragment<T> extends BaseRxFragment {
 

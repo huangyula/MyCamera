@@ -52,7 +52,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
     public void setData(ProcessExcel data) {
         if (title != null) {
             initData(data);
-        }else {
+        } else {
             this.data = data;
         }
     }

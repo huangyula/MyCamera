@@ -13,18 +13,20 @@
         <activity
             android:name="com.github.weiss.core.ContainerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape"
             android:hardwareAccelerated="true" />
 
         <activity
             android:name="com.github.weiss.core.crash.DefaultErrorActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="landscape"
             android:process=":error_activity" />
 
-        <provider
+<!--        <provider
             android:name="com.github.weiss.core.crash.CaocInitProvider"
             android:authorities="${applicationId}.customactivityoncrashinitprovider"
             android:exported="false"
-            android:initOrder="101" />
+            android:initOrder="101" />-->
     </application>
 
 </manifest>

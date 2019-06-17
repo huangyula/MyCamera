@@ -14,12 +14,12 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
- /**
-   * @author Minamo
-   * @e-mail kleinminamo@gmail.com
-   * @time   2019/6/17
-   * @des    获取启动必备权限Activity
-   */
+/**
+ * @author Minamo
+ * @e-mail kleinminamo@gmail.com
+ * @time 2019/6/17
+ * @des 获取启动必备权限Activity
+ */
 public abstract class EasyPermissionsActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks,
         EasyPermissions.RationaleCallbacks {
 

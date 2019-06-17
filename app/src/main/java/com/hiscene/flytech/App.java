@@ -15,7 +15,6 @@ import butterknife.ButterKnife;
 /**
  * Created by Weiss on 2017/1/10.
  */
-
 public class App extends BaseApp {
 
     public static UserManager<UserModel> userManager;
@@ -23,7 +22,7 @@ public class App extends BaseApp {
     @Override
     public void onCreate() {
         super.onCreate();
-        ButterKnife.setDebug(true);
+        ButterKnife.setDebug(BuildConfig.DEBUG);
 //        CrashReport.initCrashReport(getApplicationContext(), "", false);
         userManager = new UserManager<>(UserModel.class);
 //        initCrash();
@@ -36,7 +35,7 @@ public class App extends BaseApp {
     }
 
     private void initCrash() {
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             CaocConfig.Builder.create()
                     .backgroundMode(CaocConfig.BACKGROUND_MODE_SILENT) //背景模式,开启沉浸式
                     .enabled(true) //是否启动全局异常捕获

@@ -7,7 +7,7 @@ import java.util.List;
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
  * @time 2019/6/17
- * @des  Excel的表格步驟
+ * @des Excel的表格步驟
  */
 public class ExcelStep {
 
@@ -28,7 +28,7 @@ public class ExcelStep {
 
 
     public ExcelStep(int style, int step) {
-        this(style,step,null);
+        this(style, step, null);
     }
 
     public ExcelStep(int style, int step, List<ExcelStep> chilSteps) {
@@ -39,13 +39,14 @@ public class ExcelStep {
 
     /**
      * 测试数据
+     *
      * @return
      */
-    public static List<ExcelStep> test(){
+    public static List<ExcelStep> test() {
         List<ExcelStep> excelSteps = new ArrayList<>();
         int steps = 10;
         for (int i = 0; i < steps; i++) {
-            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL,i));
+            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL, i));
         }
         return excelSteps;
     }

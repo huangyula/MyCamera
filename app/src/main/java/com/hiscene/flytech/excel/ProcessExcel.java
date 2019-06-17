@@ -1,6 +1,7 @@
 package com.hiscene.flytech.excel;
 
 import com.hiscene.flytech.C;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -12,12 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-   * @author Minamo
-   * @e-mail kleinminamo@gmail.com
-   * @time   2019/6/17
-   * @des    工作过程表格
-   */
-public class ProcessExcel implements IExcel{
+ * @author Minamo
+ * @e-mail kleinminamo@gmail.com
+ * @time 2019/6/17
+ * @des 工作过程表格
+ */
+public class ProcessExcel implements IExcel {
 
     public List<ProcessExcel> processExcelList = new ArrayList<>();
 
@@ -36,28 +37,28 @@ public class ProcessExcel implements IExcel{
     public ProcessExcel() {
     }
 
-     public ProcessExcel(int id, String content, String standard) {
-         this(id,content,standard,-1);
-     }
+    public ProcessExcel(int id, String content, String standard) {
+        this(id, content, standard, -1);
+    }
 
-     public ProcessExcel(int id, String content, String standard, int result) {
-         this.id = id;
-         this.content = content;
-         this.standard = standard;
-         this.result = result;
-     }
+    public ProcessExcel(int id, String content, String standard, int result) {
+        this.id = id;
+        this.content = content;
+        this.standard = standard;
+        this.result = result;
+    }
 
-     @Override
+    @Override
     public void read() {
         try {
-            XSSFWorkbook  wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.PROCESS_FILE));
+            XSSFWorkbook wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.PROCESS_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
             for (int i = 1; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if(row != null){
-                    processExcelList.add(new ProcessExcel((int)row.getCell(0).getNumericCellValue(),
-                            row.getCell(1).getStringCellValue(),row.getCell(2).getStringCellValue()));
+                if (row != null) {
+                    processExcelList.add(new ProcessExcel((int) row.getCell(0).getNumericCellValue(),
+                            row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue()));
                 }
             }
             wb.close();
@@ -104,13 +105,13 @@ public class ProcessExcel implements IExcel{
         }*/
     }
 
-     @Override
-     public void restore() {
+    @Override
+    public void restore() {
 
-     }
+    }
 
-     @Override
-     public void svae() {
+    @Override
+    public void svae() {
 
-     }
- }
+    }
+}

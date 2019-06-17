@@ -41,8 +41,8 @@ public class SplashActivity extends EasyPermissionsActivity {
 
     @Override
     public void startMainActivity() {
-        new Thread(()->{
-            AssetsUtils.copyAssetsToDst(SplashActivity.this,"res", C.ASSETS_PATH);
+        new Thread(() -> {
+            AssetsUtils.copyAssetsToDst(SplashActivity.this, "res", C.ASSETS_PATH);
             handler.sendEmptyMessageDelayed(0, 1500);
         }).start();
     }

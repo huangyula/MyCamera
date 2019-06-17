@@ -1,12 +1,15 @@
 package com.hiscene.flytech.ui.fragment;
 
 import android.support.v4.app.FragmentManager;
+
 import com.github.weiss.core.utils.CollectionUtils;
+import com.github.weiss.core.utils.SPUtils;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.excel.IExcel;
 import com.hiscene.flytech.excel.ProcessExcel;
+import com.hiscene.flytech.util.PositionUtil;
 
 import java.util.List;
 
@@ -14,16 +17,19 @@ import java.util.List;
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
  * @time 2019/6/17
- * @des
+ * @des ExcelFragment状态机切换管理类
  */
 public class ExcelFragmentManager {
 
+    public static final String RECOVERY = "Recovery";
+
     private FragmentManager manager;
-    private ProcessExcelFragment processExcelFragment;
+    //填表格步骤
     private List<ExcelStep> excelSteps;
-    //当前步骤 比如：2.2
+    //当前步骤，-1 没有小步骤 比如：2.3 大步骤2，小步骤3。
     private String pos = "0.-1";
 
+    private ProcessExcelFragment processExcelFragment;
     private ProcessExcel processExcel;
     //当前表格
     private IExcel currentExcel;
@@ -33,54 +39,55 @@ public class ExcelFragmentManager {
         init();
     }
 
-
     protected void init() {
         excelSteps = ExcelStep.test();
         processExcel = new ProcessExcel();
-        processExcel.read();
-        showExcel(pos2ExcelStep());
+
+        if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
+            processExcel.read();
+        } else {//恢复启动
+            processExcel.restore();
+            pos = SPUtils.getString(PositionUtil.POSITION);
+        }
+        showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
     }
 
+
+    /**
+     * 上一步
+     */
     public void previousStep() {
 
     }
 
+    /**
+     * 下一步
+     */
     public void nextStep() {
         currentExcel.svae();
 
-        String[] posStrArr = pos.split("\\.");
-        int[] posArr = new int[posStrArr.length];
-        for (int i = 0; i < posArr.length; i++) {
-            posArr[i] = Integer.parseInt(posStrArr[i]);
-        }
-        ExcelStep excelStep = excelSteps.get(posArr[0]);
-        if (posArr.length > 1 && -1 != posArr[1]) {
-            if (excelStep.chilSteps.size() > posArr[1] + 1) {
-                posArr[1]++;
-            } else {
-                posArr[0]++;
-                posArr[1] = -1;
-            }
+        pos = PositionUtil.nextStep(pos, excelSteps);
+        if (PositionUtil.islastStep(pos, excelSteps)) {
+            lastStep();
         } else {
-            posArr[0]++;
-            posArr[1] = -1;
+            showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
         }
-        pos = posArr[0] + "." + posArr[1];
-        showExcel(pos2ExcelStep());
     }
 
     /**
-     * 根据当前步骤从excelSteps中获取到ExcelStep
-     *
-     * @return ExcelStep
+     * 最后一步,生成新的表格
      */
-    private ExcelStep pos2ExcelStep() {
-        String[] posArr = pos.split("\\.");
-        ExcelStep excelStep = excelSteps.get(Integer.parseInt(posArr[0]));
-        if (posArr.length > 1 && !"-1".equals(posArr[1])) {
-            excelStep = excelSteps.get(Integer.parseInt(posArr[0])).chilSteps.get(Integer.parseInt(posArr[1]));
-        }
-        return excelStep;
+    public void lastStep() {
+        processExcel.write();
+        SPUtils.put(RECOVERY, false);
+    }
+
+    /**
+     * 没填完表格退出
+     */
+    public void exit() {
+        SPUtils.put(RECOVERY, true);
+        SPUtils.put(PositionUtil.POSITION, pos);
     }
 
     /**
@@ -96,13 +103,17 @@ public class ExcelFragmentManager {
         }
     }
 
-
+    /**
+     * 显示作业过程
+     *
+     * @param excelStep
+     */
     private void showProcessExcel(ExcelStep excelStep) {
         if (CollectionUtils.isEmpty(processExcel.processExcelList)) return;
         if (processExcelFragment == null) {
             processExcelFragment = ProcessExcelFragment.newInstance(this);
         }
-        if(processExcel != currentExcel) {
+        if (processExcel != currentExcel) {
             manager.beginTransaction().replace(R.id.fragment, processExcelFragment).commit();
         }
         processExcelFragment.setData(processExcel.processExcelList.get(excelStep.step));
