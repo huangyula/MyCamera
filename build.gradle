@@ -1,0 +1,58 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.2.0'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:9.0.0-rc2'
+//        classpath 'me.tatarka:gradle-retrolambda:3.5.0'
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+
+allprojects {
+    repositories {
+        jcenter()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    releaseVersionCode = 1
+    releaseVersionName = '1.0.0'
+
+    androidCompileSdkVersion = 26
+    androidBuildToolsVersion = '26.1.0'
+    androidSupportSdkVersion = '28.0.0'
+    minSdkVersion = 16
+    targetSdkVersion = 24
+
+    junitVersion = '4.12'
+
+    rxjava2Version = '2.1.11'
+    retrofit2Version = '2.4.0'
+    gsonVersion = '2.6.2'
+    butterknifeVersion = '9.0.0-rc2'
+}

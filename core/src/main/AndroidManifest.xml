@@ -1,0 +1,30 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.github.weiss.core">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <application
+        android:label="@string/app_name">
+
+        <activity
+            android:name="com.github.weiss.core.ContainerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:hardwareAccelerated="true" />
+
+        <activity
+            android:name="com.github.weiss.core.crash.DefaultErrorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:process=":error_activity" />
+
+        <provider
+            android:name="com.github.weiss.core.crash.CaocInitProvider"
+            android:authorities="${applicationId}.customactivityoncrashinitprovider"
+            android:exported="false"
+            android:initOrder="101" />
+    </application>
+
+</manifest>

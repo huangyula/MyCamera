@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.butterknife'
+//apply plugin: 'me.tatarka.retrolambda'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.hiscene.flytech"
+        minSdkVersion 17
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0.0"
+
+        multiDexEnabled true
+/*        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11 -frtti -fexceptions"
+            }
+        }*/
+/*        jackOptions {
+            enabled true
+        }
+        useJack(true)*/
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+/*    externalNativeBuild {
+        cmake {
+            path "CMakeLists.txt"
+        }
+    }*/
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        // There are restricted packages used in some of POI code, e.g. java.awt or javax.imageio
+        // I could not exclude these in the
+        abortOnError false
+    }
+
+    // error about duplicates if some of these are not excluded
+    packagingOptions {
+        pickFirst 'META-INF/DEPENDENCIES.txt'
+        pickFirst 'META-INF/LICENSE.txt'
+        pickFirst 'META-INF/NOTICE.txt'
+        pickFirst 'META-INF/NOTICE'
+        pickFirst 'META-INF/LICENSE'
+        pickFirst 'META-INF/DEPENDENCIES'
+        pickFirst 'META-INF/notice.txt'
+        pickFirst 'META-INF/license.txt'
+        pickFirst 'META-INF/dependencies.txt'
+        pickFirst 'META-INF/LGPL2.1'
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    implementation "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknifeVersion"
+    implementation 'com.tencent.bugly:crashreport:2.4.0'
+    implementation 'in.srain.cube:ultra-ptr:1.0.11'
+    implementation "com.android.support:cardview-v7:$rootProject.ext.androidSupportSdkVersion"
+    implementation 'com.github.chrisbanes.photoview:library:1.2.3'
+    implementation 'pub.devrel:easypermissions:2.0.0'
+    implementation project(':core')
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'org.apache.commons:commons-text:1.3'
+    // for unit-tests copied from Apache POI source
+    implementation 'junit:junit:4.12'
+    implementation 'org.bouncycastle:bcpkix-jdk15on:1.59'
+
+    // newer versions of xmlsec are compiled with JDK 8 which does not work in Android Studio 2.x!
+    implementation ('org.apache.santuario:xmlsec:2.0.0') {
+        // break compilation because it includes stax-api which is under forbidden package 'javax.xml.stream'
+        exclude group: 'org.codehaus.woodstox'
+    }
+}
