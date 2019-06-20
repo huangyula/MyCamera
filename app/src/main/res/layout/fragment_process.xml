@@ -73,10 +73,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:text="(一)在220kV砚后甲线主一保护屏(1P)" />
+                android:text="作业过程" />
 
             <TextView
-                android:id="@+id/content"
+                android:id="@+id/standard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"

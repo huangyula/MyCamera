@@ -23,6 +23,8 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
 
     @BindView(R.id.title)
     TextView title;
+    @BindView(R.id.standard)
+    TextView standard;
 
     ProcessExcel data;
 
@@ -59,6 +61,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
 
     private void initData(ProcessExcel data) {
         title.setText(data.content);
+        standard.setText(data.standard);
     }
 
     @Override

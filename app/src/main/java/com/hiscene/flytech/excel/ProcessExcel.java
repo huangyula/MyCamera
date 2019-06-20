@@ -1,5 +1,9 @@
 package com.hiscene.flytech.excel;
 
+import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.StringUtils;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.util.GsonUtil;
 
@@ -10,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,15 +113,30 @@ public class ProcessExcel implements IExcel {
 
     @Override
     public void restore() {
-
+        //从缓存文件中读取内容
+        String read_content=FileUtils.readFile2String(C.TEMP_FILE,"utf-8");
+        Type type = new TypeToken<List<ProcessExcel>>(){}.getType();
+        processExcelList=new Gson().fromJson(read_content,type);
+//        System.out.println(processExcelList);
     }
 
     @Override
     public void svae() {
         //将List转化为json,并写入缓存目录
         if(processExcelList!=null&&processExcelList.size()>0){
-            String string=GsonUtil.gsonString(processExcelList);
-            System.out.println(string);
+            String write_content=GsonUtil.gsonString(processExcelList.toArray());
+            if(!StringUtils.isEmpty(write_content)){
+                if(FileUtils.createFileByDeleteOldFile(C.TEMP_FILE)){
+                    boolean a=FileUtils.writeFileFromString(C.TEMP_FILE,write_content,true);
+                }
+            }
         }
+
+        restore();
+
+    }
+
+    private String getString(String str) {
+        return " ' "+str+" ' ";
     }
 }
