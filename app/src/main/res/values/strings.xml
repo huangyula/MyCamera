@@ -10,4 +10,16 @@
     <string name="behavior_uc_header_pager">com.view.behavior.uc.UcNewsHeaderPagerBehavior</string>
     <string name="behavior_uc_title">com.view.behavior.uc.UcNewsTitleBehavior</string>
     <string name="behavior_uc_news_tab">com.view.behavior.uc.UcNewsTabBehavior</string>
+
+    <string name="exit_app">退出登录</string>
+    <string name="scan_hint">扫码登录</string>
+    <string name="scan_login_qrcode">对准登录二维码扫描</string>
+    <string name="scan_device_qrcode">对准设备二维码扫描</string>
+    <string name="zxing_scanner_tip">扫描提示</string>
+    <string name="operation_risk">作业风险</string>
+    <string name="device_info">设备资料</string>
+    <string name="executed">已执行</string>
+    <string name="unexecuted">未执行</string>
+    <string name="pre_operation">上一步</string>
+    <string name="next_operation">下一步</string>
 </resources>

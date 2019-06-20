@@ -17,8 +17,27 @@ public class PositionUtil {
     /**
      * 上一步
      */
-    public static void previousStep(String pos, List<ExcelStep> excelSteps) {
-
+    public static String previousStep(String pos, List<ExcelStep> excelSteps) {
+        //pos执行上一步
+        String[] posStrArr = pos.split("\\.");
+        int[] posArr = new int[posStrArr.length];
+        for (int i = 0; i < posArr.length; i++) {
+            posArr[i] = Integer.parseInt(posStrArr[i]);
+        }
+        ExcelStep excelStep = excelSteps.get(posArr[0]);
+        if (posArr.length > 1 && -1 != posArr[1]) {//如果有小步骤
+            if (excelStep.chilSteps.size() > posArr[1] + 1) {
+                posArr[1]--;
+            } else {
+                posArr[0]--;
+                posArr[1] = -1;
+            }
+        } else {
+            posArr[0]--;
+            posArr[1] = -1;
+        }
+        pos = posArr[0] + "." + posArr[1];
+        return pos;
     }
 
     /**

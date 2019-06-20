@@ -11,6 +11,8 @@ import com.hiscene.flytech.excel.IExcel;
 import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.util.PositionUtil;
 
+import org.json.JSONArray;
+
 import java.util.List;
 
 /**
@@ -57,7 +59,8 @@ public class ExcelFragmentManager {
      * 上一步
      */
     public void previousStep() {
-
+        pos=PositionUtil.previousStep(pos,excelSteps);
+        showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
     }
 
     /**

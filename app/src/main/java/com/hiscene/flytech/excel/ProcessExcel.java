@@ -1,6 +1,7 @@
 package com.hiscene.flytech.excel;
 
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.util.GsonUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
@@ -112,6 +113,10 @@ public class ProcessExcel implements IExcel {
 
     @Override
     public void svae() {
-
+        //将List转化为json,并写入缓存目录
+        if(processExcelList!=null&&processExcelList.size()>0){
+            String string=GsonUtil.gsonString(processExcelList);
+            System.out.println(string);
+        }
     }
 }

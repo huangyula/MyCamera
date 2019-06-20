@@ -8,4 +8,11 @@
     <dimen name="uc_news_header_title_init_offset">-45dip</dimen>
     <dimen name="uc_news_header_pager_offset">-90dip</dimen>
     <dimen name="uc_news_tabs_height">45dip</dimen>
+    <!-- 顶部栏高度 -->
+    <dimen name="top_bar_height">48dp</dimen>
+    <!-- 四周留白距离-->
+    <dimen name="app_padding">40dp</dimen>
+    <dimen name="qrcode_width">200dp</dimen>
+    <dimen name="qrcode_height">200dp</dimen>
+    <dimen name="app_name_size">22sp</dimen>
 </resources>

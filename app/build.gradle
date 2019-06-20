@@ -83,4 +83,6 @@ dependencies {
         // break compilation because it includes stax-api which is under forbidden package 'javax.xml.stream'
         exclude group: 'org.codehaus.woodstox'
     }
+    implementation 'com.mylhyl:zxingscanner:2.1.1'
+
 }

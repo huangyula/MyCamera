@@ -7,5 +7,10 @@
 
     <color name="black_90">#dd000000</color>
     <color name="window_background">#FFF5F5F5</color>
-
+    <color name="white">#FFFFFF</color>
+    <color name="line">#000000</color>
+    <color name="gray">#888888</color>
+    <color name="button_black">#3E4652</color>
+    <color name="red">#dd5862</color>
+    <color name="transparent">#00000000</color>
 </resources>
