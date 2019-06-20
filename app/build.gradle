@@ -84,5 +84,6 @@ dependencies {
         exclude group: 'org.codehaus.woodstox'
     }
     implementation 'com.mylhyl:zxingscanner:2.1.1'
+    implementation project(':cameralibrary')
 
 }

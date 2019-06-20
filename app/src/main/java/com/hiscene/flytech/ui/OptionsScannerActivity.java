@@ -42,7 +42,7 @@ public class OptionsScannerActivity extends BaseActivity implements OnScannerCom
                 .setFrameSize(256, 256)
                 .setFrameCornerLength(22)
                 .setFrameCornerWidth(2)
-                .setFrameCornerInside(true)
+                .setFrameCornerInside(false)
                 .setFrameCornerColor(Color.WHITE)
                 .setLaserLineColor(0xff06c1ae)
                 .setLaserLineHeight(2)
