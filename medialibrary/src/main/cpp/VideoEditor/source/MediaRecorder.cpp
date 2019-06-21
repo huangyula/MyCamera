@@ -22,7 +22,11 @@ void MediaRecorder::setVideoSize(int width, int height) {
 }
 
 void MediaRecorder::setVideoRotate(int rotate) {
-    this->bitRate = rotate;
+    this->rotate = rotate;
+}
+
+void MediaRecorder::setVideoBitRate(int bitRate) {
+    this->bitRate = bitRate;
 }
 
 void MediaRecorder::setFrameRate(int frameRate) {
@@ -72,7 +76,7 @@ int MediaRecorder::openFile() {
             openStream(&audioStream, fmt_ctx, &audio_codec, fmt->audio_codec);
             have_audio = true;
         }
-        if(!have_video && !have_audio) {
+        if (!have_video && !have_audio) {
             ALOGE("no audio or video codec found for the fmt!");
             break;
         }
@@ -112,6 +116,15 @@ int MediaRecorder::openFile() {
     return 0;
 }
 
+int MediaRecorder::avError(int errNum) {
+    char buf[1024];
+    //获取错误信息
+    av_strerror(errNum, buf, sizeof(buf));
+//    ALOGE("发生异常： %c",buf);
+    logw(string().append("发生异常：").append(buf).c_str());
+    return -1;
+}
+
 int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     int ret;
     // 获取输出码流
@@ -122,21 +135,25 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     // 获取视频编码上下文
     context = ost->enc;
     // 根据格式复制数据
+/*    if (sizeof(data) != context->width * context->height * 3 / 2){
+        ALOGI("encodeAndWriteVideo data size error : %d",sizeof(data) );
+        return -2;
+    }*/
     if (pixelFmt == AV_PIX_FMT_NV21) {
         memcpy(ost->tmp_frame->data[0], data, context->width * context->height);
-        memcpy(ost->tmp_frame->data[1], (char *) data + context->width * context->height,
+        memcpy(ost->tmp_frame->data[1], data + context->width * context->height,
                context->width * context->height / 2);
     } else if (pixelFmt == AV_PIX_FMT_YUV420P) { // YUV420P格式复制
         memcpy(ost->frame->data[0], data, context->width * context->height);
-        memcpy(ost->frame->data[1], (char *) data + context->width * context->height,
+        memcpy(ost->frame->data[1], data + context->width * context->height,
                context->width * context->height / 4);
-        memcpy(ost->frame->data[2], (char *) data + context->width * context->height * 5 / 4,
+        memcpy(ost->frame->data[2], data + context->width * context->height * 5 / 4,
                context->width * context->height / 4);
     }
 
     // 判断格式是否相同，不相同时，必须进行转换
     if (context->pix_fmt != pixelFmt) {
-        if (!ost->sws_ctx) {
+        if (!ost->sws_ctxInit) {
             ost->sws_ctx = sws_getContext(context->width, context->height,
                                           pixelFmt,
                                           context->width, context->height,
@@ -146,6 +163,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
                 ALOGE("Could not initialize the conversion context");
                 return -1;
             }
+            ost->sws_ctxInit = true;
         }
         // 格式转换
         sws_scale(ost->sws_ctx,
@@ -159,6 +177,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     frame = ost->frame;
     // 初始化一个AVPacket
     AVPacket pkt = {0};
+    //例如对于H.264来说。1个AVPacket的data通常对应一个NAL
     av_init_packet(&pkt);
 
     // 对视频帧进行编码
@@ -169,6 +188,39 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     }
     ALOGI("encode video frame sucess! got frame = %d\n", got_frame);
 
+//    __android_log_print(ANDROID_LOG_WARN, "FFPlayer", "编码前时间:%lld",
+//                        (long long) ((av_gettime() - startTime) / 1000));
+/*    //开始编码YUV数据
+    ret = avcodec_send_frame(context, frame);
+    if (ret != 0) {
+        ALOGE("avcodec_send_frame error");
+        avError(ret);
+        return -1;
+    }
+    //获取编码后的数据
+    ret = avcodec_receive_packet(context, &pkt);
+//    __android_log_print(ANDROID_LOG_WARN, "eric", "编码时间:%lld",
+//                        (long long) ((av_gettime() - startTime) / 1000));
+    //是否编码前的YUV数据
+    av_frame_free(&frame);
+    if (ret != 0 || pkt.size <= 0) {
+        ALOGE("avcodec_receive_packet error");
+        avError(ret);
+        return -2;
+    }
+    pkt.stream_index = ost->st->index;
+    AVRational time_base = fmt_ctx->streams[0]->time_base;//{ 1, 1000 };
+    pkt.pts = ost->countIndex * (ost->st->time_base.den) / ((ost->st->time_base.num) * frameRate);
+    pkt.dts = pkt.pts;
+    pkt.duration = (ost->st->time_base.den) / ((ost->st->time_base.num) * frameRate);
+    __android_log_print(ANDROID_LOG_WARN, "eric",
+                        "index:%d,pts:%lld,dts:%lld,duration:%lld,time_base:%d,%d",
+                        ost->countIndex,
+                        (long long) pkt.pts,
+                        (long long) pkt.dts,
+                        (long long) pkt.duration,
+                        time_base.num, time_base.den);
+    pkt.pos = -1;*/
     // 编码成功则将数据写入文件
     if (got_frame == 1) {
         ret = writeFrame(fmt_ctx, &pkt, ost->st->index);
@@ -178,6 +230,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
             ALOGE("Error write video frame: %s", av_err2str(ret));
             return -1;
         }
+        ost->countIndex++;
         ALOGI("write video frame sucess!\n");
     } else {
         ret = 0;
@@ -310,7 +363,7 @@ int MediaRecorder::openStream(EncodeStream *ost, AVFormatContext *oc, AVCodec **
             if ((*codec)->supported_samplerates) {
                 context->sample_rate = (*codec)->supported_samplerates[0];
                 for (int i = 0; (*codec)->supported_samplerates[i]; i++) {
-                    if((*codec)->supported_samplerates[i] == audioSampleRate) {
+                    if ((*codec)->supported_samplerates[i] == audioSampleRate) {
                         context->sample_rate = audioSampleRate;
                     }
                 }
@@ -332,15 +385,19 @@ int MediaRecorder::openStream(EncodeStream *ost, AVFormatContext *oc, AVCodec **
             ost->st->time_base = (AVRational) {1, context->sample_rate};
             break;
 
-        //  如果创建的是视频码流，则设置视频编码器的参数
+            //  如果创建的是视频码流，则设置视频编码器的参数
         case AVMEDIA_TYPE_VIDEO:
             context->codec_id = codec_id;
+            context->codec_type = AVMEDIA_TYPE_VIDEO;
+            context->qcompress = 0.3;
             context->bit_rate = bitRate;
+            context->bit_rate_tolerance = bitRate * 10;
             context->width = width;
             context->height = height;
+            context->framerate = (AVRational) {frameRate, 1};
             ost->st->time_base = (AVRational) {1, frameRate};
             context->time_base = ost->st->time_base;
-            context->gop_size = 25;
+            context->gop_size = 150;
             context->pix_fmt = AV_PIX_FMT_YUV420P;
             context->thread_count = 12;
             context->qmin = 10;
@@ -406,7 +463,7 @@ void MediaRecorder::closeFile() {
 }
 
 int MediaRecorder::openAudioEncoder(AVCodec *codec, EncodeStream *ost, AVDictionary *opt_arg) {
-    AVCodecContext * codecContext;
+    AVCodecContext *codecContext;
     int ret;
     AVDictionary *opt = NULL;
     // 获取音频编码上下文
@@ -550,7 +607,7 @@ AVFrame *MediaRecorder::allocVideoFrame(enum AVPixelFormat pix_fmt, int width, i
     int picture_size = av_image_get_buffer_size(pix_fmt, width, height, 1);
     uint8_t *buf = (uint8_t *) av_malloc(picture_size);
 //    avpicture_fill((AVPicture *) frame, buf, pix_fmt, width, height);
-    av_image_fill_arrays(frame->data, frame->linesize, buf, AV_PIX_FMT_RGBA, width, height, 1);
+    av_image_fill_arrays(frame->data, frame->linesize, buf, pix_fmt, width, height, 1);
     return frame;
 }
 

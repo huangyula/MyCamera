@@ -11,6 +11,8 @@
 
 #if defined(__ANDROID__)
 
+#define logw(content)   __android_log_write(ANDROID_LOG_WARN,JNI_TAG,content)
+
 #define ALOGE(format, ...) __android_log_print(ANDROID_LOG_ERROR, JNI_TAG, format, ##__VA_ARGS__)
 #define ALOGI(format, ...) __android_log_print(ANDROID_LOG_INFO,  JNI_TAG, format, ##__VA_ARGS__)
 #define ALOGD(format, ...) __android_log_print(ANDROID_LOG_DEBUG, JNI_TAG, format, ##__VA_ARGS__)

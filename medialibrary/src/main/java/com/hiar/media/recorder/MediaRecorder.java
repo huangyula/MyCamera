@@ -1,6 +1,8 @@
 package com.hiar.media.recorder;
 
 
+import com.hiar.utils.LogUtils;
+
 /**
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
@@ -12,6 +14,7 @@ public class MediaRecorder {
         System.loadLibrary("ffmpeg");
         System.loadLibrary("soundtouch");
         System.loadLibrary("media_player");
+        System.loadLibrary("video_editor");
     }
 
     private long ptr;
@@ -30,8 +33,10 @@ public class MediaRecorder {
     }
 
     public void encodeAndWriteVideo(byte[] data) {
-        if (ptr > 0)
+        if (ptr > 0) {
             encodeAndWriteVideo(ptr, data);
+//            LogUtils.d("encodeAndWriteVideo data size:"+data.length);
+        }
     }
 
     public void destroy() {

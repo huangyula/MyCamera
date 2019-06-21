@@ -11,7 +11,28 @@
 
 extern "C" {
 
-jlong JNICALL GAME(create(JNIEnv * env, jobject)) {
+unsigned char *byteArrayToByte(JNIEnv* env, jbyteArray byteArray) {
+    jbyte *pjb =  env->GetByteArrayElements( byteArray, 0);
+    jsize jlen =  env->GetArrayLength(byteArray);
+    int len = (int) jlen;
+    unsigned char * byBuf = NULL;
+
+    if (len > 0) {
+        byBuf = (unsigned char*) malloc(len + 1);
+        memcpy(byBuf, pjb, len);
+        byBuf[len] = '\0';
+    }
+    else {
+        byBuf = (unsigned char*) malloc(1);
+        byBuf[0] = '\0';
+    }
+
+    env->ReleaseByteArrayElements(byteArray, pjb, 0);
+    return byBuf;
+}
+
+
+jlong JNICALL GAME(create(JNIEnv * env, jobject /* this */)) {
     MediaRecorder *mediaRecorder = new MediaRecorder();
     return (jlong) mediaRecorder;
 }
@@ -23,7 +44,7 @@ void JNICALL GAME(init(JNIEnv * env, jobject, jlong
     MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);
     mediaRecorder->setDataSource(path);
     mediaRecorder->setFrameRate(30);
-    mediaRecorder->setVideoRotate(400000);
+    mediaRecorder->setVideoBitRate(800000);
     mediaRecorder->setVideoFormat(AV_PIX_FMT_NV21);
     mediaRecorder->setVideoSize(width,height);
     mediaRecorder->openFile();
@@ -31,9 +52,10 @@ void JNICALL GAME(init(JNIEnv * env, jobject, jlong
 
 void JNICALL GAME(encodeAndWriteVideo(JNIEnv * env, jobject, jlong
                           ptr, jbyteArray data)) {
-    jbyte *dataByte = env->GetByteArrayElements(data, 0);
+    jbyte *dataByte = env->GetByteArrayElements(data, NULL);
     MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);
     mediaRecorder->encodeAndWriteVideo((uint8_t *)dataByte);
+//    mediaRecorder->encodeAndWriteVideo(byteArrayToByte(env,data));
 }
 
 void JNICALL GAME(destroy(JNIEnv * env, jobject, jlong
