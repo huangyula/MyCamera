@@ -13,7 +13,6 @@ public class DeviceFragment extends BaseFragment {
 
     public static DeviceFragment newInstance() {
         DeviceFragment deviceFragment = new DeviceFragment();
-        FLAG=DEVICE;
         return deviceFragment;
     }
 

@@ -6,7 +6,6 @@ import com.hiscene.flytech.R;
 public class ScanLoginFragment extends BaseFragment {
     public static ScanLoginFragment newInstance() {
         ScanLoginFragment scanLoginFragment = new ScanLoginFragment();
-        FLAG=SCAN_LOGIN;
         return scanLoginFragment;
     }
 

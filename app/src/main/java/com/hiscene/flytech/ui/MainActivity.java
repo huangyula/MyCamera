@@ -19,17 +19,17 @@ import com.hiscene.flytech.ui.fragment.LoginFragment;
 import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
 import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
 
-import java.util.logging.Handler;
-
 import butterknife.BindView;
 
-import static com.github.weiss.core.base.BaseFragment.DEVICE;
-import static com.github.weiss.core.base.BaseFragment.FLAG;
-import static com.github.weiss.core.base.BaseFragment.LOGIN;
-import static com.github.weiss.core.base.BaseFragment.SCAN_DEVICE;
-import static com.github.weiss.core.base.BaseFragment.SCAN_LOGIN;
 
 public class MainActivity extends BaseActivity {
+
+    private int FLAG = -1;
+    public static final int LOGIN = 0;//登录页
+    public static final int SCAN_LOGIN = 1;//扫描登录页
+    public static final int DEVICE = 2;//主界面页
+    public static final int SCAN_DEVICE = 3;//扫描设备页
+
     @BindView(R.id.cameraLayout)
     LinearLayout cameraLayout;
 
@@ -55,28 +55,32 @@ public class MainActivity extends BaseActivity {
     protected void initView() {
         loginFragment = LoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
+        FLAG = LOGIN;
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
         qrVision = new CameraRecorder();
-        qrVision.init(C.TEMP_PATH+"test.mp4");
+        qrVision.init(C.TEMP_PATH + "test.mp4");
         qrVision.start();
         qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
                 LogUtils.d("OnQrRecognizeListener:" + result.getText());
-//                if(FLAG==LOGIN){
-//                    scanLoginFragment = ScanLoginFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commit();
-//                }else if(FLAG==SCAN_LOGIN){
-//                    deviceFragment = DeviceFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commit();
-//                }else if(FLAG==DEVICE){
-//                    scanDeviceFragment = ScanDeviceFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commit();
-//                } else if(FLAG==SCAN_DEVICE) {
-//                    excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
-//                }
-                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                if (FLAG == LOGIN) {
+                    scanLoginFragment = ScanLoginFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commit();
+                    FLAG = SCAN_LOGIN;
+                } else if (FLAG == SCAN_LOGIN) {
+                    deviceFragment = DeviceFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commit();
+                    FLAG = DEVICE;
+                } else if (FLAG == DEVICE) {
+                    scanDeviceFragment = ScanDeviceFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commit();
+                    FLAG = SCAN_DEVICE;
+                } else if (FLAG == SCAN_DEVICE) {
+                    excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                }
+//                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
                 return true;
             }
         });

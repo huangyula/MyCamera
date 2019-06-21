@@ -13,7 +13,6 @@ public class ScanDeviceFragment extends BaseFragment {
 
     public static ScanDeviceFragment newInstance() {
         ScanDeviceFragment scanDeviceFragment = new ScanDeviceFragment();
-        FLAG=SCAN_DEVICE;
         return scanDeviceFragment;
     }
 

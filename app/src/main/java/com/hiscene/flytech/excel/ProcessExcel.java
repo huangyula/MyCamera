@@ -5,6 +5,7 @@ import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.util.GsonUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -26,33 +27,7 @@ import java.util.List;
  */
 public class ProcessExcel implements IExcel {
 
-    public List<ProcessExcel> processExcelList = new ArrayList<>();
-
-    //序号
-    public int id;
-
-    //作业内容
-    public String content;
-
-    //作业标准
-    public String standard;
-
-    //作业结果 false=0, true=1, null=-1
-    public int result;
-
-    public ProcessExcel() {
-    }
-
-    public ProcessExcel(int id, String content, String standard) {
-        this(id, content, standard, -1);
-    }
-
-    public ProcessExcel(int id, String content, String standard, int result) {
-        this.id = id;
-        this.content = content;
-        this.standard = standard;
-        this.result = result;
-    }
+    public List<ProcessModel> processExcelList = new ArrayList<>();
 
     @Override
     public void read() {
@@ -63,7 +38,7 @@ public class ProcessExcel implements IExcel {
             for (int i = 1; i < sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row != null) {
-                    processExcelList.add(new ProcessExcel((int) row.getCell(0).getNumericCellValue(),
+                    processExcelList.add(new ProcessModel((int) row.getCell(0).getNumericCellValue(),
                             row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue()));
                 }
             }
@@ -115,7 +90,7 @@ public class ProcessExcel implements IExcel {
     public void restore() {
         //从缓存文件中读取内容
         String read_content=FileUtils.readFile2String(C.TEMP_FILE,"utf-8");
-        Type type = new TypeToken<List<ProcessExcel>>(){}.getType();
+        Type type = new TypeToken<List<ProcessModel>>(){}.getType();
         processExcelList=new Gson().fromJson(read_content,type);
 //        System.out.println(processExcelList);
     }

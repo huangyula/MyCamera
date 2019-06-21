@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.excel.ProcessExcel;
 
 import org.apache.poi.ss.formula.functions.T;
@@ -19,14 +20,14 @@ import butterknife.BindView;
  * @des
  */
 @SuppressLint("ValidFragment")
-public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
+public class ProcessExcelFragment extends BaseExcelFragment<ProcessModel> {
 
     @BindView(R.id.title)
     TextView title;
     @BindView(R.id.standard)
     TextView standard;
 
-    ProcessExcel data;
+    ProcessModel data;
 
     public ProcessExcelFragment(ExcelFragmentManager excelFragmentManager) {
         super(excelFragmentManager);
@@ -51,7 +52,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
     }
 
     @Override
-    public void setData(ProcessExcel data) {
+    public void setData(ProcessModel data) {
         if (title != null) {
             initData(data);
         } else {
@@ -59,7 +60,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessExcel> {
         }
     }
 
-    private void initData(ProcessExcel data) {
+    private void initData(ProcessModel data) {
         title.setText(data.content);
         standard.setText(data.standard);
     }

@@ -13,7 +13,6 @@ public class LoginFragment extends BaseFragment {
 
     public static LoginFragment newInstance() {
         LoginFragment loginFragment = new LoginFragment();
-        FLAG=LOGIN;
         return loginFragment;
     }
 
