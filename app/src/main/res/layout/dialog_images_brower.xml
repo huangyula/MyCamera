@@ -9,34 +9,51 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@color/white">
+        android:background="@mipmap/bg2">
         <com.hiscene.flytech.view.ShowImagesViewPager
             android:id="@+id/vp_images"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
              />
-        <Button
+        <TextView
             android:id="@+id/pre_picture"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@mipmap/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:drawableLeft="@mipmap/iconleftback"
+            android:layout_marginLeft="8dp"
+            android:drawablePadding="5dp"
+            android:text="@string/pre_page"
+            style="@style/text_style_blue_bold"
+            android:clickable="true"
             />
-        <Button
+
+        <TextView
             android:id="@+id/next_picture"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@mipmap/ic_launcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            />
+            android:drawableRight="@mipmap/iconrightback"
+            android:layout_marginRight="8dp"
+            android:drawablePadding="5dp"
+            android:text="@string/next_page"
+            style="@style/text_style_blue_bold"
+            android:clickable="true"
+             />
     </RelativeLayout>
 
-    <ImageView
+    <TextView
         android:id="@+id/iv_cancel"
         android:layout_width="wrap_content"
-        android:layout_height="45dp"
-        android:background="@mipmap/ic_launcher"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@mipmap/button_default"
+        android:text="@string/close"
+        style="@style/text_style_white_bold"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
         />
 
 </LinearLayout>

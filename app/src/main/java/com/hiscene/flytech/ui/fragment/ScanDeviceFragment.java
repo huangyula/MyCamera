@@ -9,17 +9,17 @@ import com.hiscene.flytech.R;
  * @time 2019/6/20
  * @des
  */
-public class LoginFragment extends BaseFragment {
+public class ScanDeviceFragment extends BaseFragment {
 
-    public static LoginFragment newInstance() {
-        LoginFragment loginFragment = new LoginFragment();
-        FLAG=LOGIN;
-        return loginFragment;
+    public static ScanDeviceFragment newInstance() {
+        ScanDeviceFragment scanDeviceFragment = new ScanDeviceFragment();
+        FLAG=SCAN_DEVICE;
+        return scanDeviceFragment;
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_login;
+        return R.layout.fragment_scan_device;
     }
 
     @Override

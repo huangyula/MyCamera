@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/app_padding"
+    android:paddingRight="@dimen/app_padding">
     <!--<TextView-->
         <!--android:id="@+id/title"-->
         <!--android:layout_width="match_parent"-->
@@ -31,26 +33,7 @@
             <!--android:layout_height="wrap_content" />-->
         <!---->
     <!--</LinearLayout>-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-        <ImageView
-            android:id="@+id/iv_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@mipmap/ic_launcher"
-            />
-        <TextView
-            android:id="@+id/tv_scan_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scan_hint"/>
-    </LinearLayout>
+    <include layout="@layout/include_top_bar"></include>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,65 +44,81 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@drawable/form_bg"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg1"
             android:orientation="vertical"
-            android:weightSum="5">
+            >
 
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:gravity="center"
-                android:text="作业过程" />
+                android:text="作业过程"
+                android:paddingLeft="@dimen/excel_left_padding"
+                android:paddingTop="18dp"
+                android:paddingBottom="16dp"
+                style="@style/text_style_white"/>
 
             <TextView
                 android:id="@+id/standard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
-                android:gravity="center"
-                android:padding="5dp"
-                android:text="密封工作票" />
+                android:text="密封工作票"
+                android:paddingLeft="@dimen/excel_left_padding"
+                style="@style/text_style_white"
+                android:textSize="14sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                >
 
                 <Button
                     android:id="@+id/executed"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/form_bg"
-                    android:text="@string/executed" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/executed"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/unexecuted"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/form_bg"
-                    android:text="@string/unexecuted" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/unexecuted"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/previousStepBtn"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/form_bg"
-                    android:text="@string/pre_operation" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/pre_operation"
+                    android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/nextStepBtn"
-                    android:layout_width="50dp"
-                    android:layout_height="30dp"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/form_bg"
-                    android:text="@string/next_operation" />
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/next_operation"
+                    android:layout_weight="1"/>
             </LinearLayout>
 
             <LinearLayout

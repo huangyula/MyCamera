@@ -18,6 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -48,11 +49,11 @@ public class ShowImagesDialog extends Dialog{
     @BindView(R.id.vp_images)
     ShowImagesViewPager mViewPager;
     @BindView(R.id.pre_picture)
-    Button prePrcture;
+    TextView prePrcture;
     @BindView(R.id.next_picture)
-    Button nextPicture;
+    TextView nextPicture;
     @BindView(R.id.iv_cancel)
-    ImageView ivCancel;
+    TextView ivCancel;
 
     private View mView;
     private ShowImagesAdapter mAdapter;
@@ -77,7 +78,7 @@ public class ShowImagesDialog extends Dialog{
         WindowManager.LayoutParams wl = window.getAttributes();
         wl.x = 0;
         wl.y = 0;
-        wl.width = (int) (DisplayUtil.getScreenHeight(mContext)*1.5);
+        wl.width = (int) (DisplayUtil.getScreenHeight(mContext)*1.5 );
         wl.height = DisplayUtil.getScreenWidth(mContext) / 2;
         wl.gravity = Gravity.CENTER;
         window.setAttributes(wl);

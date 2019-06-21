@@ -4,20 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:layout_marginTop="@dimen/app_padding">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/app_name_size"
-        android:textStyle="bold"
-        android:textColor="@color/app_blue"
-        android:text="@string/app_name"/>
-    <ImageView
-        android:layout_marginTop="6dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@mipmap/buleline"
-        />
+    >
+    <include layout="@layout/include_top_bar"></include>
 
     <RelativeLayout
         android:layout_marginTop="100dp"

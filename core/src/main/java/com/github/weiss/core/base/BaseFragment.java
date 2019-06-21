@@ -17,6 +17,11 @@ import butterknife.ButterKnife;
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
     public View rootView;
     public LayoutInflater inflater;
+    public static int FLAG=-1;
+    public static int LOGIN=0;//登录页
+    public static int SCAN_LOGIN=1;//扫描登录页
+    public static int DEVICE=2;//主界面页
+    public static int SCAN_DEVICE=3;//扫描设备页
 
     @Nullable
     @Override

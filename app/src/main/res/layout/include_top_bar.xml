@@ -3,22 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:padding="@dimen/app_padding"
     >
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
+        android:layout_height="wrap_content"
        >
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="@string/app_name"
-            android:layout_centerInParent="true"/>
+            style="@style/text_style" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@mipmap/ic_launcher"
+            android:drawableLeft="@mipmap/tuichu"
             android:text="@string/exit_app"
-            android:gravity="center" />
+            style="@style/text_style"
+            android:drawablePadding="7dp"
+            />
 
         <TextView
             android:id="@+id/login_name"
@@ -26,20 +30,23 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            style="@style/text_style"
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/login_name"
             android:layout_centerVertical="true"
-            android:text="姓名："/>
+            android:text="姓名："
+            style="@style/text_style"/>
 
     </RelativeLayout>
 
-    <View
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/line">
-    </View>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@mipmap/buleline">
+    </ImageView>
 
 </LinearLayout>

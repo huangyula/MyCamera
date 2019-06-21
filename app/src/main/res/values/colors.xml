@@ -13,4 +13,5 @@
     <color name="button_black">#3E4652</color>
     <color name="red">#dd5862</color>
     <color name="transparent">#00000000</color>
+    <color name="app_blue">#07d3ff</color>
 </resources>

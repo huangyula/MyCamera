@@ -9,10 +9,21 @@ import com.hiscene.camera.view.CameraView;
 import com.hiscene.camera.vision.QRVision;
 import com.hiscene.flytech.BaseActivity;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.ui.fragment.DeviceFragment;
 import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
 import com.hiscene.flytech.ui.fragment.LoginFragment;
+import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
+import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
+
+import java.util.logging.Handler;
 
 import butterknife.BindView;
+
+import static com.github.weiss.core.base.BaseFragment.DEVICE;
+import static com.github.weiss.core.base.BaseFragment.FLAG;
+import static com.github.weiss.core.base.BaseFragment.LOGIN;
+import static com.github.weiss.core.base.BaseFragment.SCAN_DEVICE;
+import static com.github.weiss.core.base.BaseFragment.SCAN_LOGIN;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.cameraLayout)
@@ -22,6 +33,12 @@ public class MainActivity extends BaseActivity {
     QRVision qrVision;
 
     LoginFragment loginFragment;
+
+    ScanLoginFragment scanLoginFragment;
+
+    DeviceFragment deviceFragment;
+
+    ScanDeviceFragment scanDeviceFragment;
 
     ExcelFragmentManager excelFragmentManager;
 
@@ -42,6 +59,18 @@ public class MainActivity extends BaseActivity {
             @Override
             public boolean OnRecognize(Result result) {
                 LogUtils.d("OnQrRecognizeListener:" + result.getText());
+//                if(FLAG==LOGIN){
+//                    scanLoginFragment = ScanLoginFragment.newInstance();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commit();
+//                }else if(FLAG==SCAN_LOGIN){
+//                    deviceFragment = DeviceFragment.newInstance();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commit();
+//                }else if(FLAG==DEVICE){
+//                    scanDeviceFragment = ScanDeviceFragment.newInstance();
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commit();
+//                } else if(FLAG==SCAN_DEVICE) {
+//                    excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+//                }
                 excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
                 return true;
             }
