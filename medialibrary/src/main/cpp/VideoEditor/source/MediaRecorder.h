@@ -23,18 +23,22 @@ extern "C" {
 #include <libswresample/swresample.h>
 };
 
+#include <string>
+using namespace std;
 typedef struct EncodeStream {
     AVStream *st;           // 媒体流
     AVCodecContext *enc;    // 编码上下文
 
     // 下一个pts
-    int64_t next_pts;
+    int64_t next_pts = 0;
     int samples_count;
+    int countIndex = 0;
 
     AVFrame *frame;
     AVFrame *tmp_frame;
 
     struct SwsContext *sws_ctx; // 转码上下文
+    bool sws_ctxInit;           //转码上下文初始化
     struct SwrContext *swr_ctx; // 重采样上下文
 } EncodeStream;
 
@@ -57,6 +61,8 @@ public:
     // 设置视频旋转角度
     void setVideoRotate(int rotate);
 
+    void setVideoBitRate(int bitRate);
+
     // 设置帧率
     void setFrameRate(int frameRate);
 
@@ -73,7 +79,7 @@ public:
     int openFile();
 
     // 输入视频数据
-    int encodeAndWriteVideo(uint8_t *data);
+    int encodeAndWriteVideo(unsigned char *data);
 
     // 编码PCM并写入复用器
     int encodeAndWriteAudio(uint8_t *data, int len);
@@ -146,6 +152,8 @@ private:
     int audioSampleSize;
     // 像素格式
     AVPixelFormat pixelFmt;
+
+    int avError(int errNum);
 };
 
 

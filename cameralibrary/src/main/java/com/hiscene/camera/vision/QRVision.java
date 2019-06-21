@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
  * @time 2019/6/20
- * @des 二维码识别
+ * @des 二维码识别视觉模块
  */
 public class QRVision extends LoopThread implements NewFrameListener {
     protected ByteBuffer recognizerBuffer = null;

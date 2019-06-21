@@ -8,7 +8,9 @@ import com.hiscene.camera.listener.OnQrRecognizeListener;
 import com.hiscene.camera.view.CameraView;
 import com.hiscene.camera.vision.QRVision;
 import com.hiscene.flytech.BaseActivity;
+import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
 import com.hiscene.flytech.ui.fragment.LoginFragment;
 
@@ -19,7 +21,7 @@ public class MainActivity extends BaseActivity {
     LinearLayout cameraLayout;
 
     CameraView cameraView;
-    QRVision qrVision;
+    CameraRecorder qrVision;
 
     LoginFragment loginFragment;
 
@@ -36,7 +38,8 @@ public class MainActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
-        qrVision = new QRVision();
+        qrVision = new CameraRecorder();
+        qrVision.init(C.TEMP_PATH+"test.mp4");
         qrVision.start();
         qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
@@ -49,4 +52,14 @@ public class MainActivity extends BaseActivity {
         qrVision.startQRRecognize();
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        qrVision.shutdown();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
