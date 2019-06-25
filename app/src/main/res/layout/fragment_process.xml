@@ -85,6 +85,7 @@
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
                     android:text="@string/executed"
+                    android:contentDescription="@string/executed"
                     android:layout_weight="1"/>
 
                 <Button
@@ -96,6 +97,7 @@
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
                     android:text="@string/unexecuted"
+                    android:contentDescription="@string/unexecuted"
                     android:layout_weight="1"/>
 
                 <Button
@@ -107,6 +109,7 @@
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
                     android:text="@string/pre_operation"
+                    android:contentDescription="@string/pre_operation"
                     android:layout_weight="1"/>
 
                 <Button
@@ -118,6 +121,7 @@
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
                     android:text="@string/next_operation"
+                    android:contentDescription="@string/next_operation"
                     android:layout_weight="1"/>
             </LinearLayout>
 

@@ -10,15 +10,18 @@ import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 
@@ -35,7 +38,9 @@ public class ProcessExcel implements IExcel {
     @Override
     public void read() {
         try {
-            XSSFWorkbook wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.PROCESS_FILE));
+            // 延迟解析比率
+//            ZipSecureFile.setMinInflateRatio(-1.0d);
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(new File(C.ASSETS_PATH + C.PROCESS_FILE)));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
             for (int i = 1; i < sheet.getLastRowNum(); i++) {
@@ -47,8 +52,6 @@ public class ProcessExcel implements IExcel {
             }
             wb.close();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidFormatException e) {
             e.printStackTrace();
         }
     }
