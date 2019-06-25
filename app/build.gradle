@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.hiscene.flytech"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.0"
@@ -83,7 +83,7 @@ dependencies {
         // break compilation because it includes stax-api which is under forbidden package 'javax.xml.stream'
         exclude group: 'org.codehaus.woodstox'
     }
-    implementation 'com.mylhyl:zxingscanner:2.1.1'
+    implementation 'com.google.zxing:core:3.3.0'
     implementation project(':cameralibrary')
     implementation project(':medialibrary')
 
