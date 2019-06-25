@@ -7,6 +7,7 @@ import com.github.weiss.core.utils.SPUtils;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
+import com.hiscene.flytech.excel.ExecuteExcel;
 import com.hiscene.flytech.excel.IExcel;
 import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.util.PositionUtil;
@@ -32,7 +33,9 @@ public class ExcelFragmentManager {
     private String pos = "0.-1";
 
     private ProcessExcelFragment processExcelFragment;
+    private ExecuteExcelFragment executeExcelFragment;
     private ProcessExcel processExcel;
+    private ExecuteExcel executeExcel;
     //当前表格
     private IExcel currentExcel;
 
@@ -44,11 +47,14 @@ public class ExcelFragmentManager {
     protected void init() {
         excelSteps = ExcelStep.test();
         processExcel = new ProcessExcel();
+        executeExcel = new ExecuteExcel();
 
         if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
-            processExcel.read();
+//            processExcel.read();
+            executeExcel.read();
         } else {//恢复启动
-            processExcel.restore();
+//            processExcel.restore();
+            executeExcel.restore();
             pos = SPUtils.getString(PositionUtil.POSITION);
         }
         showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
@@ -67,6 +73,8 @@ public class ExcelFragmentManager {
      * 下一步
      */
     public void nextStep() {
+        //测试
+//        currentExcel.write();
         currentExcel.svae();
 
         pos = PositionUtil.nextStep(pos, excelSteps);
@@ -81,6 +89,7 @@ public class ExcelFragmentManager {
      * 最后一步,生成新的表格
      */
     public void lastStep() {
+        System.out.println("lastStep: "+"当前已是最后一步");
         processExcel.write();
         SPUtils.put(RECOVERY, false);
     }
@@ -101,8 +110,8 @@ public class ExcelFragmentManager {
     private void showExcel(ExcelStep excelStep) {
         if (excelStep.style == ExcelStyle.PROCESS_EXCEL) {
             showProcessExcel(excelStep);
-        } else {
-
+        } else if(excelStep.style==ExcelStyle.EXCUTE_EXCEL){
+                showExecuteExcel(excelStep);
         }
     }
 
@@ -122,6 +131,29 @@ public class ExcelFragmentManager {
         processExcelFragment.setData(processExcel.processExcelList.get(excelStep.step));
         currentExcel = processExcel;
     }
+
+    /**
+     * 显示二次措施单
+     *
+     * @param excelStep
+     */
+    private void showExecuteExcel(ExcelStep excelStep) {
+        if (CollectionUtils.isEmpty(executeExcel.executeModelList)) return;
+        if (executeExcelFragment == null) {
+            executeExcelFragment = executeExcelFragment.newInstance(this);
+        }
+        if (executeExcel != currentExcel) {
+            manager.beginTransaction().replace(R.id.fragment, executeExcelFragment).commit();
+        }
+        String[] posArr = pos.split("\\.");
+        excelStep = excelSteps.get(Integer.parseInt(posArr[0]));
+        //            executeExcelFragment.setData(executeExcel.executeModelList.get(excelStep.step));
+        if(excelStep.chilSteps!=null&&excelStep.chilSteps.size()>0)
+            executeExcelFragment.setData2(executeExcel.executeModelList,excelStep, Integer.valueOf(posArr[1]));
+//        executeExcelFragment.setData(executeExcel.executeModelList.get(excelStep.step));
+        currentExcel = executeExcel;
+    }
+
 
 
 }

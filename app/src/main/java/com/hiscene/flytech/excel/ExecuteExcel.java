@@ -5,6 +5,7 @@ import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
@@ -23,26 +24,28 @@ import java.util.List;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 
 /**
- * @author Minamo
- * @e-mail kleinminamo@gmail.com
- * @time 2019/6/17
- * @des 工作过程表格
+ * @author huangyu
+ * @des 二次措施单表格
  */
-public class ProcessExcel implements IExcel {
+public class ExecuteExcel implements IExcel {
 
-    public List<ProcessModel> processExcelList = new ArrayList<>();
+    public List<ExecuteModel> executeModelList = new ArrayList<>();
 
     @Override
     public void read() {
         try {
-            XSSFWorkbook wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.PROCESS_FILE));
+            XSSFWorkbook wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.EXECUTE_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
-            for (int i = 1; i < sheet.getLastRowNum(); i++) {
+            //读取范围：行数6-21; 31-42;43-46 列数：1-6
+            for (int i = 5; i < 21; i++) {
                 Row row = sheet.getRow(i);
                 if (row != null) {
-                    processExcelList.add(new ProcessModel((int) row.getCell(0).getNumericCellValue(),
-                            row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue()));
+                    executeModelList.add(new ExecuteModel(
+                            //row.getCell(0).getStringCellValue() //此处类型不一致
+                            i+"",
+                            row.getCell(3).getStringCellValue()
+                    ));
                 }
             }
             wb.close();
@@ -58,13 +61,13 @@ public class ProcessExcel implements IExcel {
         try {
             List<String> resultList=new ArrayList<>();
             String result="";
-            for(ProcessModel processModel:processExcelList){
-                switch (processModel.getResult()){
+            for(ExecuteModel executeModel:executeModelList){
+                switch (executeModel.getExcute_result()){
                     case 0:
-                        result="确认(×)";
+                        result="×";
                         break;
                     case 1:
-                        result="确认(√)";
+                        result="√";
                         break;
                     case -1:
                         result="无";
@@ -115,20 +118,20 @@ public class ProcessExcel implements IExcel {
     @Override
     public void restore() {
         //从缓存文件中读取内容
-        String read_content=FileUtils.readFile2String(C.TEMP_PROCESS_FILE,"utf-8");
-        Type type = new TypeToken<List<ProcessModel>>(){}.getType();
-        processExcelList=new Gson().fromJson(read_content,type);
+        String read_content=FileUtils.readFile2String(C.TEMP_EXCUTE_FILE,"utf-8");
+        Type type = new TypeToken<List<ExecuteModel>>(){}.getType();
+        executeModelList=new Gson().fromJson(read_content,type);
 //        System.out.println(processExcelList);
     }
 
     @Override
     public void svae() {
         //将List转化为json,并写入缓存目录
-        if(processExcelList!=null&&processExcelList.size()>0){
-            String write_content=GsonUtil.gsonString(processExcelList.toArray());
+        if(executeModelList!=null&&executeModelList.size()>0){
+            String write_content=GsonUtil.gsonString(executeModelList.toArray());
             if(!StringUtils.isEmpty(write_content)){
-                if(FileUtils.createFileByDeleteOldFile(C.TEMP_PROCESS_FILE)){
-                    boolean a=FileUtils.writeFileFromString(C.TEMP_PROCESS_FILE,write_content,true);
+                if(FileUtils.createFileByDeleteOldFile(C.TEMP_EXCUTE_FILE)){
+                    boolean a=FileUtils.writeFileFromString(C.TEMP_EXCUTE_FILE,write_content,true);
                 }
             }
         }
@@ -136,5 +139,4 @@ public class ProcessExcel implements IExcel {
         restore();
 
     }
-
 }

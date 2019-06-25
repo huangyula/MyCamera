@@ -36,4 +36,7 @@ public class ProcessModel extends Entity {
         this.result = result;
     }
 
+    public int getResult() {
+        return result;
+    }
 }

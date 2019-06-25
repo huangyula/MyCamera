@@ -43,11 +43,35 @@ public class ExcelStep {
      * @return
      */
     public static List<ExcelStep> test() {
+//        List<ExcelStep> excelSteps = new ArrayList<>();
+//        int steps = 10;
+//        for (int i = 0; i < steps; i++) {
+//            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL, i));
+//        }
+
         List<ExcelStep> excelSteps = new ArrayList<>();
-        int steps = 10;
-        for (int i = 0; i < steps; i++) {
-            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL, i));
-        }
+        List<ExcelStep> childSteps=new ArrayList<>();
+        ExcelStep excelStep1=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,0);
+        ExcelStep excelStep2=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,1);
+        ExcelStep excelStep3=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,2);
+        ExcelStep excelStep4=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,3);
+        ExcelStep excelStep5=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,4);
+        ExcelStep excelStep6=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,5);
+        childSteps.add(excelStep2);
+        childSteps.add(excelStep3);
+        childSteps.add(excelStep4);
+        childSteps.add(excelStep5);
+        excelStep1.chilSteps=childSteps;
+        excelSteps.add(excelStep1);
+//        excelSteps.add(excelStep2);
+//        excelSteps.add(excelStep3);
+//        excelSteps.add(excelStep4);
+//        excelSteps.add(excelStep5);
+        excelSteps.add(excelStep6);
+//        int steps = 10;
+//        for (int i = 0; i < steps; i++) {
+//            excelSteps.add(new ExcelStep(ExcelStyle.EXCUTE_EXCEL, i));
+//        }
         return excelSteps;
     }
 }
