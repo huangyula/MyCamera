@@ -86,5 +86,6 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.0'
     implementation project(':cameralibrary')
     implementation project(':medialibrary')
+    implementation project(':screenrecorder')
 
 }

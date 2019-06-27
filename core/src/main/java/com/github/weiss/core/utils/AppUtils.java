@@ -3,12 +3,16 @@ package com.github.weiss.core.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -154,6 +158,39 @@ public class AppUtils {
         return false;
     }
 
+
+    /**
+     * 用URL Scheme打开App
+     * @param context
+     * @param packageName
+     */
+    public static void launchAppForURLScheme(Context context, String packageName, String url)
+    {
+        PackageInfo pi = null;
+        try{
+            pi = context.getPackageManager().getPackageInfo(packageName, 0);
+            Intent resolveIntent = new Intent(Intent.ACTION_MAIN, null);
+            resolveIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+            resolveIntent.setPackage(pi.packageName);
+
+            List<ResolveInfo> apps = context.getPackageManager().queryIntentActivities(resolveIntent, 0);
+
+            ResolveInfo ri = apps.iterator().next();
+            if (ri != null ) {
+                packageName = ri.activityInfo.packageName;
+                String className = ri.activityInfo.name;
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+                ComponentName cn = new ComponentName(packageName, className);
+
+                intent.setComponent(cn);
+                context.startActivity(intent);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * 打开App
      *

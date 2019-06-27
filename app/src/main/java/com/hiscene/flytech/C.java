@@ -27,5 +27,5 @@ public class C {
     public static final String PROCESS_FILE = "芬莱作业过程.xlsx";
 
     //临时目录下的缓存文件
-    public static final String TEMP_FILE=TEMP_PATH+"芬莱作业过程.json";
+    public static final String TEMP_FILE = TEMP_PATH + "芬莱作业过程.json";
 }

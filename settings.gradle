@@ -1,1 +1,1 @@
-include ':app', ':core', ':medialibrary', ':utilslibrary', ':cameralibrary'
+include ':app', ':core', ':medialibrary', ':utilslibrary', ':cameralibrary', ':screenrecorder'

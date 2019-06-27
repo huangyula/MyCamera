@@ -6,6 +6,8 @@ import com.github.weiss.core.utils.FileUtils;
 import com.hiar.media.recorder.MediaRecorder;
 import com.hiscene.camera.vision.QRVision;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
@@ -15,23 +17,31 @@ import com.hiscene.camera.vision.QRVision;
 public class CameraRecorder extends QRVision {
 
     MediaRecorder mediaRecorder;
+    ReentrantLock recorderLock = new ReentrantLock();
 
     boolean init = false;
     String url;
 
-    public void init(String url) {
-        this.url = url;
-        FileUtils.createFileByDeleteOldFile(url);
+    public void init() {
+        recorderLock.lock();
         mediaRecorder = new MediaRecorder();
+        init = false;
+        recorderLock.unlock();
     }
 
     @Override
     public void onNewFrame(byte[] data, Camera camera, int width, int height, int type) {
-        if(init) {
-            mediaRecorder.encodeAndWriteVideo(data.clone());
-        }else {
-            mediaRecorder.init(url,width,height);
-            init = true;
+        if(mediaRecorder != null) {
+            recorderLock.lock();
+            if (init) {
+                mediaRecorder.encodeAndWriteVideo(data.clone());
+            } else {
+                url = RecorderUtils.getFilePath();
+                FileUtils.createFileByDeleteOldFile(url);
+                mediaRecorder.init(url, width, height);
+                init = true;
+            }
+            recorderLock.unlock();
         }
         super.onNewFrame(data, camera, width, height, type);
     }
@@ -46,9 +56,10 @@ public class CameraRecorder extends QRVision {
         super.loop();
     }
 
-    @Override
-    public void over() {
-        super.over();
+    public void destroy() {
+        recorderLock.lock();
         mediaRecorder.destroy();
+        mediaRecorder = null;
+        recorderLock.unlock();
     }
 }

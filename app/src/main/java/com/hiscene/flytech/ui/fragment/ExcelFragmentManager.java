@@ -38,10 +38,6 @@ public class ExcelFragmentManager {
 
     public ExcelFragmentManager(FragmentManager fm) {
         this.manager = fm;
-        init();
-    }
-
-    protected void init() {
         excelSteps = ExcelStep.test();
         processExcel = new ProcessExcel();
 
@@ -51,6 +47,9 @@ public class ExcelFragmentManager {
             processExcel.restore();
             pos = SPUtils.getString(PositionUtil.POSITION);
         }
+    }
+
+    public void init() {
         showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
     }
 
@@ -117,7 +116,7 @@ public class ExcelFragmentManager {
             processExcelFragment = ProcessExcelFragment.newInstance(this);
         }
         if (processExcel != currentExcel) {
-            manager.beginTransaction().replace(R.id.fragment, processExcelFragment).commit();
+            manager.beginTransaction().replace(R.id.fragment, processExcelFragment).commitNowAllowingStateLoss();
         }
         processExcelFragment.setData(processExcel.processExcelList.get(excelStep.step));
         currentExcel = processExcel;

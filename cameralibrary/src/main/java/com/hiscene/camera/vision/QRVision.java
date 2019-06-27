@@ -96,6 +96,11 @@ public class QRVision extends LoopThread implements NewFrameListener {
             lock.unlock();
             doQrRecognize(recognizerBuffer.array(), frameWidth, frameHeight);
         }
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
