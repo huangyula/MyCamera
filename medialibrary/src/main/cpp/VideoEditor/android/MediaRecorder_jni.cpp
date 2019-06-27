@@ -58,6 +58,15 @@ void JNICALL GAME(encodeAndWriteVideo(JNIEnv * env, jobject, jlong
 //    mediaRecorder->encodeAndWriteVideo(byteArrayToByte(env,data));
 }
 
+
+void JNICALL GAME(writeH264Video(JNIEnv * env, jobject, jlong
+                          ptr, jbyteArray data,jint length)) {
+    jbyte *dataByte = env->GetByteArrayElements(data, NULL);
+    MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);
+    mediaRecorder->writeH264Video((uint8_t *)dataByte,length);
+//    mediaRecorder->encodeAndWriteVideo(byteArrayToByte(env,data));
+}
+
 void JNICALL GAME(destroy(JNIEnv * env, jobject, jlong
                           ptr)) {
     MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);

@@ -79,7 +79,10 @@ public:
     int openFile();
 
     // 输入视频数据
-    int encodeAndWriteVideo(unsigned char *data);
+    int encodeAndWriteVideo(uint8_t *data);
+
+    // 输入视频数据
+    int writeH264Video(uint8_t *data,int length);
 
     // 编码PCM并写入复用器
     int encodeAndWriteAudio(uint8_t *data, int len);
@@ -128,9 +131,9 @@ private:
     bool have_audio;            // 是否存在音频流
 
     // 视频编码流
-    EncodeStream videoStream;
+    EncodeStream *videoStream;
     // 音频编码流
-    EncodeStream audioStream;
+    EncodeStream *audioStream;
     // 输出文件
     const char *dstUrl;
     // 视频宽度
