@@ -4,12 +4,17 @@
 
 #include "MediaRecorder.h"
 
-MediaRecorder::MediaRecorder() {
-
+MediaRecorder::MediaRecorder()
+:isInited(false),fmt(NULL),fmt_ctx(NULL),have_video(false),have_audio(false),
+ dstUrl(NULL), videoStream(NULL), audioStream(NULL), pixelFmt(AV_PIX_FMT_NV21){
+    videoStream = new EncodeStream();
+    audioStream = new EncodeStream();
 }
 
 MediaRecorder::~MediaRecorder() {
-
+    delete fmt_ctx;
+    delete videoStream;
+    delete audioStream;
 }
 
 void MediaRecorder::setDataSource(const char *url) {
@@ -67,13 +72,13 @@ int MediaRecorder::openFile() {
 
         // 使用默认格式编码器视频流，并初始化编码器
         if (fmt->video_codec != AV_CODEC_ID_NONE) {
-            openStream(&videoStream, fmt_ctx, &video_codec, fmt->video_codec);
+            openStream(videoStream, fmt_ctx, &video_codec, fmt->video_codec);
             have_video = true;
         }
 
         // 使用默认格式编码器音频流，并初始化编码器
         if (fmt->audio_codec != AV_CODEC_ID_NONE && enableAudio) {
-            openStream(&audioStream, fmt_ctx, &audio_codec, fmt->audio_codec);
+            openStream(audioStream, fmt_ctx, &audio_codec, fmt->audio_codec);
             have_audio = true;
         }
         if (!have_video && !have_audio) {
@@ -83,12 +88,12 @@ int MediaRecorder::openFile() {
 
         // 打开视频编码器
         if (have_video) {
-            openVideoEncoder(video_codec, &videoStream, opt);
+            openVideoEncoder(video_codec, videoStream, opt);
         }
 
         // 打开音频编码器
         if (have_audio) {
-            openAudioEncoder(audio_codec, &audioStream, opt);
+            openAudioEncoder(audio_codec, audioStream, opt);
         }
 
         // 打开输出文件
@@ -128,7 +133,7 @@ int MediaRecorder::avError(int errNum) {
 int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     int ret;
     // 获取输出码流
-    EncodeStream *ost = &videoStream;
+    EncodeStream *ost = videoStream;
     AVCodecContext *context;
     AVFrame *frame;
     int got_frame = 0;
@@ -188,39 +193,6 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
     }
     ALOGI("encode video frame sucess! got frame = %d\n", got_frame);
 
-//    __android_log_print(ANDROID_LOG_WARN, "FFPlayer", "编码前时间:%lld",
-//                        (long long) ((av_gettime() - startTime) / 1000));
-/*    //开始编码YUV数据
-    ret = avcodec_send_frame(context, frame);
-    if (ret != 0) {
-        ALOGE("avcodec_send_frame error");
-        avError(ret);
-        return -1;
-    }
-    //获取编码后的数据
-    ret = avcodec_receive_packet(context, &pkt);
-//    __android_log_print(ANDROID_LOG_WARN, "eric", "编码时间:%lld",
-//                        (long long) ((av_gettime() - startTime) / 1000));
-    //是否编码前的YUV数据
-    av_frame_free(&frame);
-    if (ret != 0 || pkt.size <= 0) {
-        ALOGE("avcodec_receive_packet error");
-        avError(ret);
-        return -2;
-    }
-    pkt.stream_index = ost->st->index;
-    AVRational time_base = fmt_ctx->streams[0]->time_base;//{ 1, 1000 };
-    pkt.pts = ost->countIndex * (ost->st->time_base.den) / ((ost->st->time_base.num) * frameRate);
-    pkt.dts = pkt.pts;
-    pkt.duration = (ost->st->time_base.den) / ((ost->st->time_base.num) * frameRate);
-    __android_log_print(ANDROID_LOG_WARN, "eric",
-                        "index:%d,pts:%lld,dts:%lld,duration:%lld,time_base:%d,%d",
-                        ost->countIndex,
-                        (long long) pkt.pts,
-                        (long long) pkt.dts,
-                        (long long) pkt.duration,
-                        time_base.num, time_base.den);
-    pkt.pos = -1;*/
     // 编码成功则将数据写入文件
     if (got_frame == 1) {
         ret = writeFrame(fmt_ctx, &pkt, ost->st->index);
@@ -253,7 +225,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
     int ret;
     int got_frame;
     int dst_nb_samples;
-    EncodeStream *ost = &audioStream;
+    EncodeStream *ost = audioStream;
     // 获取源数据
     unsigned char *srcData = (unsigned char *) data;
     // 初始化AVPacket
@@ -262,13 +234,13 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
     // 获取音频编码上下文
     context = ost->enc;
     // 获取暂存的编码帧
-    frame = audioStream.tmp_frame;
+    frame = audioStream->tmp_frame;
     // 复制数据
     memcpy(frame->data[0], srcData, len);
     // 获取pts
-    frame->pts = audioStream.next_pts;
+    frame->pts = audioStream->next_pts;
     // 计算pts
-    audioStream.next_pts += frame->nb_samples;
+    audioStream->next_pts += frame->nb_samples;
     ALOGI("nb_samples = %d", frame->nb_samples);
     // 如果音频编码帧存在，则进入音频编码阶段
     if (frame) {
@@ -313,6 +285,112 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
 
     // 释放资源
     av_packet_unref(&pkt);
+    return 0;
+}
+
+/**
+ * 直接写H264编码（未验证）
+ * @param data
+ * @param length
+ * @return
+ */
+int MediaRecorder::writeH264Video(uint8_t *data,int length) {
+    // 获取输出码流
+    EncodeStream *ost = videoStream;
+    AVCodecContext *context;
+    AVFrame *frame;
+    int got_frame = 0;
+    // 获取视频编码上下文
+    context = ost->enc;
+    int ret = 0;
+    int dataLen = length;
+    // 初始化一个AVPacket
+    AVPacket pkt = {0};
+
+    av_new_packet(&pkt, length);
+    memcpy(pkt.data, data, length);
+    pkt.stream_index = ost->st->index;
+    pkt.pts = ost->countIndex * (context->time_base.den) / ((context->time_base.num) * frameRate);
+    pkt.dts = pkt.pts;
+    pkt.duration = (context->time_base.den) / ((context->time_base.num) * frameRate);
+    // determine whether the I frame
+/*    if (isKeyFrame) { // 判断该H264帧是否为I帧
+        pkt.flags |= AV_PKT_FLAG_KEY;
+    } else { // p frame
+        pkt.flags = 0;
+    }*/
+    __android_log_print(ANDROID_LOG_WARN, "eric",
+                        "index:%d,pts:%lld,dts:%lld,duration:%lld,time_base:%d,%d",
+                        ost->countIndex,
+                        (long long) pkt.pts,
+                        (long long) pkt.dts,
+                        (long long) pkt.duration,
+                        context->time_base.num, context->time_base.den);
+    pkt.pos = -1;
+
+
+    // 判断格式是否相同，不相同时，必须进行转换
+/*
+    if (context->pix_fmt != pixelFmt) {
+        if (!ost->sws_ctxInit) {
+            ost->sws_ctx = sws_getContext(context->width, context->height,
+                                          pixelFmt,
+                                          context->width, context->height,
+                                          context->pix_fmt,
+                                          SWS_BICUBIC, NULL, NULL, NULL);
+            if (!ost->sws_ctx) {
+                ALOGE("Could not initialize the conversion context");
+                return -1;
+            }
+            ost->sws_ctxInit = true;
+        }
+        // 格式转换
+        sws_scale(ost->sws_ctx,
+                  (const uint8_t *const *) ost->tmp_frame->data, ost->tmp_frame->linesize,
+                  0, context->height, ost->frame->data, ost->frame->linesize);
+    }
+*/
+
+//    ost->frame->data= (uint8_t *) av_malloc(length);
+//    memcpy(ost->frame->data, data, length);
+    // 计算AVFrame的pts
+/*    ost->frame->pts = av_rescale_q(ost->next_pts++, (AVRational) {1, frameRate},
+                                   ost->st->time_base);
+    frame = ost->frame;
+    //例如对于H.264来说。1个AVPacket的data通常对应一个NAL
+    av_init_packet(&pkt);
+
+    // 对视频帧进行编码
+    ret = avcodec_encode_video2(context, &pkt, frame, &got_frame);
+    if (ret < 0) {
+        ALOGE("Error encoding video frame: %s", av_err2str(ret));
+        return -1;
+    }
+    ALOGI("encode video frame sucess! got frame = %d\n", got_frame);*/
+
+    // 编码成功则将数据写入文件
+    if (true) {
+        ret = writeFrame(fmt_ctx, &pkt, ost->st->index);
+        // 释放AVPacket
+        av_packet_unref(&pkt);
+        if (ret < 0) {
+            ALOGE("Error write video frame: %s", av_err2str(ret));
+            return -1;
+        }
+        ost->countIndex++;
+        ALOGI("write video frame sucess!\n");
+    } else {
+        ret = 0;
+        // 释放AVPacket
+        av_packet_unref(&pkt);
+    }
+
+    // 判断是否写入成功
+    if (ret < 0) {
+        ALOGE("Error while writing video frame: %s", av_err2str(ret));
+        return -1;
+    }
+
     return 0;
 }
 
@@ -444,11 +522,11 @@ void MediaRecorder::closeStream(EncodeStream *ost) {
 void MediaRecorder::closeFile() {
     // 关闭视频编码器码流
     if (have_video) {
-        closeStream(&videoStream);
+        closeStream(videoStream);
     }
     // 关闭音频编码器码流
     if (have_audio) {
-        closeStream(&audioStream);
+        closeStream(audioStream);
     }
     // 关闭输出文件
     if (!(fmt_ctx->flags & AVFMT_NOFILE)) {

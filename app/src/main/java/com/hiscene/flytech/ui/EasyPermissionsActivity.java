@@ -25,7 +25,7 @@ public abstract class EasyPermissionsActivity extends BaseActivity implements Ea
 
     private static final String TAG = "EasyPermissionsActivity";
     private static final String[] PERMISSION = {
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
     };
 
     private static final int RC_PERM = 124;

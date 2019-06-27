@@ -39,6 +39,14 @@ public class MediaRecorder {
         }
     }
 
+
+    public void writeH264Video(byte[] data, int length) {
+        if (ptr > 0) {
+            writeH264Video(ptr, data, length);
+//            LogUtils.d("encodeAndWriteVideo data size:"+data.length);
+        }
+    }
+
     public void destroy() {
         if (ptr > 0) {
             destroy(ptr);
@@ -52,6 +60,8 @@ public class MediaRecorder {
     protected static native void init(long mediaRecorder, String url, int width, int height);
 
     protected static native void encodeAndWriteVideo(long mediaRecorder, byte[] data);
+
+    protected static native void writeH264Video(long mediaRecorder, byte[] data, int length);
 
     protected static native void destroy(long mediaRecorder);
 }
