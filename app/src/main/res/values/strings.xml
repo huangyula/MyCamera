@@ -26,4 +26,8 @@
     <string name="close">关闭</string>
     <string name="pre_page">上一页</string>
     <string name="next_page">下一页</string>
+    <string name="edit">填写数据</string>
+    <string name="select">选择</string>
+    <string name="title_excute">二次设备及回路工作安全技术措施单</string>
+    <string name="title_process">作业过程</string>
 </resources>

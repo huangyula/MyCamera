@@ -18,5 +18,6 @@
     <dimen name="scan_text_size">16sp</dimen>
     <dimen name="top_bar_text_size">16sp</dimen>
     <dimen name="scan_magin_top">54dp</dimen>
-    <dimen name="excel_left_padding">15dp</dimen>
+    <dimen name="excel_left_padding_15">15dp</dimen>
+    <dimen name="excel_left_padding_16">16dp</dimen>
 </resources>

@@ -2,16 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="6dp"
     >
         <TextView
             android:id="@+id/tv_first_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="二次设备及回路工作安全技术措施单"
-            android:paddingLeft="@dimen/excel_left_padding"
+            android:paddingLeft="@dimen/excel_left_padding_15"
             android:background="@mipmap/bg"
-            style="@style/text_style_white"
+            style="@style/text_style_white_bold"
             android:gravity="center_vertical"/>
 
         <TextView

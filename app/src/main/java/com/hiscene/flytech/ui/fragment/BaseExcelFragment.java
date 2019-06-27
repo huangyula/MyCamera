@@ -5,7 +5,11 @@ import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseRxFragment;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.ExcelStep;
+import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.view.ShowImagesDialog;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     TextView oprationRisk;
     @BindView(R.id.device_info)
     TextView deviceInfo;
+    @BindView(R.id.rate)
+    TextView rate;
     protected ExcelFragmentManager excelFragmentManager;
 
     public BaseExcelFragment(ExcelFragmentManager excelFragmentManager) {

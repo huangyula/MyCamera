@@ -14,4 +14,5 @@
     <color name="red">#dd5862</color>
     <color name="transparent">#00000000</color>
     <color name="app_blue">#07d3ff</color>
+    <color name="half_white">#ccFFFFFF</color>
 </resources>

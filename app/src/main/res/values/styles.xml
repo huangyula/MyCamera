@@ -52,5 +52,6 @@
     <style name="text_style_blue_bold">
         <item name="android:textColor">@color/app_blue </item>
         <item name="android:textSize">@dimen/top_bar_text_size</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

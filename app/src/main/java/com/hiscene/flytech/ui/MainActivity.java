@@ -54,38 +54,38 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initView() {
         excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
-//        loginFragment = LoginFragment.newInstance();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
-//        FLAG = LOGIN;
-//        cameraView = new CameraView(this);
-//        cameraLayout.addView(cameraView);
-//        qrVision = new CameraRecorder();
-//        qrVision.init(C.TEMP_PATH + "test.mp4");
-//        qrVision.start();
-//        qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
-//            @Override
-//            public boolean OnRecognize(Result result) {
-//                LogUtils.d("OnQrRecognizeListener:" + result.getText());
-//                if (FLAG == LOGIN) {
-//                    scanLoginFragment = ScanLoginFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commit();
-//                    FLAG = SCAN_LOGIN;
-//                } else if (FLAG == SCAN_LOGIN) {
-//                    deviceFragment = DeviceFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commit();
-//                    FLAG = DEVICE;
-//                } else if (FLAG == DEVICE) {
-//                    scanDeviceFragment = ScanDeviceFragment.newInstance();
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commit();
-//                    FLAG = SCAN_DEVICE;
-//                } else if (FLAG == SCAN_DEVICE) {
-//                    excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
-//                }
-//                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
-//                return true;
-////            }
-////        });
-////        qrVision.startQRRecognize();
+        loginFragment = LoginFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
+        FLAG = LOGIN;
+        cameraView = new CameraView(this);
+        cameraLayout.addView(cameraView);
+        qrVision = new CameraRecorder();
+        qrVision.init(C.TEMP_PATH + "test.mp4");
+        qrVision.start();
+        qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
+            @Override
+            public boolean OnRecognize(Result result) {
+                LogUtils.d("OnQrRecognizeListener:" + result.getText());
+                if (FLAG == LOGIN) {
+                    scanLoginFragment = ScanLoginFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commit();
+                    FLAG = SCAN_LOGIN;
+                } else if (FLAG == SCAN_LOGIN) {
+                    deviceFragment = DeviceFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commit();
+                    FLAG = DEVICE;
+                } else if (FLAG == DEVICE) {
+                    scanDeviceFragment = ScanDeviceFragment.newInstance();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commit();
+                    FLAG = SCAN_DEVICE;
+                } else if (FLAG == SCAN_DEVICE) {
+                    excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                }
+                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                return true;
+            }
+        });
+        qrVision.startQRRecognize();
     }
 
     @Override

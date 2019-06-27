@@ -48,7 +48,7 @@
             android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:name=".ui.WebActivity" />
-        <activity android:name=".ui.OptionsScannerActivity"
+        <activity android:name=".ui.TestActivity"
             android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation|screenSize">
 

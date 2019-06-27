@@ -30,7 +30,8 @@ public class ExcelFragmentManager {
     //填表格步骤
     private List<ExcelStep> excelSteps;
     //当前步骤，-1 没有小步骤 比如：2.3 大步骤2，小步骤3。
-    private String pos = "0.-1";
+//    private String pos = "0.-1";
+    private String pos = "0.0";
 
     private ProcessExcelFragment processExcelFragment;
     private ExecuteExcelFragment executeExcelFragment;
@@ -50,10 +51,10 @@ public class ExcelFragmentManager {
         executeExcel = new ExecuteExcel();
 
         if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
-//            processExcel.read();
+            processExcel.read();
             executeExcel.read();
         } else {//恢复启动
-//            processExcel.restore();
+            processExcel.restore();
             executeExcel.restore();
             pos = SPUtils.getString(PositionUtil.POSITION);
         }
@@ -65,18 +66,23 @@ public class ExcelFragmentManager {
      * 上一步
      */
     public void previousStep() {
+
+        if(PositionUtil.isFirstStep(pos,excelSteps)){
+            System.out.println("已经是第一步了");
+            return;
+
+        }
         pos=PositionUtil.previousStep(pos,excelSteps);
         showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
+
+
     }
 
     /**
      * 下一步
      */
     public void nextStep() {
-        //测试
-//        currentExcel.write();
         currentExcel.svae();
-
         pos = PositionUtil.nextStep(pos, excelSteps);
         if (PositionUtil.islastStep(pos, excelSteps)) {
             lastStep();
@@ -89,7 +95,6 @@ public class ExcelFragmentManager {
      * 最后一步,生成新的表格
      */
     public void lastStep() {
-        System.out.println("lastStep: "+"当前已是最后一步");
         processExcel.write();
         SPUtils.put(RECOVERY, false);
     }
@@ -147,10 +152,11 @@ public class ExcelFragmentManager {
         }
         String[] posArr = pos.split("\\.");
         excelStep = excelSteps.get(Integer.parseInt(posArr[0]));
-        //            executeExcelFragment.setData(executeExcel.executeModelList.get(excelStep.step));
-        if(excelStep.chilSteps!=null&&excelStep.chilSteps.size()>0)
+        if(excelStep.childSteps!=null&&excelStep.childSteps.size()>0){//有子步骤
             executeExcelFragment.setData2(executeExcel.executeModelList,excelStep, Integer.valueOf(posArr[1]));
-//        executeExcelFragment.setData(executeExcel.executeModelList.get(excelStep.step));
+        }else {//
+            executeExcelFragment.setData(executeExcel.executeModelList.get(Integer.parseInt(posArr[0])));
+        }
         currentExcel = executeExcel;
     }
 

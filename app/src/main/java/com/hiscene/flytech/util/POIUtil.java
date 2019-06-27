@@ -140,8 +140,8 @@ public class POIUtil {
      */
     public static Cell getCellInSheet(int rowIndex, int colIndex) {
         sheet = workbook.getSheetAt(0);
-        Row row = sheet.getRow(rowIndex - 1);
-        Cell cell = row.getCell(colIndex - 1);
+        Row row = sheet.getRow(rowIndex-1 );
+        Cell cell = row.getCell(colIndex-1 );
         return cell ;
     }
 
@@ -267,8 +267,9 @@ public class POIUtil {
 
         insureExcelType(filePath);
         for(int i=0;i<list.size();i++){
-            Cell cell = getCellInSheet(i,colIndex);
+            Cell cell = getCellInSheet(rowIndex,colIndex);
             setCellValue(workbook,cell,list.get(i));
+            rowIndex++;
         }
         try{
             if(!FileUtils.isFileExists(descPath)){

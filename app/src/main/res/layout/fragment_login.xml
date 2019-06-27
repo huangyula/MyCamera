@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:layout_marginTop="@dimen/app_padding">
+    android:paddingTop="@dimen/app_padding"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,17 +39,18 @@
             android:background="@mipmap/orangeline"
             />
     </RelativeLayout>
+
     <TextView
         android:id="@+id/tv_scan_hint"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/scan_login_hint"
         android:layout_below="@id/iv_scan"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="21dp"
+        android:text="@string/scan_login_hint"
+        android:contentDescription="@string/scan_login_hint"
         android:textColor="@color/white"
         android:textSize="@dimen/scan_text_size"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
 </LinearLayout>

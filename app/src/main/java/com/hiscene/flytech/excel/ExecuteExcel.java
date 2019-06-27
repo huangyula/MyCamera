@@ -11,11 +11,15 @@ import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.bouncycastle.math.ec.ScaleYPointMap;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,24 +38,26 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void read() {
         try {
-            XSSFWorkbook wb = new XSSFWorkbook(new File(C.ASSETS_PATH + C.EXECUTE_FILE));
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
-            //读取范围：行数6-21; 31-42;43-46 列数：1-6
-            for (int i = 5; i < 21; i++) {
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
+                if(row==null){
+                    break;
+                }
                 if (row != null) {
-                    executeModelList.add(new ExecuteModel(
-                            //row.getCell(0).getStringCellValue() //此处类型不一致
-                            i+"",
+                            row.getCell(0).setCellType(CellType.STRING);
+                            executeModelList.add(new ExecuteModel(
+                            row.getCell(0).getStringCellValue() ,//此处类型不一致
                             row.getCell(3).getStringCellValue()
                     ));
                 }
             }
+            System.out.println("sheet.getLastRowNum(): "+sheet.getLastRowNum());
+            System.out.println("executeModelList: "+executeModelList.size());
             wb.close();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidFormatException e) {
             e.printStackTrace();
         }
     }

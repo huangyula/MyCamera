@@ -43,13 +43,18 @@ public class ProcessExcel implements IExcel {
             XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(new File(C.ASSETS_PATH + C.PROCESS_FILE)));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
-            for (int i = 1; i < sheet.getLastRowNum(); i++) {
+            for (int i = 1; i <=sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
+                if(row==null){//防止空行导致获取到的总行数不正确
+                    break;
+                }
                 if (row != null) {
                     processExcelList.add(new ProcessModel((int) row.getCell(0).getNumericCellValue(),
                             row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue()));
                 }
             }
+            System.out.println("sheet.getLastRowNum(): "+sheet.getLastRowNum());
+            System.out.println("processExcelList: "+processExcelList.size());
             wb.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,20 +66,22 @@ public class ProcessExcel implements IExcel {
         try {
             List<String> resultList=new ArrayList<>();
             String result="";
-            for(ProcessModel processModel:processExcelList){
-                switch (processModel.getResult()){
-                    case 0:
-                        result="确认(×)";
-                        break;
-                    case 1:
-                        result="确认(√)";
-                        break;
-                    case -1:
-                        result="无";
-                        break;
-                }
-                resultList.add(result);
-            }
+//            for(ProcessModel processModel:processExcelList){
+//                switch (processModel.getResult()){
+//                    case 0:
+//                        result="确认(×)";
+//                        break;
+//                    case 1:
+//                        result="确认(√)";
+//                        break;
+//                    case -1:
+//                        result="无";
+//                        break;
+//                }
+//                resultList.add(result);
+//            }
+            resultList.add("1");
+            resultList.add("2");
             POIUtil.setCellValueAt(C.ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,2,4,resultList);
             System.out.println("已成功修改表格内容");
         } catch (Exception e) {
@@ -135,9 +142,6 @@ public class ProcessExcel implements IExcel {
                 }
             }
         }
-
-        restore();
-
     }
 
 }
