@@ -3,36 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
->
-    <!--<TextView-->
-        <!--android:id="@+id/title"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="VR in future"-->
-        <!--android:layout_marginTop="64dp"-->
-        <!--android:textColor="@color/colorAccent"-->
-        <!--android:textSize="20sp"-->
-        <!--android:textStyle="bold" />-->
+    android:padding="@dimen/app_padding"
+    >
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="32dp"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<Button-->
-            <!--android:id="@+id/previousStepBtn"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="上一步"-->
-            <!--android:layout_height="wrap_content" />-->
-        <!--<Button-->
-            <!--android:id="@+id/nextStepBtn"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="下一步"-->
-            <!--android:layout_height="wrap_content" />-->
-        <!---->
-    <!--</LinearLayout>-->
-    <include layout="@layout/include_top_bar"></include>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -78,8 +51,9 @@
                 android:layout_marginRight="15dp"
                 android:layout_toLeftOf="@id/device_info"
                 android:clickable="true"
-                android:text="@string/operation_risk"
-                android:drawableLeft="@mipmap/icon_operationalrisk"
+                android:text="@string/help"
+                android:contentDescription="@string/help"
+                android:drawableLeft="@mipmap/hileia"
                 android:background="@mipmap/button"
                 style="@style/text_style_white_bold"
                 android:textSize="12sp"
@@ -103,6 +77,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:text="作业过程"
                     android:paddingLeft="@dimen/excel_left_padding_15"
                     android:paddingTop="18dp"
                     android:paddingBottom="16dp"
@@ -126,6 +101,39 @@
                 android:paddingLeft="@dimen/excel_left_padding_16"
                 style="@style/text_style_white"
                 android:textSize="14sp"/>
+            <LinearLayout
+                android:id="@+id/liner_attach_first_excel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/excel_left_padding_15"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:id="@+id/attach_first_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="实际值："/>
+                    <EditText
+                        android:id="@+id/number"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MΩ"/>
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

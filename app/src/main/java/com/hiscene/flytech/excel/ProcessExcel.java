@@ -1,10 +1,13 @@
 package com.hiscene.flytech.excel;
 
+import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.entity.AttachFirstModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
@@ -34,6 +37,7 @@ import static com.hiscene.flytech.C.OUTPUT_PATH;
 public class ProcessExcel implements IExcel {
 
     public List<ProcessModel> processExcelList = new ArrayList<>();
+    public List<AttachFirstModel> attachFirstModels = new ArrayList<>();
 
     @Override
     public void read() {
@@ -53,9 +57,12 @@ public class ProcessExcel implements IExcel {
                             row.getCell(1).getStringCellValue(), row.getCell(2).getStringCellValue()));
                 }
             }
-            System.out.println("sheet.getLastRowNum(): "+sheet.getLastRowNum());
-            System.out.println("processExcelList: "+processExcelList.size());
+            LogUtils.d("sheet.getLastRowNum(): "+sheet.getLastRowNum());
+            LogUtils.d("processExcelList: "+processExcelList.size());
             wb.close();
+            attachFirstModels.add(new AttachFirstModel(1,"111","1111"));
+            attachFirstModels.add(new AttachFirstModel(2,"222","2222"));
+            attachFirstModels.add(new AttachFirstModel(3,"333","3333"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,26 +73,26 @@ public class ProcessExcel implements IExcel {
         try {
             List<String> resultList=new ArrayList<>();
             String result="";
-//            for(ProcessModel processModel:processExcelList){
-//                switch (processModel.getResult()){
-//                    case 0:
-//                        result="确认(×)";
-//                        break;
-//                    case 1:
-//                        result="确认(√)";
-//                        break;
-//                    case -1:
-//                        result="无";
-//                        break;
-//                }
-//                resultList.add(result);
-//            }
-            resultList.add("1");
-            resultList.add("2");
+            for(ProcessModel processModel:processExcelList){
+                switch (processModel.getResult()){
+                    case 0:
+                        result="确认(×)";
+                        break;
+                    case 1:
+                        result="确认(√)";
+                        break;
+                    case -1:
+                        result="确认(无)";
+                        break;
+                }
+                resultList.add(result);
+            }
             POIUtil.setCellValueAt(C.ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,2,4,resultList);
-            System.out.println("已成功修改表格内容");
+            LogUtils.d("已成功修改表格内容");
+
+            //写附表1
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtils.d(e.getMessage());
             e.printStackTrace();
         }
 /*        Workbook wb = new XSSFWorkbook();
@@ -128,7 +135,9 @@ public class ProcessExcel implements IExcel {
         String read_content=FileUtils.readFile2String(C.TEMP_PROCESS_FILE,"utf-8");
         Type type = new TypeToken<List<ProcessModel>>(){}.getType();
         processExcelList=new Gson().fromJson(read_content,type);
-//        System.out.println(processExcelList);
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FIRST_FILE,"utf-8");
+        type=new TypeToken<AttachFirstModel>(){}.getType();
+        attachFirstModels=new Gson().fromJson(read_content,type);
     }
 
     @Override
@@ -138,7 +147,17 @@ public class ProcessExcel implements IExcel {
             String write_content=GsonUtil.gsonString(processExcelList.toArray());
             if(!StringUtils.isEmpty(write_content)){
                 if(FileUtils.createFileByDeleteOldFile(C.TEMP_PROCESS_FILE)){
-                    boolean a=FileUtils.writeFileFromString(C.TEMP_PROCESS_FILE,write_content,true);
+                    boolean result=FileUtils.writeFileFromString(C.TEMP_PROCESS_FILE,write_content,true);
+                    LogUtils.d("save 缓存:"+result);
+                }
+            }
+        }
+        if(!CollectionUtils.isEmpty(attachFirstModels)){
+            String write_content=GsonUtil.gsonString(attachFirstModels.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_FIRST_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_FIRST_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
                 }
             }
         }

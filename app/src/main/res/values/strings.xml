@@ -30,4 +30,6 @@
     <string name="select">选择</string>
     <string name="title_excute">二次设备及回路工作安全技术措施单</string>
     <string name="title_process">作业过程</string>
+    <string name="start_edit">开始表单填写</string>
+    <string name="help">请求协助</string>
 </resources>

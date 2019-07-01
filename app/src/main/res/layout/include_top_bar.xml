@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/tuichu"
             android:text="@string/exit_app"
+            android:contentDescription="@string/exit_app"
             style="@style/text_style"
             android:drawablePadding="7dp"
             />

@@ -1,6 +1,7 @@
 package com.hiscene.flytech.excel;
 
 import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.hiscene.flytech.C.OUTPUT_PATH;
@@ -38,7 +40,7 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void read() {
         try {
-            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_FILE));
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_READ_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -54,8 +56,8 @@ public class ExecuteExcel implements IExcel {
                     ));
                 }
             }
-            System.out.println("sheet.getLastRowNum(): "+sheet.getLastRowNum());
-            System.out.println("executeModelList: "+executeModelList.size());
+            LogUtils.d("sheet.getLastRowNum(): "+sheet.getLastRowNum());
+            LogUtils.d("executeModelList: "+executeModelList.size());
             wb.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,26 +67,29 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void write() {
         try {
-            List<String> resultList=new ArrayList<>();
-            String result="";
-            for(ExecuteModel executeModel:executeModelList){
-                switch (executeModel.getExcute_result()){
-                    case 0:
-                        result="×";
-                        break;
-                    case 1:
-                        result="√";
-                        break;
-                    case -1:
-                        result="无";
-                        break;
-                }
-                resultList.add(result);
-            }
-            POIUtil.setCellValueAt(C.ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,2,4,resultList);
-            System.out.println("已成功修改表格内容");
+//            List<String> execute_result_List=new ArrayList<>();
+//            List<Date> execute_date_List=new ArrayList<>();
+//            String execute_result="";
+//            Date execute_date=new Date();
+//            for(ExecuteModel executeModel:executeModelList){
+//                switch (executeModel.getExcute_result()){
+//                    case 0:
+//                        execute_result="确认(×)";
+//                        break;
+//                    case 1:
+//                        execute_result="确认(√)";
+//                        break;
+//                    case -1:
+//                        execute_result="确认(无)";
+//                        break;
+//                }
+//                execute_date_List.add(execute_date);
+//                execute_result_List.add(execute_result);
+//            }
+            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,OUTPUT_PATH+C.EXECUTE_FILE,executeModelList);
+            LogUtils.d("已成功修改表格内容");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtils.d(e.getMessage());
             e.printStackTrace();
         }
 /*        Workbook wb = new XSSFWorkbook();
@@ -127,7 +132,6 @@ public class ExecuteExcel implements IExcel {
         String read_content=FileUtils.readFile2String(C.TEMP_EXCUTE_FILE,"utf-8");
         Type type = new TypeToken<List<ExecuteModel>>(){}.getType();
         executeModelList=new Gson().fromJson(read_content,type);
-//        System.out.println(processExcelList);
     }
 
     @Override
@@ -137,12 +141,11 @@ public class ExecuteExcel implements IExcel {
             String write_content=GsonUtil.gsonString(executeModelList.toArray());
             if(!StringUtils.isEmpty(write_content)){
                 if(FileUtils.createFileByDeleteOldFile(C.TEMP_EXCUTE_FILE)){
-                    boolean a=FileUtils.writeFileFromString(C.TEMP_EXCUTE_FILE,write_content,true);
+                    boolean result=FileUtils.writeFileFromString(C.TEMP_EXCUTE_FILE,write_content,true);
+                    LogUtils.d("save 缓存:"+result);
                 }
             }
         }
-
-        restore();
 
     }
 }

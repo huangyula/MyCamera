@@ -9,4 +9,5 @@ package com.hiscene.flytech.entity;
 public class ExcelStyle {
     public final static int PROCESS_EXCEL = 1;
     public final static int EXCUTE_EXCEL = 0;
+    public final static int ATTACH_FIRST_EXCEL=2;
 }

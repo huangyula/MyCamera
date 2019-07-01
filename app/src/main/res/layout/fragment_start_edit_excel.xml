@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    >
+    <include layout="@layout/include_top_bar"></include>
+
+    <RelativeLayout
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+        <ImageView
+            android:id="@+id/iv_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/tianxiebiaodan"
+            />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/orangeline"
+            />
+    </RelativeLayout>
+    <TextView
+        android:id="@+id/tv_scan_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_edit"
+        android:layout_below="@id/iv_scan"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="21dp"
+        android:textColor="@color/white"
+        android:textSize="@dimen/scan_text_size"
+        android:textStyle="bold"
+        android:contentDescription="@string/start_edit"
+        />
+
+</LinearLayout>

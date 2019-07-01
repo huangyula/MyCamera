@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -35,6 +36,10 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     TextView deviceInfo;
     @BindView(R.id.rate)
     TextView rate;
+    @BindView(R.id.executed)
+    Button executed;
+    @BindView(R.id.unexecuted)
+    Button unexecuted;
     protected ExcelFragmentManager excelFragmentManager;
 
     public BaseExcelFragment(ExcelFragmentManager excelFragmentManager) {
@@ -58,6 +63,12 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     protected void oprationRisk(){
 
     }
+
+    @OnClick(R.id.executed)
+    protected abstract void executed();
+
+    @OnClick(R.id.unexecuted)
+    protected abstract void unexecuted();
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){

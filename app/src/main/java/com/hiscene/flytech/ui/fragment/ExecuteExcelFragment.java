@@ -3,6 +3,9 @@ package com.hiscene.flytech.ui.fragment;
 import android.annotation.SuppressLint;
 import android.widget.TextView;
 
+import com.github.weiss.core.entity.Entity;
+import com.github.weiss.core.utils.CollectionUtils;
+import com.github.weiss.core.utils.TimeUtils;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
@@ -72,8 +75,6 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
         if(excelStep.childCount>0){
             rate.setText(pos+1+"/"+excelStep.childCount);
         }
-//        System.out.println("tiltle: "+executeModelList.get(excelStep.step).content);
-//        System.out.println("content: "+executeModelList.get(excelStep.childSteps.get(pos).step).content);
     }
 
     @Override
@@ -86,6 +87,17 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
         excelFragmentManager.nextStep();
     }
 
+    @Override
+    protected void executed() {
+        excelFragmentManager.setResult(1);
+    }
+
+    @Override
+    protected void unexecuted() {
+        excelFragmentManager.setResult(0);
+    }
+
+
     public void setData2(List<ExecuteModel> executeModelList, ExcelStep excelStep, int pos) {
         if (title != null) {
             initData(dataList,excelStep,pos);
@@ -95,6 +107,8 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
             this.pos=pos;
         }
     }
+
+
 
     public void changePreButtonStatus(){
         previousStepBtn.setEnabled(false);

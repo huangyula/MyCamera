@@ -1,5 +1,8 @@
 package com.hiscene.flytech.entity;
 
+import android.graphics.Paint;
+
+import com.github.weiss.core.utils.LogUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.util.GsonUtil;
@@ -104,10 +107,24 @@ public class ExcelStep {
             }
 
         }
-        System.out.println("执行步骤: "+excelSteps.size());
+        LogUtils.d("执行步骤: "+excelSteps.size());
         //作业过程步骤
         for(int i=0;i<50;i++){
-            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL, i,0));
+            excelStep= new ExcelStep(ExcelStyle.PROCESS_EXCEL, i,0);
+            if(i==3){
+                excelStep.childCount=3;
+                List<ExcelStep> stepList=new ArrayList<>();
+                stepList.add(new ExcelStep(ExcelStyle.ATTACH_FIRST_EXCEL,0,0));
+                stepList.add(new ExcelStep(ExcelStyle.ATTACH_FIRST_EXCEL,1,0));
+                stepList.add(new ExcelStep(ExcelStyle.ATTACH_FIRST_EXCEL,2,0));
+                excelStep.childSteps=stepList;
+            }
+            excelSteps.add(excelStep);
+//            switch (i){
+//                case 4:
+//                    excelStep
+//                    break;
+//            }
         }
         return excelSteps;
     }

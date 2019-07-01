@@ -33,11 +33,11 @@ import butterknife.OnClick;
 import io.reactivex.Observable;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements LoginFragment.LoginScanListener, DeviceFragment.DeviceListener {
 
     private static final int REQUEST_SCREEN_LIVE = 1;
 
-    private int FLAG = -1;
+    public static int FLAG = -1;
     public static final int LOGIN = 0;//登录页
     public static final int SCAN_LOGIN = 1;//扫描登录页
     public static final int DEVICE = 2;//主界面页
@@ -77,7 +77,7 @@ public class MainActivity extends BaseActivity {
         cameraLayout.addView(cameraView);
         qrVision = new CameraRecorder();
         qrVision.init();
-        qrVision.start();
+//        qrVision.start();
         qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
@@ -85,29 +85,25 @@ public class MainActivity extends BaseActivity {
                         .compose(RxSchedulers.io_main())
                         .subscribe(str -> {
                             LogUtils.d("OnQrRecognizeListener:" + result.getText());
-                            if (FLAG == LOGIN) {
-                                scanLoginFragment = ScanLoginFragment.newInstance();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
-                                FLAG = SCAN_LOGIN;
-                            } else if (FLAG == SCAN_LOGIN) {
+                             if (FLAG == SCAN_LOGIN) {
                                 deviceFragment = DeviceFragment.newInstance();
                                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commitNowAllowingStateLoss();
                                 FLAG = DEVICE;
-                            } else if (FLAG == DEVICE) {
-                                scanDeviceFragment = ScanDeviceFragment.newInstance();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commitNowAllowingStateLoss();
-                                FLAG = SCAN_DEVICE;
-                            } else if (FLAG == SCAN_DEVICE) {
+                            }  else if (FLAG == SCAN_DEVICE) {
                                 if(excelFragmentManager != null) {
                                     excelFragmentManager.init();
                                 }
                             }
                         }, e -> e.printStackTrace()));
 //                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                if(FLAG==DEVICE||FLAG==SCAN_DEVICE){
+                    LogUtils.d("OnQrRecognizeListener:return false");
+                    return false;
+                }
                 return true;
             }
         });
-        qrVision.startQRRecognize();
+
     }
 
 
@@ -166,4 +162,22 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    @Override
+    public void scanLogin() {
+        scanLoginFragment = ScanLoginFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
+        FLAG = SCAN_LOGIN;
+        qrVision.start();
+        qrVision.startQRRecognize();
+    }
+
+
+    @Override
+    public void scanDevice() {
+        deviceFragment = DeviceFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commitNowAllowingStateLoss();
+        FLAG = SCAN_DEVICE;
+        qrVision.startQRRecognize();
+    }
 }

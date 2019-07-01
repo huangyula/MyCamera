@@ -13,10 +13,14 @@
             android:background="@mipmap/erweimasaomiaodenglu"
             />
         <ImageView
+            android:id="@+id/scan_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:background="@mipmap/big_orangeline"
+            android:layout_marginTop="18dp"
+            android:layout_alignTop="@id/iv_scan"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
             />
         <TextView
             android:id="@+id/tv_scan_hint"
