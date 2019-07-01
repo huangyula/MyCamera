@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 //apply plugin: 'me.tatarka.retrolambda'
 
+File signPropertiesFile = file('../buildSystem/keystore.properties')
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -23,9 +25,28 @@ android {
         useJack(true)*/
     }
 
+    if (signPropertiesFile.exists()) {
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(signPropertiesFile))
+        signingConfigs {
+            release {
+                storeFile file(properties['keystore'])
+                storePassword properties['storePassword']
+                keyAlias properties['keyAlias']
+                keyPassword properties['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
-        release {
+        debug {
+            jniDebuggable true
             minifyEnabled false
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -59,6 +80,17 @@ android {
         pickFirst 'META-INF/dependencies.txt'
         pickFirst 'META-INF/LGPL2.1'
     }
+
+    //Generate the name of APK based on the version number
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "Hiflyech_Android_${variant.versionName}_${variant.versionCode}_${releaseTime()}_${variant.buildType.name}.apk"
+        }
+    }
+}
+
+def releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {

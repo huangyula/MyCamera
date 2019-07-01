@@ -17,32 +17,19 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CameraRecorder extends QRVision {
 
     MediaRecorder mediaRecorder;
-    ReentrantLock recorderLock = new ReentrantLock();
 
     boolean init = false;
     String url;
 
     public void init() {
-        recorderLock.lock();
+        lock.lock();
         mediaRecorder = new MediaRecorder();
         init = false;
-        recorderLock.unlock();
+        lock.unlock();
     }
 
     @Override
     public void onNewFrame(byte[] data, Camera camera, int width, int height, int type) {
-        if(mediaRecorder != null) {
-            recorderLock.lock();
-            if (init) {
-                mediaRecorder.encodeAndWriteVideo(data.clone());
-            } else {
-                url = RecorderUtils.getFilePath();
-                FileUtils.createFileByDeleteOldFile(url);
-                mediaRecorder.init(url, width, height);
-                init = true;
-            }
-            recorderLock.unlock();
-        }
         super.onNewFrame(data, camera, width, height, type);
     }
 
@@ -52,14 +39,23 @@ public class CameraRecorder extends QRVision {
     }
 
     @Override
-    public void loop() {
-        super.loop();
+    public void loop4End() {
+        if(mediaRecorder != null) {
+            if (init) {
+                mediaRecorder.encodeAndWriteVideo(recognizerBuffer.array());
+            } else {
+                url = RecorderUtils.getFilePath();
+                FileUtils.createFileByDeleteOldFile(url);
+                mediaRecorder.init(url, frameWidth, frameHeight);
+                init = true;
+            }
+        }
     }
 
     public void destroy() {
-        recorderLock.lock();
+        lock.lock();
         mediaRecorder.destroy();
         mediaRecorder = null;
-        recorderLock.unlock();
+        lock.unlock();
     }
 }

@@ -104,6 +104,7 @@ public class MainActivity extends BaseActivity {
                             }
                         }, e -> e.printStackTrace()));
 //                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+                if(FLAG == SCAN_DEVICE) return false;
                 return true;
             }
         });
@@ -138,12 +139,14 @@ public class MainActivity extends BaseActivity {
             isLaunchHiLeia = false;
             screenRecorderManager.cancelRecorder();
             qrVision.init();
+//            cameraView.resume();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+//        cameraView.pause();
     }
 
     @Override

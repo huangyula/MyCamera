@@ -57,7 +57,7 @@ public class ScreenRecorderManager {
      * instead of a foreground Activity in this demonstrate.
      */
     private ScreenRecorder mRecorder;
-    private boolean audioEnabled = true;
+    private boolean audioEnabled = false;
     private boolean isLandscape = true;
     private Activity activity;
     // I-frames
