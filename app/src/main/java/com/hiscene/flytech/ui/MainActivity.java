@@ -1,33 +1,20 @@
 package com.hiscene.flytech.ui;
 
-import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
+import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.github.weiss.core.UserManager;
-import com.github.weiss.core.bus.RxBus;
 import com.github.weiss.core.utils.AppUtils;
 import com.github.weiss.core.utils.LogUtils;
-import com.github.weiss.core.utils.ScreenUtils;
-import com.github.weiss.core.utils.StringUtils;
 import com.github.weiss.core.utils.helper.RxSchedulers;
 import com.google.zxing.Result;
 import com.hiscene.camera.listener.OnQrRecognizeListener;
 import com.hiscene.camera.view.CameraView;
-import com.hiscene.camera.vision.QRVision;
 import com.hiscene.flytech.BaseActivity;
-import com.hiscene.flytech.C;
-import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.UserModel;
 import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.recorder.ScreenRecorderManager;
 import com.hiscene.flytech.ui.fragment.DeviceFragment;
-import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
 import com.hiscene.flytech.ui.fragment.LoginFragment;
 import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
@@ -56,7 +43,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     LinearLayout cameraLayout;
 
     CameraView cameraView;
-    CameraRecorder qrVision;
+    CameraRecorder cameraRecorder;
     ScreenRecorderManager screenRecorderManager;
     boolean isLaunchHiLeia = false;
 
@@ -91,9 +78,9 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
         FLAG = LOGIN;
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
-        qrVision = new CameraRecorder();
-        qrVision.init();
-        qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
+        cameraView.setVisibility(View.GONE);
+        cameraRecorder = new CameraRecorder();
+        cameraRecorder.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
                 addRxDestroy(Observable.just("didi")
@@ -105,6 +92,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
                             String[] user= resultStr.split(":");
                             if(user.length>=1){
                                 if("User:508f567cc3015cba395858d4493dd706".equals(resultStr)){
+                                    cameraView.setVisibility(View.GONE);
                                     userManager.login(new UserModel(user[1]));
                                     startEditExcelFragment=StartEditExcelFragment.newInstance();
                                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
@@ -116,6 +104,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
                 return true;
             }
         });
+        cameraRecorder.start();
 
     }
 
@@ -146,7 +135,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
             LogUtils.d("isLaunchHiLeia");
             isLaunchHiLeia = false;
             screenRecorderManager.cancelRecorder();
-            qrVision.init();
+            cameraRecorder.init();
 //            cameraView.resume();
         }
     }
@@ -165,8 +154,8 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
             isLaunchHiLeia = false;
             screenRecorderManager.cancelRecorder();
         }else {
-            qrVision.destroy();
-            qrVision.shutdown();
+            cameraRecorder.destroy();
+            cameraRecorder.shutdown();
         }
     }
 
@@ -174,7 +163,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ScreenRecorderManager.REQUEST_MEDIA_PROJECTION) {
-            qrVision.destroy();
+            cameraRecorder.destroy();
             LogUtils.d("onActivityResult");
             screenRecorderManager.onActivityResult(requestCode, resultCode, data);
             AppUtils.launchAppForURLScheme(this, "com.hiscene.hileia",
@@ -189,8 +178,8 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
         scanLoginFragment = ScanLoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
         FLAG = SCAN_LOGIN;
-        qrVision.start();
-        qrVision.startQRRecognize();
+        cameraRecorder.startQRRecognize();
+        cameraView.setVisibility(View.VISIBLE);
     }
 
 
@@ -199,7 +188,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
 //        scanDeviceFragment = ScanDeviceFragment.newInstance();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commitNowAllowingStateLoss();
 //        FLAG = SCAN_DEVICE;
-//        qrVision.startQRRecognize();
+//        cameraRecorder.startQRRecognize();
 //    }
 
     @Override
@@ -207,5 +196,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
        if(excelFragmentManager!=null){
            excelFragmentManager.init();
        }
+        cameraView.setVisibility(View.VISIBLE);
+        cameraRecorder.init();
     }
 }
