@@ -20,4 +20,5 @@
     <dimen name="scan_magin_top">54dp</dimen>
     <dimen name="excel_left_padding_15">15dp</dimen>
     <dimen name="excel_left_padding_16">16dp</dimen>
+    <dimen name="buutton_height">40dp</dimen>
 </resources>

@@ -34,7 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class QRVision extends LoopThread implements NewFrameListener {
     protected ByteBuffer recognizerBuffer = null;
     protected boolean bufferInit = false;
-    ReentrantLock lock = new ReentrantLock();
+    protected ReentrantLock lock = new ReentrantLock();
     boolean needRecognize = false;
 
 
@@ -93,14 +93,21 @@ public class QRVision extends LoopThread implements NewFrameListener {
             lock.lock();
             processState = State.NONE;
             needRecognize = false;
+            if (isNeedQRRecognize) {
+                doQrRecognize(recognizerBuffer.array(), frameWidth, frameHeight);
+            }
+            loop4End();
             lock.unlock();
-            doQrRecognize(recognizerBuffer.array(), frameWidth, frameHeight);
         }
-        try {
+/*        try {
             Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
+    }
+
+    public void loop4End() {
+
     }
 
     @Override
@@ -115,7 +122,7 @@ public class QRVision extends LoopThread implements NewFrameListener {
     private Result result;
     private boolean isNeedQRRecognize = false;
     private boolean isAR = true;
-    private int frameWidth, frameHeight;
+    protected int frameWidth, frameHeight;
     Hashtable<DecodeHintType, Object> hints;
 
     public void startQRRecognize() {

@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="@dimen/app_padding"
     >
-
+    <include layout="@layout/include_top_bar"></include>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -114,6 +114,7 @@
                     android:id="@+id/attach_first_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    style="@style/text_style_white"
                     />
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -121,32 +122,36 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="实际值："/>
+                        android:text="实际值："
+                        style="@style/text_style_white"/>
                     <EditText
                         android:id="@+id/number"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:focusable="true"
+                        style="@style/text_style_white"
                         />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MΩ"/>
+                        android:text="MΩ"
+                        style="@style/text_style_white"/>
                 </LinearLayout>
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
-
+                android:weightSum="4"
+                android:gravity="center_horizontal"
                 >
 
                 <Button
                     android:id="@+id/executed"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
@@ -157,7 +162,7 @@
                 <Button
                     android:id="@+id/unexecuted"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -169,7 +174,7 @@
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -181,7 +186,7 @@
                 <Button
                     android:id="@+id/nextStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/selector_button_bg"

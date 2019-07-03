@@ -269,7 +269,7 @@ public class POIUtil {
 
         insureExcelType(filePath);
         for(int i=0;i<list.size();i++){
-            Cell cell = getCellInSheet(rowIndex,colIndex);
+            Cell cell = getCellInSheet(rowIndex,colIndex);//
             setCellValue(workbook,cell,list.get(i));
             rowIndex++;
         }
@@ -490,6 +490,33 @@ public class POIUtil {
             if(rowIndex==32){
                 rowIndex++;
             }
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+
+    public static void setCellValueAtMulCol(String filePath, String descPath, int rowIndex, int[] colIndex, List<String> list) throws Exception {
+
+        insureExcelType(filePath);
+        int num=colIndex.length;
+
+        for(int j=0;j<colIndex.length;j++){
+                Cell cell=getCellInSheet(rowIndex,colIndex[j]);
+                setCellValue(workbook,cell,list.get(j));
         }
         try{
             if(!FileUtils.isFileExists(descPath)){

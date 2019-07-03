@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/app_padding"
->
-
+    >
     <include layout="@layout/include_top_bar"></include>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,7 +27,7 @@
                 android:background="@mipmap/bg"
                 style="@style/text_style_white_bold"
                 android:gravity="center_vertical"
-                android:text="@string/title_excute"/>
+                android:text="@string/title_process"/>
 
             <TextView
                 android:id="@+id/device_info"
@@ -64,9 +64,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@mipmap/bg1"
             android:orientation="vertical"
+
             >
 
             <LinearLayout
@@ -92,15 +93,61 @@
                     />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/standard"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="密封工作票"
-                android:paddingLeft="@dimen/excel_left_padding_16"
-                style="@style/text_style_white"
-                android:textSize="14sp"/>
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:padding="15dp"
+               >
+
+
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content">
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="动作时间记录"
+                       style="@style/text_style_white"/>
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="第一组跳闸mS"
+                       style="@style/text_style_white"
+                       android:layout_centerHorizontal="true"/>
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="第二组跳闸mS"
+                       style="@style/text_style_white"
+                       android:layout_alignParentRight="true"/>
+               </RelativeLayout>
+               <RelativeLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   >
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:text="开关三相不一致"
+                       style="@style/text_style_white"
+                       android:layout_centerVertical="true"/>
+                   <EditText
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/text_style_white"
+                       android:layout_centerHorizontal="true"
+                       android:inputType="numberDecimal"/>
+                   <EditText
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       style="@style/text_style_white"
+                       android:layout_alignParentRight="true"
+                       android:inputType="numberDecimal"/>
+               </RelativeLayout>
+
+           </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,34 +157,10 @@
                 android:weightSum="4"
                 android:gravity="center_horizontal"
                 >
-
-                <Button
-                    android:id="@+id/executed"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/buutton_height"
-                    android:background="@drawable/selector_button_bg"
-                    style="@style/text_style_white_bold"
-                    android:textSize="14sp"
-                    android:text="@string/executed"
-                    android:contentDescription="@string/executed"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/unexecuted"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="26dp"
-                    android:background="@drawable/selector_button_bg"
-                    style="@style/text_style_white_bold"
-                    android:textSize="14sp"
-                    android:text="@string/unexecuted"
-                    android:contentDescription="@string/unexecuted"
-                    android:layout_weight="1"/>
-
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -149,7 +172,7 @@
                 <Button
                     android:id="@+id/nextStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/selector_button_bg"

@@ -1,12 +1,14 @@
 package com.hiscene.flytech.ui.fragment;
 
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 
 import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.TimeUtils;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ProcessModel;
@@ -15,9 +17,9 @@ import com.hiscene.flytech.excel.IExcel;
 import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.util.PositionUtil;
 
-import org.json.JSONArray;
-
 import java.util.List;
+
+import static com.hiscene.flytech.App.userManager;
 
 /**
  * @author Minamo
@@ -28,6 +30,8 @@ import java.util.List;
 public class ExcelFragmentManager {
 
     public static final String RECOVERY = "Recovery";
+    public static final String START_TIME = "START_TIME";//作业开始时间
+    public static final String END_TIME = "END_TIME";//作业结束时间
 
     private FragmentManager manager;
     //填表格步骤
@@ -35,13 +39,19 @@ public class ExcelFragmentManager {
     //当前步骤，-1 没有小步骤 比如：2.3 大步骤2，小步骤3。
 //    private String pos = "0.-1";
     private String pos = "0.0";
+    public int CURRENT_FRAGMENT=-1;//0：作业过程,1:附表一,2:附表2
 
     private ProcessExcelFragment processExcelFragment;
     private ExecuteExcelFragment executeExcelFragment;
+    private AttachSecondExcelFragment attachSecondExcelFragment;
+    private AttachThreeExcelFragment attachThreeExcelFragment;
+    private AttachFourExcelFragment attachFourExcelFragment;
     private ProcessExcel processExcel;
     private ExecuteExcel executeExcel;
     //当前表格
     private IExcel currentExcel;
+    //临界点判断
+    private boolean laststep=false;
 
     public ExcelFragmentManager( FragmentManager fm ) {
         this.manager = fm;
@@ -60,7 +70,7 @@ public class ExcelFragmentManager {
     }
 
     public void init() {
-        showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
+        showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
     }
 
 
@@ -68,14 +78,13 @@ public class ExcelFragmentManager {
      * 上一步
      */
     public void previousStep() {
-
+        executeExcelFragment.nextStepBtn.setEnabled(true);
         if (PositionUtil.isFirstStep(pos, excelSteps)) {
             LogUtils.d("已经是第一步了");
             return;
-
         }
         pos = PositionUtil.previousStep(pos, excelSteps);
-        showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
+        showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
 
 
     }
@@ -84,12 +93,21 @@ public class ExcelFragmentManager {
      * 下一步
      */
     public void nextStep() {
+        //附表1的填写
+        ExcelStep excelStep=PositionUtil.pos2ExcelStep_ChildStep(pos,excelSteps);
+        if(excelStep.style==ExcelStyle.ATTACH_FIRST_EXCEL){
+            float number= TextUtils.isEmpty(processExcelFragment.et_number.getText())?0.0f:Float.valueOf(processExcelFragment.et_number.getText().toString().trim());
+            processExcel.attachFirstModels.get(excelStep.step).result=number;
+        }
+        executeExcelFragment.previousStepBtn.setEnabled(true);
         currentExcel.svae();
-        pos = PositionUtil.nextStep(pos, excelSteps);
-        if (PositionUtil.islastStep(pos, excelSteps)) {
+        String index = PositionUtil.nextStep(pos, excelSteps);
+        if (PositionUtil.islastStep(index, excelSteps)) {
+            executeExcelFragment.nextStepBtn.setEnabled(false);
             lastStep();
         } else {
-            showExcel(PositionUtil.pos2ExcelStep(pos, excelSteps));
+            pos=PositionUtil.nextStep(pos, excelSteps);
+            showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
         }
     }
 
@@ -97,15 +115,18 @@ public class ExcelFragmentManager {
      * 最后一步,生成新的表格
      */
     public void lastStep() {
+        laststep=true;
         executeExcel.write();
         processExcel.write();
         SPUtils.put(RECOVERY, false);
+        SPUtils.put(START_TIME,"");
     }
 
     /**
      * 没填完表格退出
      */
     public void exit() {
+        userManager.logout();
         SPUtils.put(RECOVERY, true);
         SPUtils.put(PositionUtil.POSITION, pos);
     }
@@ -118,12 +139,21 @@ public class ExcelFragmentManager {
     private void showExcel( ExcelStep excelStep ) {
         if (excelStep.style == ExcelStyle.PROCESS_EXCEL) {
             showProcessExcel(excelStep);
-        } else if (excelStep.style == ExcelStyle.EXCUTE_EXCEL) {
+        } else if (excelStep.style == ExcelStyle.EXCUTE_EXCEL||excelStep.style==ExcelStyle.RECOVER_EXCEL) {
             showExecuteExcel(excelStep);
         }else if(excelStep.style==ExcelStyle.ATTACH_FIRST_EXCEL){
             showProcessExcel(excelStep);
+        }else if(excelStep.style==ExcelStyle.ATTACH_SECOND_EXCEL){
+            showAttachSecondExcel(excelStep);
+        }else if(excelStep.style==ExcelStyle.ATTACH_THREE_EXCEL){
+            showAttachThreeExcel(excelStep);
+        }else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){
+            showAttachFourExcel(excelStep);
         }
     }
+
+
+
 
     /**
      * 显示作业过程
@@ -135,7 +165,7 @@ public class ExcelFragmentManager {
         if (processExcelFragment == null) {
             processExcelFragment = ProcessExcelFragment.newInstance(this);
         }
-        if (processExcel != currentExcel) {
+        if (CURRENT_FRAGMENT != 0) {
             manager.beginTransaction().replace(R.id.fragment, processExcelFragment).commitNowAllowingStateLoss();
         }
         int[] posArr=PositionUtil.pos2posArr(pos);
@@ -143,10 +173,12 @@ public class ExcelFragmentManager {
         if (!CollectionUtils.isEmpty(excelStep.childSteps)) {//有子步骤
             processExcelFragment.setData2(processExcel.processExcelList.get(excelStep.step),processExcel.attachFirstModels,excelStep,posArr[1]);
         } else {//
-            processExcelFragment.setData(processExcel.processExcelList.get(posArr[0]));
+            processExcelFragment.setData(processExcel.processExcelList.get(excelStep.step));
         }
 //        processExcelFragment.setData(processExcel.processExcelList.get(excelStep.step));
         currentExcel = processExcel;
+        CURRENT_FRAGMENT=0;
+
     }
 
     /**
@@ -167,10 +199,62 @@ public class ExcelFragmentManager {
         if (!CollectionUtils.isEmpty(excelStep.childSteps)) {//有子步骤
             executeExcelFragment.setData2(executeExcel.executeModelList,excelStep,posArr[1]);
         } else {//
-            executeExcelFragment.setData(executeExcel.executeModelList.get(posArr[0]));
+            executeExcelFragment.setData(executeExcel.executeModelList.get(excelStep.step));
         }
         currentExcel = executeExcel;
     }
+
+
+    private void showAttachSecondExcel( ExcelStep excelStep ) {
+        if (CollectionUtils.isEmpty(processExcel.processExcelList)) return;
+        if ( attachSecondExcelFragment== null) {
+            attachSecondExcelFragment = AttachSecondExcelFragment.newInstance(this);
+        }
+        if (CURRENT_FRAGMENT != 2) {
+            manager.beginTransaction().replace(R.id.fragment, attachSecondExcelFragment).commit();
+        }
+        int[] posArr=PositionUtil.pos2posArr(pos);
+        excelStep = excelSteps.get(posArr[0]);
+        ProcessModel processModel=processExcel.processExcelList.get(excelStep.step);
+        AttachSecondModel attachSecondModel=processExcel.attachSecondModelList.get(excelStep.childSteps.get(posArr[1]).step);
+        attachSecondExcelFragment.setData(processModel,attachSecondModel,(posArr[1]+1)+"/"+excelStep.childSteps.size());
+
+        currentExcel = processExcel;
+        CURRENT_FRAGMENT=2;
+    }
+
+    private void showAttachThreeExcel( ExcelStep excelStep ) {
+        if ( attachThreeExcelFragment== null) {
+            attachThreeExcelFragment = AttachThreeExcelFragment.newInstance(this);
+        }
+        if (CURRENT_FRAGMENT != 3) {
+            manager.beginTransaction().replace(R.id.fragment, attachThreeExcelFragment).commit();
+        }
+        int[] posArr=PositionUtil.pos2posArr(pos);
+        excelStep = excelSteps.get(posArr[0]);
+        ProcessModel processModel=processExcel.processExcelList.get(excelStep.step);
+        attachThreeExcelFragment.setData(processModel,excelStep.childSteps.get(posArr[1]).step,(posArr[1]+1)+"/"+excelStep.childSteps.size());
+
+        currentExcel = processExcel;
+        CURRENT_FRAGMENT=3;
+    }
+
+    private void showAttachFourExcel( ExcelStep excelStep ) {
+        if ( attachFourExcelFragment== null) {
+            attachFourExcelFragment = AttachFourExcelFragment.newInstance(this);
+        }
+        if (CURRENT_FRAGMENT != 4) {
+            manager.beginTransaction().replace(R.id.fragment, attachFourExcelFragment).commit();
+        }
+        int[] posArr=PositionUtil.pos2posArr(pos);
+        excelStep = excelSteps.get(posArr[0]);
+        ProcessModel processModel=processExcel.processExcelList.get(excelStep.step);
+        attachFourExcelFragment.setData(processModel,excelStep.childSteps.get(posArr[1]).step,(posArr[1]+1)+"/"+excelStep.childSteps.size());
+
+        currentExcel = processExcel;
+        CURRENT_FRAGMENT=4;
+    }
+
 
     protected void setResult( int result ) {
         int[] posArr = PositionUtil.pos2posArr(pos);
@@ -184,10 +268,16 @@ public class ExcelFragmentManager {
         if (excelStep.style == ExcelStyle.EXCUTE_EXCEL) {
             executeExcel.executeModelList.get(index).excute_result = result;
             executeExcel.executeModelList.get(index).execute_date= TimeUtils.getNowTimeString();
+        }else if(excelStep.style==ExcelStyle.RECOVER_EXCEL) {
+            executeExcel.executeModelList.get(index).recover_result = result;
+            executeExcel.executeModelList.get(index).recover_date = TimeUtils.getNowTimeString();
         } else if (excelStep.style == ExcelStyle.PROCESS_EXCEL) {
             processExcel.processExcelList.get(index).result = result;
         }
     }
+
+
+
 
 
 }

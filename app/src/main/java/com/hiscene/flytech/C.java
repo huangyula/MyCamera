@@ -34,5 +34,11 @@ public class C {
     public static final String TEMP_PROCESS_FILE=TEMP_PATH+"芬莱作业过程.json";
     public static final String TEMP_EXCUTE_FILE=TEMP_PATH+"220kV砚后甲线二次措施单.json";
     public static final String TEMP_ATTACH_FIRST_FILE=TEMP_PATH+"附表1.json";
+    public static final String TEMP_ATTACH_SECOND_FILE=TEMP_PATH+"附表2.json";
     //测试路径
+
+    public static final int START_TIME_BEGIN=2;
+    public static final int PROCESS_ROW_BEGIN=10,PROCESS_ROW_END=59;
+    public static final int ATTACH_ONE_ROW_BEGIN=73,ATTACH_ONE_ROW_END=75;
+    public static final int ATTACH_SECOND_ROW_BEGIN=79,ATTACH_SECONG_ROW_END=82;
 }

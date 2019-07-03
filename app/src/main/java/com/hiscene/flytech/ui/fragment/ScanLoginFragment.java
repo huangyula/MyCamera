@@ -48,4 +48,5 @@ public class ScanLoginFragment extends BaseFragment implements ViewTreeObserver.
             scan_line.startAnimation(translateAnimation);
         }
     }
+
 }

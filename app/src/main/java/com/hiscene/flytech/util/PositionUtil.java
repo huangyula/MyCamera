@@ -102,6 +102,15 @@ public class PositionUtil {
         return excelStep;
     }
 
+    public static ExcelStep pos2ExcelStep_ChildStep(String pos, List<ExcelStep> excelSteps) {
+        int[] posArr = pos2posArr(pos);
+        ExcelStep excelStep = excelSteps.get(posArr[0]);
+        if(!CollectionUtils.isEmpty(excelStep.childSteps)){
+            excelStep=excelStep.childSteps.get(posArr[1]);
+        }
+        return excelStep;
+    }
+
     public static int[] pos2posArr( String pos){
         String[] posStrArr = pos.split("\\.");
         int[] posArr = new int[posStrArr.length];

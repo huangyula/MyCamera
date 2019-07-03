@@ -3,19 +3,17 @@ package com.hiscene.flytech.ui.fragment;
 import android.annotation.SuppressLint;
 import android.widget.TextView;
 
-import com.github.weiss.core.entity.Entity;
-import com.github.weiss.core.utils.CollectionUtils;
-import com.github.weiss.core.utils.TimeUtils;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
-import com.hiscene.flytech.excel.ExecuteExcel;
 
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * @author huangyu
@@ -67,6 +65,18 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
 
 
     private void initData(List<ExecuteModel> dataList,ExcelStep excelStep,int pos) {
+        if(excelStep.style== ExcelStyle.EXCUTE_EXCEL){
+            executed.setText("已执行");
+            unexecuted.setText("未执行");
+            executed.setContentDescription("已执行");
+            unexecuted.setContentDescription("未执行");
+
+        }else if(excelStep.style== ExcelStyle.RECOVER_EXCEL){
+            executed.setText("已恢复");
+            unexecuted.setText("未恢复");
+            executed.setContentDescription("已恢复");
+            unexecuted.setContentDescription("未恢复");
+        }
         if(pos<0){
             pos=0;
         }
@@ -88,11 +98,17 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
     }
 
     @Override
+    protected void logout() {
+        excelFragmentManager.exit();
+        getActivity().finish();
+    }
+
+    @OnClick(R.id.executed)
     protected void executed() {
         excelFragmentManager.setResult(1);
     }
 
-    @Override
+    @OnClick(R.id.unexecuted)
     protected void unexecuted() {
         excelFragmentManager.setResult(0);
     }
