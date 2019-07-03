@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/app_padding"
+    >
+    <include layout="@layout/include_top_bar"></include>
+    <ImageView
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/tianxiebiaodan"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/start_edit"
+        />
+    <TextView
+        android:id="@+id/tv_scan_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/start_edit"
+        android:layout_below="@id/edit"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="21dp"
+        style="@style/text_style_white_bold"
+        />
+
+</RelativeLayout>

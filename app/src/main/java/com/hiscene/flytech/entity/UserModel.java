@@ -7,9 +7,9 @@ package com.hiscene.flytech.entity;
  */
 public class UserModel {
 
-    public int id;
+    public String id;
 
-    public UserModel(int id) {
+    public UserModel(String id) {
         this.id = id;
     }
 }

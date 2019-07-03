@@ -19,19 +19,19 @@ public class ExecuteModel extends Entity {
     public int excute_result;
 
     //执行时间
-    public Date execute_date;
+    public String execute_date;
 
     //恢复结果 false=0, true=1, null=-1
     public int recover_result;
 
     //恢复时间
-    public Date recover_date;
+    public String recover_date;
 
     public ExecuteModel(String id, String content) {
         this(id,content,-1,null,-1,null);
     }
 
-    public ExecuteModel(String id, String content, int excute_result, Date execute_date, int recover_result, Date recover_date) {
+    public ExecuteModel(String id, String content, int excute_result, String execute_date, int recover_result, String recover_date) {
         this.id = id;
         this.content = content;
         this.excute_result = excute_result;

@@ -30,4 +30,12 @@
     <string name="select">选择</string>
     <string name="title_excute">二次设备及回路工作安全技术措施单</string>
     <string name="title_process">作业过程</string>
+    <string name="start_edit">开始表单填写</string>
+    <string name="help">请求协助</string>
+    <string name="device_name">装置名称：</string>
+    <string name="device_number">装置型号:</string>
+    <string name="check_code">校验码：</string>
+    <string name="device_version">装置版本号：</string>
+    <string name="factory">生产厂家：</string>
+    <string name="user_name">巡检员</string>
 </resources>

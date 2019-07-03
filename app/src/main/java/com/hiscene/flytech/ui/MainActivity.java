@@ -1,5 +1,6 @@
 package com.hiscene.flytech.ui;
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
@@ -7,9 +8,12 @@ import android.net.Uri;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.github.weiss.core.UserManager;
+import com.github.weiss.core.bus.RxBus;
 import com.github.weiss.core.utils.AppUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.ScreenUtils;
+import com.github.weiss.core.utils.StringUtils;
 import com.github.weiss.core.utils.helper.RxSchedulers;
 import com.google.zxing.Result;
 import com.hiscene.camera.listener.OnQrRecognizeListener;
@@ -19,6 +23,7 @@ import com.hiscene.flytech.BaseActivity;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.UserModel;
 import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.recorder.ScreenRecorderManager;
 import com.hiscene.flytech.ui.fragment.DeviceFragment;
@@ -27,13 +32,16 @@ import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
 import com.hiscene.flytech.ui.fragment.LoginFragment;
 import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
 import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
+import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 
+import static com.hiscene.flytech.App.userManager;
 
-public class MainActivity extends BaseActivity {
+
+public class MainActivity extends BaseActivity implements LoginFragment.LoginScanListener, StartEditExcelFragment.StartEditListener {
 
     private static final int REQUEST_SCREEN_LIVE = 1;
 
@@ -42,6 +50,7 @@ public class MainActivity extends BaseActivity {
     public static final int SCAN_LOGIN = 1;//扫描登录页
     public static final int DEVICE = 2;//主界面页
     public static final int SCAN_DEVICE = 3;//扫描设备页
+    public static final int START_EDIT = 4;//开始填写表单页
 
     @BindView(R.id.cameraLayout)
     LinearLayout cameraLayout;
@@ -59,6 +68,8 @@ public class MainActivity extends BaseActivity {
 
     ScanDeviceFragment scanDeviceFragment;
 
+    StartEditExcelFragment startEditExcelFragment;
+
     ExcelFragmentManager excelFragmentManager;
 
     @Override
@@ -69,15 +80,19 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initView() {
         screenRecorderManager = new ScreenRecorderManager(this);
-        loginFragment = LoginFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commitNowAllowingStateLoss();
+        if(userManager.isLogin()){
+            startEditExcelFragment=StartEditExcelFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
+        }else {
+            loginFragment = LoginFragment.newInstance();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commitNowAllowingStateLoss();
+        }
         new Thread(() -> excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager())).start();
         FLAG = LOGIN;
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
         qrVision = new CameraRecorder();
         qrVision.init();
-        qrVision.start();
         qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
@@ -85,30 +100,23 @@ public class MainActivity extends BaseActivity {
                         .compose(RxSchedulers.io_main())
                         .subscribe(str -> {
                             LogUtils.d("OnQrRecognizeListener:" + result.getText());
-                            if (FLAG == LOGIN) {
-                                scanLoginFragment = ScanLoginFragment.newInstance();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
-                                FLAG = SCAN_LOGIN;
-                            } else if (FLAG == SCAN_LOGIN) {
-                                deviceFragment = DeviceFragment.newInstance();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, deviceFragment).commitNowAllowingStateLoss();
-                                FLAG = DEVICE;
-                            } else if (FLAG == DEVICE) {
-                                scanDeviceFragment = ScanDeviceFragment.newInstance();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commitNowAllowingStateLoss();
-                                FLAG = SCAN_DEVICE;
-                            } else if (FLAG == SCAN_DEVICE) {
-                                if(excelFragmentManager != null) {
-                                    excelFragmentManager.init();
+                            String resultStr=result.getText();
+                            resultStr="User:508f567cc3015cba395858d4493dd706";
+                            String[] user= resultStr.split(":");
+                            if(user.length>=1){
+                                if("User:508f567cc3015cba395858d4493dd706".equals(resultStr)){
+                                    userManager.login(new UserModel(user[1]));
+                                    startEditExcelFragment=StartEditExcelFragment.newInstance();
+                                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
                                 }
                             }
                         }, e -> e.printStackTrace()));
 //                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
-                if(FLAG == SCAN_DEVICE) return false;
+                if(SCAN_LOGIN==FLAG||SCAN_DEVICE==FLAG) return false;
                 return true;
             }
         });
-        qrVision.startQRRecognize();
+
     }
 
 
@@ -175,4 +183,29 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+
+    @Override
+    public void scanLogin() {
+        scanLoginFragment = ScanLoginFragment.newInstance();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
+        FLAG = SCAN_LOGIN;
+        qrVision.start();
+        qrVision.startQRRecognize();
+    }
+
+
+//    @Override
+//    public void scanDevice() {
+//        scanDeviceFragment = ScanDeviceFragment.newInstance();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commitNowAllowingStateLoss();
+//        FLAG = SCAN_DEVICE;
+//        qrVision.startQRRecognize();
+//    }
+
+    @Override
+    public void startEdit() {
+       if(excelFragmentManager!=null){
+           excelFragmentManager.init();
+       }
+    }
 }

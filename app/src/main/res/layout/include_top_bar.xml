@@ -17,12 +17,15 @@
             style="@style/text_style_blue_bold"
             />
         <TextView
+            android:id="@+id/logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/tuichu"
             android:text="@string/exit_app"
+            android:contentDescription="@string/exit_app"
             style="@style/text_style"
             android:drawablePadding="7dp"
+            android:clickable="true"
             />
 
         <TextView
@@ -32,6 +35,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             style="@style/text_style"
+            android:text="@string/user_name"
             />
         <TextView
             android:layout_width="wrap_content"

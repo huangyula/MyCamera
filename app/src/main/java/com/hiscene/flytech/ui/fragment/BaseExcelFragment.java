@@ -1,21 +1,25 @@
 package com.hiscene.flytech.ui.fragment;
 
+import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseRxFragment;
+import com.github.weiss.core.utils.SPUtils;
 import com.hiscene.flytech.R;
-import com.hiscene.flytech.entity.ExcelStep;
-import com.hiscene.flytech.entity.ExecuteModel;
+import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.util.PositionUtil;
 import com.hiscene.flytech.view.ShowImagesDialog;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
 
 /**
  * @author Minamo
@@ -35,12 +39,27 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     TextView deviceInfo;
     @BindView(R.id.rate)
     TextView rate;
+    @BindView(R.id.executed)
+    @Nullable
+    Button executed;
+    @BindView(R.id.unexecuted)
+    @Nullable
+    Button unexecuted;
+    @BindView(R.id.logout)
+    TextView logout;
     protected ExcelFragmentManager excelFragmentManager;
+
 
     public BaseExcelFragment(ExcelFragmentManager excelFragmentManager) {
         this.excelFragmentManager = excelFragmentManager;
     }
 
+    /**
+     * 设置当前表格类型数据模型
+     *
+     * @param data
+     * @param attachSecondModel
+     */
     /**
      * 设置当前表格类型数据模型
      *
@@ -58,6 +77,15 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     protected void oprationRisk(){
 
     }
+
+//    @OnClick(R.id.executed)
+//    protected abstract void executed();
+//
+//    @OnClick(R.id.unexecuted)
+//    protected abstract void unexecuted();
+
+    @OnClick(R.id.logout)
+    protected abstract void logout();
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){

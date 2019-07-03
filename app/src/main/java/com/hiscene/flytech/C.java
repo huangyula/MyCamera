@@ -27,11 +27,18 @@ public class C {
     public static final String PROCESS_FILE = "芬莱作业过程.xlsx";
 
     //二次措施单表格文件名
-    public static final String EXECUTE_FILE="220kV砚后甲线二次措施单-数据读取.xlsx";
+    public static final String EXECUTE_READ_FILE="220kV砚后甲线二次措施单-数据读取.xlsx";
+    public static final String EXECUTE_FILE="220kV砚后甲线二次措施单.xlsx";
 
    //临时目录下的缓存文件
     public static final String TEMP_PROCESS_FILE=TEMP_PATH+"芬莱作业过程.json";
     public static final String TEMP_EXCUTE_FILE=TEMP_PATH+"220kV砚后甲线二次措施单.json";
-
+    public static final String TEMP_ATTACH_FIRST_FILE=TEMP_PATH+"附表1.json";
+    public static final String TEMP_ATTACH_SECOND_FILE=TEMP_PATH+"附表2.json";
     //测试路径
+
+    public static final int START_TIME_BEGIN=2;
+    public static final int PROCESS_ROW_BEGIN=10,PROCESS_ROW_END=59;
+    public static final int ATTACH_ONE_ROW_BEGIN=73,ATTACH_ONE_ROW_END=75;
+    public static final int ATTACH_SECOND_ROW_BEGIN=79,ATTACH_SECONG_ROW_END=82;
 }

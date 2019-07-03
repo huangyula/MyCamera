@@ -4,9 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/app_padding"
->
-
+    >
     <include layout="@layout/include_top_bar"></include>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,7 +27,7 @@
                 android:background="@mipmap/bg"
                 style="@style/text_style_white_bold"
                 android:gravity="center_vertical"
-                android:text="@string/title_excute"/>
+                android:text="@string/title_process"/>
 
             <TextView
                 android:id="@+id/device_info"
@@ -64,9 +64,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@mipmap/bg1"
             android:orientation="vertical"
+
             >
 
             <LinearLayout
@@ -80,7 +81,7 @@
                     android:text="作业过程"
                     android:paddingLeft="@dimen/excel_left_padding_15"
                     android:paddingTop="18dp"
-                    android:paddingBottom="16dp"
+                    android:paddingBottom="10dp"
                     style="@style/text_style_white_bold"/>
                 <TextView
                     android:id="@+id/rate"
@@ -92,15 +93,82 @@
                     />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/standard"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="密封工作票"
-                android:paddingLeft="@dimen/excel_left_padding_16"
-                style="@style/text_style_white"
-                android:textSize="14sp"/>
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/device_name"
+                    style="@style/text_style_white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/device_name" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/device_number"
+                            style="@style/text_style_white"/>
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/device_number"
+                            style="@style/text_style_white"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/check_code"
+                            style="@style/text_style_white"
+                            />
+                        <EditText
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/check_code"
+                            style="@style/text_style_white"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/device_version"
+                        style="@style/text_style_white"/>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/device_version"
+                        style="@style/text_style_white"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/factory"
+                        style="@style/text_style_white"/>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/factory"
+                        style="@style/text_style_white"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,34 +178,10 @@
                 android:weightSum="4"
                 android:gravity="center_horizontal"
                 >
-
-                <Button
-                    android:id="@+id/executed"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/buutton_height"
-                    android:background="@drawable/selector_button_bg"
-                    style="@style/text_style_white_bold"
-                    android:textSize="14sp"
-                    android:text="@string/executed"
-                    android:contentDescription="@string/executed"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/unexecuted"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="26dp"
-                    android:background="@drawable/selector_button_bg"
-                    style="@style/text_style_white_bold"
-                    android:textSize="14sp"
-                    android:text="@string/unexecuted"
-                    android:contentDescription="@string/unexecuted"
-                    android:layout_weight="1"/>
-
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -149,7 +193,7 @@
                 <Button
                     android:id="@+id/nextStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/selector_button_bg"

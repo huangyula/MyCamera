@@ -1,6 +1,7 @@
 package com.hiscene.flytech.util;
 
 import com.github.weiss.core.utils.FileUtils;
+import com.hiscene.flytech.entity.ExecuteModel;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -30,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Minamo
@@ -267,7 +269,7 @@ public class POIUtil {
 
         insureExcelType(filePath);
         for(int i=0;i<list.size();i++){
-            Cell cell = getCellInSheet(rowIndex,colIndex);
+            Cell cell = getCellInSheet(rowIndex,colIndex);//
             setCellValue(workbook,cell,list.get(i));
             rowIndex++;
         }
@@ -363,6 +365,9 @@ public class POIUtil {
      * @return 设置好的单元格列对象
      */
     public static Cell setCellValue(Workbook workbook,Cell cell, Object value) {
+        if(value==null){
+            return cell;
+        }
         if (value instanceof String) {
             cell.setCellValue((String) value);
             cell.setCellType(Cell.CELL_TYPE_STRING);
@@ -434,5 +439,101 @@ public class POIUtil {
         Picture pict = drawing.createPicture(anchor, pictureIdx);
 
     }
+    /**
+     * 设置措施单内容
+     * @param filePath  源文件地址
+     * @param descPath  保存文件的目的地
+     * @param executeModelList 要设置得内容
+     */
+    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList) throws
+            Exception {
+        //行：从第5行开始，中间第32行不是步骤
+        //列：2，3，8，9
+        int rowIndex=6;
+        insureExcelType(filePath);
+        ExecuteModel executeModel;
+        for(int i=0;i<executeModelList.size();i++){
+            executeModel=executeModelList.get(i);
+            String execute_result="";
+            String recover_result="";
+            switch (executeModel.excute_result){
+                case 0:
+                    execute_result="×";
+                    break;
+                case 1:
+                    execute_result="√";
+                    break;
+                case -1:
+                    execute_result="无";
+                    break;
+            }
+            switch (executeModel.recover_result){
+                case 0:
+                    recover_result="确认(×)";
+                    break;
+                case 1:
+                    recover_result="确认(√)";
+                    break;
+                case -1:
+                    recover_result="确认(无)";
+                    break;
+            }
+            Cell cell_1 = getCellInSheet(rowIndex,2);//执行结果
+            Cell cell_2 = getCellInSheet(rowIndex,3);//执行时间
+            Cell cell_3 = getCellInSheet(rowIndex,8);//恢复结果
+            Cell cell_4 = getCellInSheet(rowIndex,9);//恢复时间
+            setCellValue(workbook,cell_1,execute_result);
+            setCellValue(workbook,cell_2,executeModel.execute_date);
+            setCellValue(workbook,cell_3,recover_result);
+            setCellValue(workbook,cell_4,executeModel.recover_date);
+            rowIndex++;
+            if(rowIndex==32){
+                rowIndex++;
+            }
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+
+    public static void setCellValueAtMulCol(String filePath, String descPath, int rowIndex, int[] colIndex, List<String> list) throws Exception {
+
+        insureExcelType(filePath);
+        int num=colIndex.length;
+
+        for(int j=0;j<colIndex.length;j++){
+                Cell cell=getCellInSheet(rowIndex,colIndex[j]);
+                setCellValue(workbook,cell,list.get(j));
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
 
 }
