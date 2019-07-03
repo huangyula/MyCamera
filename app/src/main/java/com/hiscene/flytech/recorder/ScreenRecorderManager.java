@@ -11,7 +11,6 @@ import android.media.MediaCodecInfo;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
-import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
@@ -27,9 +26,6 @@ import com.hiscene.screenrecorder.Utils;
 import com.hiscene.screenrecorder.VideoEncodeConfig;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -134,7 +130,7 @@ public class ScreenRecorderManager {
                 cancelRecorder();
                 return;
             }
-            final File file = new File(RecorderUtils.getFilePath());
+            final File file = new File(RecorderUtils.getScreenRecorderFilePath());
             Log.d("@@", "Create recorder with :" + video + " \n " + audio + "\n " + file);
             mRecorder = newRecorder(mediaProjection, video, audio, file);
             if (hasPermissions()) {

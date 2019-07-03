@@ -47,6 +47,8 @@ void JNICALL GAME(init(JNIEnv * env, jobject, jlong
     mediaRecorder->setVideoBitRate(800000);
     mediaRecorder->setVideoFormat(AV_PIX_FMT_NV21);
     mediaRecorder->setVideoSize(width,height);
+    mediaRecorder->setAudioBitRate(96000);
+    mediaRecorder->setAudioEnable(true);
     mediaRecorder->openFile();
 }
 
@@ -58,13 +60,18 @@ void JNICALL GAME(encodeAndWriteVideo(JNIEnv * env, jobject, jlong
 //    mediaRecorder->encodeAndWriteVideo(byteArrayToByte(env,data));
 }
 
+void JNICALL GAME(encodeAndWriteAudio(JNIEnv * env, jobject, jlong
+                          ptr, jbyteArray data,jint length)) {
+    jbyte *dataByte = env->GetByteArrayElements(data, NULL);
+    MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);
+    mediaRecorder->encodeAndWriteAudio((uint8_t *)dataByte,length);
+}
 
 void JNICALL GAME(writeH264Video(JNIEnv * env, jobject, jlong
                           ptr, jbyteArray data,jint length)) {
     jbyte *dataByte = env->GetByteArrayElements(data, NULL);
     MediaRecorder *mediaRecorder = ((MediaRecorder *) ptr);
     mediaRecorder->writeH264Video((uint8_t *)dataByte,length);
-//    mediaRecorder->encodeAndWriteVideo(byteArrayToByte(env,data));
 }
 
 void JNICALL GAME(destroy(JNIEnv * env, jobject, jlong

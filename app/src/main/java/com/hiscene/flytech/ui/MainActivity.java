@@ -160,8 +160,14 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        qrVision.destroy();
-        qrVision.shutdown();
+        if (isLaunchHiLeia) {
+            LogUtils.d("isLaunchHiLeia onDestroy");
+            isLaunchHiLeia = false;
+            screenRecorderManager.cancelRecorder();
+        }else {
+            qrVision.destroy();
+            qrVision.shutdown();
+        }
     }
 
     @Override
