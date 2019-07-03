@@ -5,7 +5,7 @@
 #include "MediaRecorder.h"
 
 MediaRecorder::MediaRecorder()
-:isInited(false),fmt(NULL),fmt_ctx(NULL),have_video(false),have_audio(false),
+:isInited(false),fmt(NULL),fmt_ctx(NULL),have_video(false),have_audio(false),enableAudio(false),
  dstUrl(NULL), videoStream(NULL), audioStream(NULL), pixelFmt(AV_PIX_FMT_NV21){
     videoStream = new EncodeStream();
     audioStream = new EncodeStream();
@@ -48,6 +48,7 @@ void MediaRecorder::setAudioEnable(bool enable) {
 
 void MediaRecorder::setAudioBitRate(int bitRate) {
     this->audioBitRate = bitRate;
+    this->audioSampleRate = 44100;
 }
 
 int MediaRecorder::openFile() {
@@ -195,6 +196,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
 
     // 编码成功则将数据写入文件
     if (got_frame == 1) {
+//        ALOGI("encode video frame sucess! ost->st->index = %d\n", ost->st->index);
         ret = writeFrame(fmt_ctx, &pkt, ost->st->index);
         // 释放AVPacket
         av_packet_unref(&pkt);
@@ -245,6 +247,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
     // 如果音频编码帧存在，则进入音频编码阶段
     if (frame) {
         // TODO 计算输出的dst_nb_samples，否则没法输出声音
+        dst_nb_samples = av_rescale_rnd(swr_get_delay(ost->swr_ctx, frame->sample_rate) + frame->nb_samples, frame->sample_rate, frame->sample_rate, AVRounding(1));
         // 这是因为新版本的FFmpeg音频编码格式已经变成了AV_SAMPLE_FMT_FLTP
         // 但输入的PCM数据依旧是AV_SAMPLE_FMT_S16
         // 转换为目标格式
@@ -273,6 +276,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
 
     // 如果编码成功，则写入文件
     if (got_frame) {
+//        ALOGI("encode audio frame sucess! ost->st->index = %d\n", ost->st->index);
         ret = writeFrame(fmt_ctx, &pkt, ost->st->index);
         // 释放资源
         av_packet_unref(&pkt);
@@ -281,10 +285,12 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
             return -1;
         }
         ALOGI("writing audio frame sucess!\n");
+        return 0;
+    } else{
+        // 释放资源
+        av_packet_unref(&pkt);
     }
 
-    // 释放资源
-    av_packet_unref(&pkt);
     return 0;
 }
 
@@ -400,6 +406,7 @@ int MediaRecorder::flushEncoder() {
 
 int MediaRecorder::writeTailer() {
     av_write_trailer(fmt_ctx);
+    ALOGI("writeTailer\n");
     return 0;
 }
 
@@ -414,6 +421,7 @@ int MediaRecorder::openStream(EncodeStream *ost, AVFormatContext *oc, AVCodec **
     }
     // 创建输出码流
     ost->st = avformat_new_stream(oc, *codec);
+//    ost->st = avformat_new_stream(oc, NULL);
     if (!ost->st) {
         ALOGE("Could not allocate stream\n");
         return -1;
@@ -432,9 +440,20 @@ int MediaRecorder::openStream(EncodeStream *ost, AVFormatContext *oc, AVCodec **
     switch ((*codec)->type) {
         // 如果创建的是音频码流,则设置音频编码器的参数
         case AVMEDIA_TYPE_AUDIO:
+            //6.分配编码器并设置参数
+          /*  context->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+            context->codec_id = fmt->audio_codec;
+            context->codec_type = AVMEDIA_TYPE_AUDIO;
+            context->sample_fmt = AV_SAMPLE_FMT_FLTP;
+            context->sample_rate = 44100;
+            context->channel_layout = AV_CH_LAYOUT_STEREO;
+            context->channels = av_get_channel_layout_nb_channels(context->channel_layout);
+            context->bit_rate = 96000;*/
+
             context->sample_fmt = (*codec)->sample_fmts
                                   ? (AVSampleFormat) (*codec)->sample_fmts[0]
                                   : AV_SAMPLE_FMT_S16;
+//            context->sample_fmt = AV_SAMPLE_FMT_FLTP;
             context->bit_rate = audioBitRate;
             context->sample_rate = audioSampleRate;
             // 判断支持的采样率
@@ -580,6 +599,9 @@ int MediaRecorder::openAudioEncoder(AVCodec *codec, EncodeStream *ost, AVDiction
     }
 
     // 设定重采样信息
+    av_opt_set_channel_layout(ost->swr_ctx, "in_channel_layout", AV_CH_LAYOUT_STEREO, 0);
+    av_opt_set_channel_layout(ost->swr_ctx, "out_channel_layout", AV_CH_LAYOUT_STEREO, 0);
+
     av_opt_set_int(ost->swr_ctx, "in_channel_count", codecContext->channels, 0);
     av_opt_set_int(ost->swr_ctx, "in_sample_rate", codecContext->sample_rate, 0);
     av_opt_set_sample_fmt(ost->swr_ctx, "in_sample_fmt", AV_SAMPLE_FMT_S16, 0);
@@ -690,7 +712,7 @@ AVFrame *MediaRecorder::allocVideoFrame(enum AVPixelFormat pix_fmt, int width, i
 }
 
 int MediaRecorder::writeFrame(AVFormatContext *fmt_ctx, AVPacket *pkt, int stream_index) {
-    if (!pkt) {
+    if (!pkt||!pkt->data) {
         return -1;
     }
     pkt->stream_index = stream_index;

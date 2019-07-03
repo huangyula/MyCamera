@@ -24,4 +24,10 @@ public class RecorderUtils {
         String path = C.TEMP_PATH+"Recorder"+File.separator + "Recorder-" + format.format(new Date()) + ".mp4";
         return path;
     }
+
+    public static String getScreenRecorderFilePath() {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
+        String path = C.TEMP_PATH+"Recorder"+File.separator + "ScreenRecorder-" + format.format(new Date()) + ".mp4";
+        return path;
+    }
 }
