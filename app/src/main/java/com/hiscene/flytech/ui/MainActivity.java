@@ -12,6 +12,7 @@ import com.github.weiss.core.UserManager;
 import com.github.weiss.core.bus.RxBus;
 import com.github.weiss.core.utils.AppUtils;
 import com.github.weiss.core.utils.LogUtils;
+import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.ScreenUtils;
 import com.github.weiss.core.utils.StringUtils;
 import com.github.weiss.core.utils.helper.RxSchedulers;
@@ -33,12 +34,14 @@ import com.hiscene.flytech.ui.fragment.LoginFragment;
 import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
 import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
 import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
+import com.hiscene.flytech.util.PositionUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 
 import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
 
 
 public class MainActivity extends BaseActivity implements LoginFragment.LoginScanListener, StartEditExcelFragment.StartEditListener {
@@ -160,6 +163,10 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(userManager.isLogin()){
+            SPUtils.put(RECOVERY, true);
+            SPUtils.put(PositionUtil.POSITION, excelFragmentManager.pos);
+        }
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
             isLaunchHiLeia = false;

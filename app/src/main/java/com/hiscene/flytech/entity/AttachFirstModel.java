@@ -24,7 +24,7 @@ public class AttachFirstModel extends Entity {
     }
 
     public AttachFirstModel(int id, String content, String standard) {
-        this(id, content, standard, -1);
+        this(id, content, standard, 0.0f);
     }
 
     public AttachFirstModel(int id, String content, String standard, float result) {

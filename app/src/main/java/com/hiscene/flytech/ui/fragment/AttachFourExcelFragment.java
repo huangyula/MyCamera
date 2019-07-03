@@ -24,7 +24,10 @@ public class AttachFourExcelFragment extends BaseExcelFragment<AttachSecondModel
     TextView title;
     @BindView(R.id.rate)
     TextView tv_rate;
-
+    @BindView(R.id.time_1)
+    TextView time_1;
+    @BindView(R.id.time_2)
+    TextView time_2;
     int step;
     String rate="1";
     ProcessModel processModel;

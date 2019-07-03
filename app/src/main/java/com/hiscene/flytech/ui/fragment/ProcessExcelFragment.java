@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.TimeUtils;
 import com.hiscene.flytech.R;
@@ -55,7 +56,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessModel> {
 
     public static ProcessExcelFragment newInstance(ExcelFragmentManager excelFragmentManager) {
         //记录作业开始时间
-        if(TextUtils.isEmpty(SPUtils.getString(START_TIME,""))){
+        if(TextUtils.isEmpty(SPUtils.getString(START_TIME))){
             SPUtils.put(START_TIME, TimeUtils.getNowTimeString());
         }
         ProcessExcelFragment processExcelFragment = new ProcessExcelFragment(excelFragmentManager);

@@ -38,7 +38,7 @@ public class ExcelFragmentManager {
     private List<ExcelStep> excelSteps;
     //当前步骤，-1 没有小步骤 比如：2.3 大步骤2，小步骤3。
 //    private String pos = "0.-1";
-    private String pos = "0.0";
+    public String pos = "0.0";
     public int CURRENT_FRAGMENT=-1;//0：作业过程,1:附表一,2:附表2
 
     private ProcessExcelFragment processExcelFragment;
@@ -52,6 +52,7 @@ public class ExcelFragmentManager {
     private IExcel currentExcel;
     //临界点判断
     private boolean laststep=false;
+    private boolean firststep=false;
 
     public ExcelFragmentManager( FragmentManager fm ) {
         this.manager = fm;
@@ -62,6 +63,8 @@ public class ExcelFragmentManager {
         if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
             processExcel.read();
             executeExcel.read();
+            processExcel.svae();
+            executeExcel.svae();
         } else {//恢复启动
             processExcel.restore();
             executeExcel.restore();
@@ -78,9 +81,14 @@ public class ExcelFragmentManager {
      * 上一步
      */
     public void previousStep() {
-        executeExcelFragment.nextStepBtn.setEnabled(true);
+        if(laststep){
+            executeExcelFragment.nextStepBtn.setEnabled(true);
+            laststep=false;
+        }
         if (PositionUtil.isFirstStep(pos, excelSteps)) {
             LogUtils.d("已经是第一步了");
+            firststep=true;
+            executeExcelFragment.previousStepBtn.setEnabled(false);
             return;
         }
         pos = PositionUtil.previousStep(pos, excelSteps);
@@ -93,17 +101,26 @@ public class ExcelFragmentManager {
      * 下一步
      */
     public void nextStep() {
+        if(firststep){
+            executeExcelFragment.previousStepBtn.setEnabled(true);
+            firststep=false;
+        }
         //附表1的填写
         ExcelStep excelStep=PositionUtil.pos2ExcelStep_ChildStep(pos,excelSteps);
         if(excelStep.style==ExcelStyle.ATTACH_FIRST_EXCEL){
             float number= TextUtils.isEmpty(processExcelFragment.et_number.getText())?0.0f:Float.valueOf(processExcelFragment.et_number.getText().toString().trim());
             processExcel.attachFirstModels.get(excelStep.step).result=number;
+        }else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){//附表四的填写
+            String time_1= TextUtils.isEmpty(attachFourExcelFragment.time_1.getText())?"":attachFourExcelFragment.time_1.getText().toString().trim();
+            String time_2= TextUtils.isEmpty(attachFourExcelFragment.time_2.getText())?"":attachFourExcelFragment.time_2.getText().toString().trim();
+            processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;
+            processExcel.attachFourModelList.get(excelStep.step).time_1=time_2;
         }
-        executeExcelFragment.previousStepBtn.setEnabled(true);
+
+
         currentExcel.svae();
         String index = PositionUtil.nextStep(pos, excelSteps);
         if (PositionUtil.islastStep(index, excelSteps)) {
-            executeExcelFragment.nextStepBtn.setEnabled(false);
             lastStep();
         } else {
             pos=PositionUtil.nextStep(pos, excelSteps);
@@ -116,10 +133,11 @@ public class ExcelFragmentManager {
      */
     public void lastStep() {
         laststep=true;
+        executeExcelFragment.nextStepBtn.setEnabled(false);
         executeExcel.write();
         processExcel.write();
-        SPUtils.put(RECOVERY, false);
-        SPUtils.put(START_TIME,"");
+//        SPUtils.put(RECOVERY, false);
+//        SPUtils.put(START_TIME,"");
     }
 
     /**
@@ -127,8 +145,6 @@ public class ExcelFragmentManager {
      */
     public void exit() {
         userManager.logout();
-        SPUtils.put(RECOVERY, true);
-        SPUtils.put(PositionUtil.POSITION, pos);
     }
 
     /**

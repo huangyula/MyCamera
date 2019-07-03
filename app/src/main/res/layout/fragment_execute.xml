@@ -125,7 +125,7 @@
                 <Button
                     android:id="@+id/unexecuted"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -137,7 +137,7 @@
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
@@ -149,7 +149,7 @@
                 <Button
                     android:id="@+id/nextStepBtn"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/buutton_height"
                     android:layout_marginLeft="26dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/selector_button_bg"

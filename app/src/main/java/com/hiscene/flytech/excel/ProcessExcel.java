@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.entity.AttachFirstModel;
+import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.util.GsonUtil;
@@ -52,6 +53,7 @@ public class ProcessExcel implements IExcel {
     public List<ProcessModel> processExcelList = new ArrayList<>();
     public List<AttachFirstModel> attachFirstModels = new ArrayList<>();
     public List<AttachSecondModel> attachSecondModelList = new ArrayList<>();
+    public List<AttachFourModel> attachFourModelList = new ArrayList<>();
 
 
     @Override
@@ -99,6 +101,9 @@ public class ProcessExcel implements IExcel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //附表4
+        attachFourModelList.add(new AttachFourModel("",""));
     }
 
     @Override
@@ -133,6 +138,7 @@ public class ProcessExcel implements IExcel {
             //基本信息 列D,F
             int[] col_array=new int[]{4,6};
             results.clear();
+            LogUtils.d(SPUtils.getString(START_TIME));
             results.add(SPUtils.getString(START_TIME,""));//作业开始时间
             results.add(TimeUtils.getNowTimeString());//作业结束时间
             POIUtil.setCellValueAtMulCol(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,START_TIME_BEGIN,col_array,results);
@@ -182,14 +188,18 @@ public class ProcessExcel implements IExcel {
         processExcelList=new Gson().fromJson(read_content,type);
 
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FIRST_FILE,"utf-8");
-        type=new TypeToken<AttachFirstModel>(){}.getType();
+        type=new TypeToken<List<AttachFirstModel>>(){}.getType();
         attachFirstModels=new Gson().fromJson(read_content,type);
 
         //附表2
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_SECOND_FILE,"utf-8");
-        type=new TypeToken<AttachSecondModel>(){}.getType();
+        type=new TypeToken<List<AttachSecondModel>>(){}.getType();
         attachSecondModelList=new Gson().fromJson(read_content,type);
 
+        //附表4
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FOUR_FILE,"utf-8");
+        type=new TypeToken<List<AttachFourModel>>(){}.getType();
+        attachFourModelList=new Gson().fromJson(read_content,type);
     }
 
     @Override
@@ -220,6 +230,16 @@ public class ProcessExcel implements IExcel {
             if(!StringUtils.isEmpty(write_content)) {
                 if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_SECOND_FILE)) {
                     boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_SECOND_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
+                }
+            }
+        }
+        //附表4
+        if(!CollectionUtils.isEmpty(attachFourModelList)){
+            String write_content=GsonUtil.gsonString(attachFourModelList.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_FOUR_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_FOUR_FILE, write_content, true);
                     LogUtils.d("save 缓存:" + result);
                 }
             }
