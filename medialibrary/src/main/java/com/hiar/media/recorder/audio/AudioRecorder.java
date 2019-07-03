@@ -16,9 +16,9 @@ import java.io.IOException;
    * @time   2019/7/3
    * @des    声音录制
    */
-public class AudioRecordRecorder implements IAudioRecorder {
+public class AudioRecorder implements IAudioRecorder {
 
-    private static final String TAG = "AudioRecordRecorder";
+    private static final String TAG = "AudioRecorder";
 
     private int AUDIO_SOURCE = MediaRecorder.AudioSource.MIC;
 
@@ -67,7 +67,7 @@ public class AudioRecordRecorder implements IAudioRecorder {
      */
     private OnAudioRecordListener mOnAudioRecordListener;
 
-    public AudioRecordRecorder(String filePath) {
+    public AudioRecorder(String filePath) {
         this.pcmPath = filePath;
     }
 

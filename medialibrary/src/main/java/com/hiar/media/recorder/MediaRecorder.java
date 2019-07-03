@@ -2,16 +2,17 @@ package com.hiar.media.recorder;
 
 
 import com.github.weiss.core.thread.QueueRunnable;
-import com.hiar.media.recorder.audio.AudioRecordRecorder;
+import com.hiar.media.recorder.audio.AudioRecorder;
+
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Minamo
  * @e-mail kleinminamo@gmail.com
  * @time 2019/6/18
- * @des
+ * @des  FFMPEG 录制音视频
  */
-public class MediaRecorder extends QueueRunnable implements AudioRecordRecorder.OnAudioRecordListener{
+public class MediaRecorder extends QueueRunnable implements AudioRecorder.OnAudioRecordListener{
     static {
         System.loadLibrary("ffmpeg");
         System.loadLibrary("soundtouch");
@@ -22,7 +23,7 @@ public class MediaRecorder extends QueueRunnable implements AudioRecordRecorder.
     /**
      * 录制原始的音频数据
      */
-    private AudioRecordRecorder audioRecorder;
+    private AudioRecorder audioRecorder;
     protected ReentrantLock lock = new ReentrantLock();
 
     private long ptr;
@@ -33,7 +34,7 @@ public class MediaRecorder extends QueueRunnable implements AudioRecordRecorder.
 
     public MediaRecorder() {
         ptr = create();
-        audioRecorder = new AudioRecordRecorder(null);
+        audioRecorder = new AudioRecorder(null);
         audioRecorder.setOnAudioRecordListener(this);
         if (audioRecorder != null) {
             audioRecorder.initRecorder();
@@ -50,7 +51,7 @@ public class MediaRecorder extends QueueRunnable implements AudioRecordRecorder.
     }
 
     public void encodeAndWriteVideo(byte[] data) {
-        runAll();
+        runAllQueue();
         if (ptr > 0) {
             encodeAndWriteVideo(ptr, data);
 //            LogUtils.d("encodeAndWriteVideo data size:"+data.length);

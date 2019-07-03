@@ -4,6 +4,7 @@ import android.hardware.Camera;
 import android.opengl.GLES20;
 import android.opengl.Matrix;
 
+import com.github.weiss.core.thread.QueueRunnable;
 import com.hiar.utils.LogUtils;
 import com.hiar.utils.OpenglUtil;
 
