@@ -43,4 +43,8 @@ public class C {
     public static final int PROCESS_ROW_BEGIN=10,PROCESS_ROW_END=59;
     public static final int ATTACH_ONE_ROW_BEGIN=73,ATTACH_ONE_ROW_END=75;
     public static final int ATTACH_SECOND_ROW_BEGIN=79,ATTACH_SECONG_ROW_END=82;
+
+    //表格写入成功判断
+    public static final String EXCEL_WRITE_SUCCESS = "EXCEL_WRITE_SUCCESS";
+    public static final String EXCEL_WRITE_ERROR="EXCEL_WRITE_ERROR";
 }

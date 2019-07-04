@@ -4,6 +4,7 @@ import android.hardware.Camera;
 
 import com.github.weiss.core.utils.FileUtils;
 import com.hiar.media.recorder.MediaRecorder;
+import com.hiscene.camera.renderer.RendererController;
 import com.hiscene.camera.vision.QRVision;
 
 import java.util.concurrent.locks.ReentrantLock;
@@ -53,9 +54,11 @@ public class CameraRecorder extends QRVision {
     }
 
     public void destroy() {
-        lock.lock();
-        mediaRecorder.destroy();
-        mediaRecorder = null;
-        lock.unlock();
+        if(mediaRecorder != null) {
+            lock.lock();
+            mediaRecorder.destroy();
+            mediaRecorder = null;
+            lock.unlock();
+        }
     }
 }

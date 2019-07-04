@@ -25,7 +25,6 @@
             android:contentDescription="@string/exit_app"
             style="@style/text_style"
             android:drawablePadding="7dp"
-            android:clickable="true"
             />
 
         <TextView

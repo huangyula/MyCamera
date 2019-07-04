@@ -158,7 +158,7 @@ class SourceNV21Renderer extends SourceRenderer {
             initializeTexture();
             textureInit = true;
         }
-        runAll(runnableQueue);
+        runAllQueue();
 //        putRenderBuffer();
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, cameraTextureYID);
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR);

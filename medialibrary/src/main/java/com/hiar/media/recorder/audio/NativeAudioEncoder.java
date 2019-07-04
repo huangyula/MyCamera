@@ -5,7 +5,7 @@ package com.hiar.media.recorder.audio;
  * @date: 18-12-2
  */
 
-public class NativeAudioEncoder implements IAudioRecorder, AudioRecordRecorder.OnAudioRecordListener {
+public class NativeAudioEncoder implements IAudioRecorder, AudioRecorder.OnAudioRecordListener {
 
     static {
         System.loadLibrary("video_editor");
@@ -20,7 +20,7 @@ public class NativeAudioEncoder implements IAudioRecorder, AudioRecordRecorder.O
     /**
      * 录制原始的音频数据
      */
-    private AudioRecordRecorder audioRecorder;
+    private AudioRecorder audioRecorder;
 
     /**
      * 输出的aac文件路径
@@ -29,7 +29,7 @@ public class NativeAudioEncoder implements IAudioRecorder, AudioRecordRecorder.O
 
     public NativeAudioEncoder(String path) {
         this.aacPath = path;
-        audioRecorder = new AudioRecordRecorder(null);
+        audioRecorder = new AudioRecorder(null);
         audioRecorder.setOnAudioRecordListener(this);
     }
 

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -25,6 +27,12 @@ import com.hiscene.flytech.C;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.UserModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.event.SimpleEventHandler;
+import com.hiscene.flytech.excel.ProcessExcel;
+import com.hiscene.flytech.lifecycle.IComponentContainer;
+import com.hiscene.flytech.lifecycle.LifeCycleComponent;
+import com.hiscene.flytech.lifecycle.LifeCycleComponentManager;
 import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.recorder.ScreenRecorderManager;
 import com.hiscene.flytech.ui.fragment.DeviceFragment;
@@ -36,6 +44,10 @@ import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
 import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
 import com.hiscene.flytech.util.PositionUtil;
 
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
@@ -44,8 +56,7 @@ import static com.hiscene.flytech.App.userManager;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
 
 
-public class MainActivity extends BaseActivity implements LoginFragment.LoginScanListener, StartEditExcelFragment.StartEditListener {
-
+public class MainActivity extends BaseActivity implements IComponentContainer {
     private static final int REQUEST_SCREEN_LIVE = 1;
 
     private int FLAG = -1;
@@ -55,11 +66,17 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     public static final int SCAN_DEVICE = 3;//扫描设备页
     public static final int START_EDIT = 4;//开始填写表单页
 
+    public static final String BACK_TO_LOGIN ="BACK_TO_LOGIN" ;
+    public static final String START_EDIT_EXCEL ="START_EDIT" ;
+    public static final String START_SCAN_LOGIN ="START_SCAN_LOGIN" ;
+    public static final String HILEIA="HILEIA";
+    private LifeCycleComponentManager mComponentContainer = new LifeCycleComponentManager();
+
     @BindView(R.id.cameraLayout)
     LinearLayout cameraLayout;
 
     CameraView cameraView;
-    CameraRecorder qrVision;
+    CameraRecorder cameraRecorder;
     ScreenRecorderManager screenRecorderManager;
     boolean isLaunchHiLeia = false;
 
@@ -82,6 +99,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
 
     @Override
     protected void initView() {
+        EventCenter.bindContainerAndHandler(this, mEventHandler);
         screenRecorderManager = new ScreenRecorderManager(this);
         if(userManager.isLogin()){
             startEditExcelFragment=StartEditExcelFragment.newInstance();
@@ -94,9 +112,9 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
         FLAG = LOGIN;
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
-        qrVision = new CameraRecorder();
-        qrVision.init();
-        qrVision.setOnQrRecognizeListener(new OnQrRecognizeListener() {
+        cameraView.setVisibility(View.GONE);
+        cameraRecorder = new CameraRecorder();
+        cameraRecorder.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
                 addRxDestroy(Observable.just("didi")
@@ -108,6 +126,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
                             String[] user= resultStr.split(":");
                             if(user.length>=1){
                                 if("User:508f567cc3015cba395858d4493dd706".equals(resultStr)){
+                                    cameraView.setVisibility(View.GONE);
                                     userManager.login(new UserModel(user[1]));
                                     startEditExcelFragment=StartEditExcelFragment.newInstance();
                                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
@@ -119,12 +138,11 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
                 return true;
             }
         });
+        cameraRecorder.start();
 
     }
 
-
-    @OnClick(R.id.hileia)
-    protected void hileia() {
+    public void hileia() {
         if (AppUtils.isInstallApp(this, "com.hiscene.hileia")) {
             screenRecorderManager.startCaptureIntent();
         }
@@ -139,17 +157,19 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     protected void onResume() {
         super.onResume();
         LogUtils.d("onResume");
+        mComponentContainer.onBecomesVisibleFromPartiallyInvisible();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         LogUtils.d("onStart");
+        mComponentContainer.onBecomesVisibleFromTotallyInvisible();
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia");
             isLaunchHiLeia = false;
             screenRecorderManager.cancelRecorder();
-            qrVision.init();
+            cameraRecorder.init();
 //            cameraView.resume();
         }
     }
@@ -157,23 +177,30 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     @Override
     protected void onPause() {
         super.onPause();
+        mComponentContainer.onBecomesPartiallyInvisible();
 //        cameraView.pause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mComponentContainer.onBecomesTotallyInvisible();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(userManager.isLogin()){
-            SPUtils.put(RECOVERY, true);
-            SPUtils.put(PositionUtil.POSITION, excelFragmentManager.pos);
-        }
+        mComponentContainer.onDestroy();
+        SPUtils.put(RECOVERY, true);
+        SPUtils.put(PositionUtil.POSITION, excelFragmentManager.pos);
+
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
             isLaunchHiLeia = false;
             screenRecorderManager.cancelRecorder();
         }else {
-            qrVision.destroy();
-            qrVision.shutdown();
+            cameraRecorder.destroy();
+            cameraRecorder.shutdown();
         }
     }
 
@@ -181,7 +208,7 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ScreenRecorderManager.REQUEST_MEDIA_PROJECTION) {
-            qrVision.destroy();
+            cameraRecorder.destroy();
             LogUtils.d("onActivityResult");
             screenRecorderManager.onActivityResult(requestCode, resultCode, data);
             AppUtils.launchAppForURLScheme(this, "com.hiscene.hileia",
@@ -190,14 +217,19 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
         }
     }
 
-
-    @Override
     public void scanLogin() {
         scanLoginFragment = ScanLoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
         FLAG = SCAN_LOGIN;
-        qrVision.start();
-        qrVision.startQRRecognize();
+        cameraRecorder.startQRRecognize();
+        cameraView.setVisibility(View.VISIBLE);
+    }
+
+    public void Login(){
+        if(loginFragment==null){
+            loginFragment=LoginFragment.newInstance();
+        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
     }
 
 
@@ -209,10 +241,46 @@ public class MainActivity extends BaseActivity implements LoginFragment.LoginSca
 //        qrVision.startQRRecognize();
 //    }
 
-    @Override
     public void startEdit() {
        if(excelFragmentManager!=null){
            excelFragmentManager.init();
        }
+        cameraView.setVisibility(View.VISIBLE);
+        cameraRecorder.init();
+    }
+
+    private SimpleEventHandler mEventHandler = new SimpleEventHandler() {
+        @Subscribe
+        public void onEvent(String code) {
+            LogUtils.d("code:"+code);
+            switch (code){
+                case BACK_TO_LOGIN:
+                    Login();
+                    break;
+                case START_EDIT_EXCEL:
+                    startEdit();
+                    break;
+                case START_SCAN_LOGIN:
+                    scanLogin();
+                    break;
+                case HILEIA:
+                    hileia();
+                    break;
+                case C.EXCEL_WRITE_SUCCESS:
+                    showToast("表格写入文件成功,已保存到设备中");
+                    // TODO: 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
+                    break;
+                case C.EXCEL_WRITE_ERROR:
+
+                    break;
+            }
+        }
+
+    };
+
+
+    @Override
+    public void addComponent( LifeCycleComponent component ) {
+        mComponentContainer.addComponent(component);
     }
 }

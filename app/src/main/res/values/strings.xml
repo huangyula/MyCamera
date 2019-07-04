@@ -38,4 +38,6 @@
     <string name="device_version">装置版本号：</string>
     <string name="factory">生产厂家：</string>
     <string name="user_name">巡检员</string>
+    <string name="recovered">已恢复</string>
+    <string name="unrecorver">未恢复</string>
 </resources>

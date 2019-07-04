@@ -31,7 +31,7 @@ public class QueueRunnable {
         }
     }
 
-    protected void runAll() {
+    protected void runAllQueue() {
         synchronized (runnableQueue) {
             while (!runnableQueue.isEmpty()) {
                 runnableQueue.poll().run();

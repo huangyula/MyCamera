@@ -7,6 +7,8 @@ import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 
 import java.util.List;
 
@@ -89,7 +91,7 @@ public class AttachSecondExcelFragment extends BaseExcelFragment<AttachSecondMod
     @Override
     protected void logout() {
         excelFragmentManager.exit();
-        getActivity().finish();
+        EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
 

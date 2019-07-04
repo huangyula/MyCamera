@@ -118,8 +118,8 @@
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
-                    android:text="@string/executed"
-                    android:contentDescription="@string/executed"
+                    android:text="@string/recovered"
+                    android:contentDescription="@string/recovered"
                     android:layout_weight="1"/>
 
                 <Button
@@ -130,8 +130,8 @@
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
-                    android:text="@string/unexecuted"
-                    android:contentDescription="@string/unexecuted"
+                    android:text="@string/unrecorver"
+                    android:contentDescription="@string/unrecorver"
                     android:layout_weight="1"/>
 
                 <Button

@@ -4,12 +4,14 @@ import android.widget.ImageView;
 
 import com.github.weiss.core.base.BaseFragment;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.hiscene.flytech.ui.MainActivity.SCAN_LOGIN;
+import static com.hiscene.flytech.ui.MainActivity.START_SCAN_LOGIN;
 
 /**
  * @author Minamo
@@ -20,7 +22,6 @@ import static com.hiscene.flytech.ui.MainActivity.SCAN_LOGIN;
 public class LoginFragment extends BaseFragment {
     @BindView(R.id.iv_scan)
     ImageView scan;
-    LoginScanListener scanListener;
     public static LoginFragment newInstance() {
         LoginFragment loginFragment = new LoginFragment();
         return loginFragment;
@@ -37,19 +38,8 @@ public class LoginFragment extends BaseFragment {
 
     @OnClick(R.id.iv_scan)
     protected void startFragment(){
-        if(getActivity()instanceof LoginScanListener){
-
-            ((LoginScanListener)getActivity()).scanLogin();
-
-        }
+        EventCenter.getInstance().post(START_SCAN_LOGIN);
     }
 
 
-    public interface LoginScanListener{
-       void scanLogin();
-    }
-
-    public void setScanListener( LoginScanListener scanListener ) {
-        this.scanListener = scanListener;
-    }
 }

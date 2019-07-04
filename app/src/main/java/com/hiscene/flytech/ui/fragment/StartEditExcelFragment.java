@@ -4,12 +4,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseFragment;
+import com.google.zxing.Result;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.UserModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.ui.MainActivity.LOGIN;
+import static com.hiscene.flytech.ui.MainActivity.START_EDIT;
+import static com.hiscene.flytech.ui.MainActivity.START_EDIT_EXCEL;
 
 /**
  * @author huangyu
@@ -20,7 +27,6 @@ public class StartEditExcelFragment extends BaseFragment {
     ImageView edit;
     @BindView(R.id.logout)
     TextView logout;
-    StartEditListener listener;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_start_edit_excel;
@@ -38,23 +44,13 @@ public class StartEditExcelFragment extends BaseFragment {
 
     @OnClick(R.id.edit)
     protected void edit(){
-        if(getActivity()instanceof StartEditListener){
-            ((StartEditListener) getActivity()).startEdit();
-        }
+        EventCenter.getInstance().post(START_EDIT_EXCEL);
     }
 
     @OnClick(R.id.logout)
     protected void logout(){
         userManager.logout();
-        getActivity().finish();
-    }
-
-    public interface StartEditListener{
-        void startEdit();
-    }
-
-    public void setStartEditListener(StartEditListener listener) {
-        this.listener = listener;
+        EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
 }

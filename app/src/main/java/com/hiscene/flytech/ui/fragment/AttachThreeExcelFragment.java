@@ -6,6 +6,8 @@ import android.widget.TextView;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 
 import java.util.List;
 
@@ -103,7 +105,7 @@ public class AttachThreeExcelFragment extends BaseExcelFragment<AttachSecondMode
     @Override
     protected void logout() {
         excelFragmentManager.exit();
-        getActivity().finish();
+        EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
 

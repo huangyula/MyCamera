@@ -1,5 +1,9 @@
 package com.hiscene.flytech.excel;
 
+import android.content.Intent;
+import android.net.Uri;
+
+import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.StringUtils;
@@ -8,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
 
@@ -27,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 
 /**
@@ -88,7 +94,12 @@ public class ExecuteExcel implements IExcel {
 //            }
             POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,OUTPUT_PATH+C.EXECUTE_FILE,executeModelList);
             LogUtils.d("已成功修改表格内容");
+            //及时刷新文件
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            intent.setData(Uri.fromFile(new File((OUTPUT_PATH+C.EXECUTE_FILE)))); // 需要更新的文件路径
+            BaseApp.getAppContext().sendBroadcast(intent);
         } catch (Exception e) {
+            EventCenter.getInstance().post(EXCEL_WRITE_ERROR);
             LogUtils.d(e.getMessage());
             e.printStackTrace();
         }
