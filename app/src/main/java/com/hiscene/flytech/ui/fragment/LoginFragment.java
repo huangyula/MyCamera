@@ -1,6 +1,8 @@
 package com.hiscene.flytech.ui.fragment;
 
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.github.weiss.core.base.BaseFragment;
 import com.hiscene.flytech.R;
@@ -21,7 +23,7 @@ import static com.hiscene.flytech.ui.MainActivity.START_SCAN_LOGIN;
  */
 public class LoginFragment extends BaseFragment {
     @BindView(R.id.iv_scan)
-    ImageView scan;
+    Button scan;
     public static LoginFragment newInstance() {
         LoginFragment loginFragment = new LoginFragment();
         return loginFragment;

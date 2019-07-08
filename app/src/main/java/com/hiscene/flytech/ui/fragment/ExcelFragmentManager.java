@@ -2,6 +2,7 @@ package com.hiscene.flytech.ui.fragment;
 
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.view.TextureView;
 import android.widget.Toast;
 
 import com.github.weiss.core.utils.CollectionUtils;
@@ -19,6 +20,7 @@ import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.util.PositionUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.weiss.core.base.BaseApp.getAppContext;
 import static com.hiscene.flytech.App.userManager;
@@ -57,6 +59,7 @@ public class ExcelFragmentManager {
     private boolean firststep=false;
 
     public ExcelFragmentManager( FragmentManager fm ) {
+        long time = System.currentTimeMillis();
         this.manager = fm;
         excelSteps = ExcelStep.test();
         processExcel = new ProcessExcel();
@@ -72,6 +75,7 @@ public class ExcelFragmentManager {
             executeExcel.restore();
             pos = SPUtils.getString(PositionUtil.POSITION);
         }
+        LogUtils.d("load time: "+(System.currentTimeMillis() - time));
     }
 
     public void init() {
@@ -112,7 +116,11 @@ public class ExcelFragmentManager {
         if(excelStep.style==ExcelStyle.ATTACH_FIRST_EXCEL){
             String number= TextUtils.isEmpty(processExcelFragment.et_number.getText())?"":processExcelFragment.et_number.getText().toString().trim();
             processExcel.attachFirstModels.get(excelStep.step).result=number;
-        }else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){//附表四的填写
+        }else if(excelStep.style==ExcelStyle.ATTACH_SECOND_EXCEL){//附表二的填写
+            String device_version= attachSecondExcelFragment.device_version.getSelectedItemPosition()==-1?"":attachSecondExcelFragment.device_version.getSelectedItem().toString();
+            processExcel.attachSecondModelList.get(excelStep.step).number=device_version;
+            LogUtils.d("device_name:"+device_version);
+        } else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){//附表四的填写
             String time_1= TextUtils.isEmpty(attachFourExcelFragment.time_1.getText())?"":attachFourExcelFragment.time_1.getText().toString().trim();
             String time_2= TextUtils.isEmpty(attachFourExcelFragment.time_2.getText())?"":attachFourExcelFragment.time_2.getText().toString().trim();
             processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;

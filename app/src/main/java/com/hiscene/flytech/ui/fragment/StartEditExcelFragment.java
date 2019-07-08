@@ -1,9 +1,12 @@
 package com.hiscene.flytech.ui.fragment;
 
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseFragment;
+import com.github.weiss.core.utils.LogUtils;
 import com.google.zxing.Result;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.UserModel;
@@ -24,7 +27,7 @@ import static com.hiscene.flytech.ui.MainActivity.START_EDIT_EXCEL;
  */
 public class StartEditExcelFragment extends BaseFragment {
     @BindView(R.id.edit)
-    ImageView edit;
+    Button edit;
     @BindView(R.id.logout)
     TextView logout;
     @Override
@@ -44,6 +47,7 @@ public class StartEditExcelFragment extends BaseFragment {
 
     @OnClick(R.id.edit)
     protected void edit(){
+        LogUtils.d("edit");
         EventCenter.getInstance().post(START_EDIT_EXCEL);
     }
 

@@ -2,9 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="@dimen/app_padding"
-    >
+    android:id="@+id/parent">
     <include layout="@layout/include_top_bar"></include>
 
     <LinearLayout
@@ -111,63 +112,82 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:weightSum="4">
                         <TextView
-
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/device_number"
-                            style="@style/text_style_white"/>
-                        <EditText
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/device_number"
-                            style="@style/MyEditText"
+                            android:text="@string/device_number"
+                            style="@style/text_style_white"
+                            android:layout_weight="0.8"/>
+
+                        <Spinner
+                            android:id="@+id/device_number"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:contentDescription="@string/device_number"
+                            android:gravity="center"
+                            android:entries="@array/device_number"
+                            android:popupBackground="@color/app_blue"
                             />
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:text="@string/check_code"
                             style="@style/text_style_white"
+                            android:layout_weight="0.8"
                             />
-                        <EditText
+
+                        <Spinner
+                            android:id="@+id/check_code"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/check_code"
-                            style="@style/MyEditText"
                             android:layout_weight="1"
-                           />
+                            android:contentDescription="@string/check_code"
+                            android:gravity="center"
+                            android:entries="@array/check_code"
+                            android:popupBackground="@color/app_blue"/>
                     </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp">
+                    android:layout_marginTop="5dp"
+                    android:weightSum="4">
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/device_version"
-                        style="@style/text_style_white"/>
-                    <EditText
+                        style="@style/text_style_white"
+                        android:layout_weight="0.8"/>
+                    <Spinner
+                        android:id="@+id/device_version"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/device_version"
-                        style="@style/MyEditText"
                         android:layout_weight="1"
+                        android:gravity="center"
+                        android:entries="@array/device_version"
+                        android:popupBackground="@color/app_blue"
                         />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:text="@string/factory"
-                        style="@style/text_style_white"/>
-                    <EditText
+                        style="@style/text_style_white"
+                        android:layout_weight="0.8"/>
+                    <Spinner
+                        android:id="@+id/factory"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/factory"
-                        style="@style/MyEditText"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:entries="@array/factory"
+                        android:popupBackground="@color/app_blue"
+                        />
                 </LinearLayout>
 
 

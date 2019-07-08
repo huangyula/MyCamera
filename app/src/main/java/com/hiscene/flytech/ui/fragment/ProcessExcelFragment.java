@@ -105,6 +105,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessModel> {
     }
 
     private void initData(ProcessModel data) {
+        init();
         standard.setVisibility(View.VISIBLE);
         executed.setVisibility(View.VISIBLE);
         unexecuted.setVisibility(View.VISIBLE);
@@ -151,6 +152,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessModel> {
     }
 
     private void initData(ProcessModel data,List<AttachFirstModel> dataList,ExcelStep excelStep,int pos) {
+        init();
         if(pos<0){
             pos=0;
         }
@@ -162,6 +164,7 @@ public class ProcessExcelFragment extends BaseExcelFragment<ProcessModel> {
         attach_first_content.setText(dataList.get(pos).content+"\n"+
                 dataList.get(pos).standard);
         et_number.setText(dataList.get(pos).result);
+        et_number.setSelection(et_number.getText().length());
         if(excelStep.childCount>0){
             rate.setText(pos+1+"/"+excelStep.childCount);
         }

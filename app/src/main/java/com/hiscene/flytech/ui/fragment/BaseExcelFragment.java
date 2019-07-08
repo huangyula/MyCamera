@@ -98,4 +98,8 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
         new ShowImagesDialog(getActivity(),bitmapList).show();
 
     }
+
+    protected  void  init(){
+        rootView.postDelayed(()->rootView.performClick(),700);
+    }
 }

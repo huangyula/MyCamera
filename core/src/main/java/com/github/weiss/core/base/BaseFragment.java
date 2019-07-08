@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.weiss.core.utils.LogUtils;
+
 import butterknife.ButterKnife;
 
 /**
@@ -34,6 +36,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (parent != null) {
             parent.removeView(rootView);
         }
+        rootView.setOnClickListener(v->{
+            LogUtils.d("performClick");
+        });
+        rootView.postDelayed(()->rootView.performClick(),1000);
         return rootView;
     }
 

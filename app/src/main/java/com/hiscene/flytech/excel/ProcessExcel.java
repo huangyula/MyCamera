@@ -18,6 +18,7 @@ import com.hiscene.flytech.entity.AttachFirstModel;
 import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Result;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
@@ -135,7 +136,6 @@ public class ProcessExcel implements IExcel {
                         resultList.add(result);
                     }
                     POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,PROCESS_ROW_BEGIN,4,resultList);
-                    LogUtils.d("已成功修改表格内容");
 
                     //附表1
                     List<String> results=new ArrayList<>();
@@ -156,9 +156,13 @@ public class ProcessExcel implements IExcel {
                     Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                     intent.setData(Uri.fromFile(new File((OUTPUT_PATH + C.PROCESS_FILE)))); // 需要更新的文件路径
                     BaseApp.getAppContext().sendBroadcast(intent);
-                    EventCenter.getInstance().post(EXCEL_WRITE_SUCCESS);
+
+
+                    EventCenter.getInstance().post(new Result(EXCEL_WRITE_SUCCESS,""));
+                    LogUtils.d("已成功修改表格内容");
                 } catch (Exception e) {
-                    EventCenter.getInstance().post(EXCEL_WRITE_ERROR);
+                    Result result=new Result(EXCEL_WRITE_ERROR,e.getMessage());
+                    EventCenter.getInstance().post(result);
                     LogUtils.d(e.getMessage());
                     e.printStackTrace();
                 }

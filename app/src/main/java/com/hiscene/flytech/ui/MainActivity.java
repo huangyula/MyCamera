@@ -17,6 +17,7 @@ import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.ScreenUtils;
 import com.github.weiss.core.utils.StringUtils;
+import com.github.weiss.core.utils.ToastUtils;
 import com.github.weiss.core.utils.helper.RxSchedulers;
 import com.google.zxing.Result;
 import com.hiscene.camera.listener.OnQrRecognizeListener;
@@ -45,6 +46,7 @@ import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
 import com.hiscene.flytech.util.PositionUtil;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -243,10 +245,12 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 
     public void startEdit() {
        if(excelFragmentManager!=null){
-           excelFragmentManager.init();
-       }
+         excelFragmentManager.init();
         cameraView.setVisibility(View.VISIBLE);
         cameraRecorder.init();
+       }else {
+           ToastUtils.show("正在加載表格，請稍後");
+       }
     }
 
     private SimpleEventHandler mEventHandler = new SimpleEventHandler() {
@@ -266,12 +270,18 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
                 case HILEIA:
                     hileia();
                     break;
-                case C.EXCEL_WRITE_SUCCESS:
-                    showToast("表格写入文件成功,已保存到设备中");
-                    // TODO: 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
-                    break;
-                case C.EXCEL_WRITE_ERROR:
+            }
+        }
 
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        public void  onEvent( com.hiscene.flytech.entity.Result result ){
+            switch (result.code){
+                case C.EXCEL_WRITE_ERROR:
+                    LogUtils.d("文件写入数据出错："+result.msg);
+                    break;
+                case C.EXCEL_WRITE_SUCCESS:
+                    showToast("操作已经是最后一步了,数据写入文件成功,已保存到设备中");
+                    // TODO: 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
                     break;
             }
         }

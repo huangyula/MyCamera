@@ -68,18 +68,7 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
 
 
     private void initData(List<ExecuteModel> dataList,ExcelStep excelStep,int pos) {
-//        if(excelStep.style== ExcelStyle.EXCUTE_EXCEL){
-//            executed.setText("已执行");
-//            unexecuted.setText("未执行");
-//            executed.setContentDescription("已执行");
-//            unexecuted.setContentDescription("未执行");
-//
-//        }else if(excelStep.style== ExcelStyle.RECOVER_EXCEL){
-//            executed.setText("已恢复");
-//            unexecuted.setText("未恢复");
-//            executed.setContentDescription("已恢复");
-//            unexecuted.setContentDescription("未恢复");
-//        }
+        init();
         if(dataList.get(excelStep.childSteps.get(pos).step).excute_result==1){
             executed.setSelected(true);
             unexecuted.setSelected(false);

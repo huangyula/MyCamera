@@ -73,6 +73,7 @@ public class AttachFourExcelFragment extends BaseExcelFragment<AttachSecondModel
     }
 
     private void initData( ProcessModel processModel, int step ,String rate) {
+        init();
         title.setText(processModel.content+"("+processModel.standard+")");
         tv_rate.setText(rate);
     }
