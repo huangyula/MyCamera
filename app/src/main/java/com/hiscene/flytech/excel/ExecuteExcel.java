@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
+import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +35,8 @@ import java.util.List;
 
 import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.C.START_TIME_BEGIN;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
  * @author huangyu
@@ -73,30 +76,12 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void write() {
         try {
-//            List<String> execute_result_List=new ArrayList<>();
-//            List<Date> execute_date_List=new ArrayList<>();
-//            String execute_result="";
-//            Date execute_date=new Date();
-//            for(ExecuteModel executeModel:executeModelList){
-//                switch (executeModel.getExcute_result()){
-//                    case 0:
-//                        execute_result="确认(×)";
-//                        break;
-//                    case 1:
-//                        execute_result="确认(√)";
-//                        break;
-//                    case -1:
-//                        execute_result="确认(无)";
-//                        break;
-//                }
-//                execute_date_List.add(execute_date);
-//                execute_result_List.add(execute_result);
-//            }
-            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,OUTPUT_PATH+C.EXECUTE_FILE,executeModelList);
+            String path= OUTPUT_PATH+C.EXECUTE+"-"+SPUtils.getString(START_TIME)+".xlsx";
+            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,path,C.EXECUTE_BEGIN,executeModelList);
             LogUtils.d("已成功修改表格内容");
             //及时刷新文件
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            intent.setData(Uri.fromFile(new File((OUTPUT_PATH+C.EXECUTE_FILE)))); // 需要更新的文件路径
+            intent.setData(Uri.fromFile(new File((path)))); // 需要更新的文件路径
             BaseApp.getAppContext().sendBroadcast(intent);
         } catch (Exception e) {
             EventCenter.getInstance().post(EXCEL_WRITE_ERROR);

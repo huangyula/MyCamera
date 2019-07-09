@@ -39,7 +39,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         rootView.setOnClickListener(v->{
             LogUtils.d("performClick");
         });
-        rootView.postDelayed(()->rootView.performClick(),1000);
+        rootView.postDelayed(()->rootView.performClick(),500);
         return rootView;
     }
 

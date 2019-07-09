@@ -14,9 +14,11 @@ import com.github.weiss.core.utils.TimeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachFirstModel;
 import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.entity.Result;
 import com.hiscene.flytech.event.EventCenter;
@@ -34,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
@@ -62,6 +65,7 @@ public class ProcessExcel implements IExcel {
     public List<ProcessModel> processExcelList = new ArrayList<>();
     public List<AttachFirstModel> attachFirstModels = new ArrayList<>();
     public List<AttachSecondModel> attachSecondModelList = new ArrayList<>();
+    public List<AttachThreeModel> attachThreeModelList = new ArrayList<>();
     public List<AttachFourModel> attachFourModelList = new ArrayList<>();
 
 
@@ -104,8 +108,37 @@ public class ProcessExcel implements IExcel {
                 Row row=sheet.getRow(i);
                 if(row!=null){
                     row.getCell(0).setCellType(CellType.NUMERIC);
-                    attachSecondModelList.add(new AttachSecondModel((int)row.getCell(0).getNumericCellValue(),row.getCell(1).getStringCellValue()));
+                    String name=row.getCell(1).getStringCellValue();
+                    attachSecondModelList.add(new AttachSecondModel((int)row.getCell(0).getNumericCellValue(),name));
+                    LogUtils.d("name:",attachSecondModelList.get(0).name);
                 }
+            }
+
+
+            //附表3
+            AttachThreeModel attachThreeModel;
+            List<String> titles=CollectionUtils.arrayToList(BaseApp.getAppContext().getResources().getStringArray(R.array.third_excel_title));
+            String item_name="",item_no="";
+            int result_1,result_2;
+            for(int i=0;i<18;i++){//主一裝置通道
+                result_1=i/6;
+                result_2=i%6;
+                switch (result_1){
+                    case 0:
+                        item_name="主一装置通道";
+                        item_no="项目1";
+                        break;
+                    case 1:
+                        item_name="主二装置通道";
+                        item_no="项目2";
+                        break;
+                    case 2:
+                        item_name="光电转换装置通道";
+                        item_no="项目3";
+                        break;
+                }
+                attachThreeModel=new AttachThreeModel(item_name,item_no,titles.get(result_2),"","");
+                attachThreeModelList.add(attachThreeModel);
             }
             wb.close();
         } catch (IOException e) {
@@ -135,26 +168,36 @@ public class ProcessExcel implements IExcel {
                         }
                         resultList.add(result);
                     }
-                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,PROCESS_ROW_BEGIN,4,resultList);
+                    String path= OUTPUT_PATH+C.PROCESS+"-"+SPUtils.getString(START_TIME)+".xlsx";//OUTPUT_PATH+C.PROCESS_FILE
+                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,4,resultList);
 
                     //附表1
                     List<String> results=new ArrayList<>();
                     for(AttachFirstModel attachFirstModel:attachFirstModels){
-                        results.add(attachFirstModel.result);
+                        results.add(attachFirstModel.result+" MΩ");
                     }
-                    POIUtil.setCellValueAt(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,ATTACH_ONE_ROW_BEGIN,4,results);
+                    POIUtil.setCellValueAt(path,path,ATTACH_ONE_ROW_BEGIN,4,results);
+
+                    //附表2 列3，4，5，6
+                    POIUtil.setCellValueAtSecond(path,path, ATTACH_SECOND_ROW_BEGIN,attachSecondModelList);
+
+                    //附表3
+                    POIUtil.setCellValueAtThird(path,path,C.ATTACH_THIRD_ROW_BEGIN_1,attachThreeModelList);
+
+                    //附表4
+                    POIUtil.setCellValueAtFour(path,path,C.ATTACH_FOUR_ROW_BEGIN,attachFourModelList);
 
                     //基本信息 列D,F
                     int[] col_array=new int[]{4,6};
                     results.clear();
                     LogUtils.d(SPUtils.getString(START_TIME));
-                    results.add(SPUtils.getString(START_TIME,""));//作业开始时间
+                    results.add(SPUtils.getString(START_TIME));//作业开始时间
                     results.add(TimeUtils.getNowTimeString());//作业结束时间
-                    POIUtil.setCellValueAtMulCol(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,START_TIME_BEGIN,col_array,results);
+                    POIUtil.setCellValueAtMulCol(path,path,START_TIME_BEGIN,col_array,results);
 
                     //及时刷新文件
                     Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                    intent.setData(Uri.fromFile(new File((OUTPUT_PATH + C.PROCESS_FILE)))); // 需要更新的文件路径
+                    intent.setData(Uri.fromFile(new File((path)))); // 需要更新的文件路径
                     BaseApp.getAppContext().sendBroadcast(intent);
 
 
@@ -216,6 +259,11 @@ public class ProcessExcel implements IExcel {
         type=new TypeToken<List<AttachSecondModel>>(){}.getType();
         attachSecondModelList=new Gson().fromJson(read_content,type);
 
+        //附表3
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_THREE_FILE,"utf-8");
+        type=new TypeToken<List<AttachThreeModel>>(){}.getType();
+        attachThreeModelList=new Gson().fromJson(read_content,type);
+
         //附表4
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FOUR_FILE,"utf-8");
         type=new TypeToken<List<AttachFourModel>>(){}.getType();
@@ -250,6 +298,16 @@ public class ProcessExcel implements IExcel {
             if(!StringUtils.isEmpty(write_content)) {
                 if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_SECOND_FILE)) {
                     boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_SECOND_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
+                }
+            }
+        }
+        //附表3
+        if(!CollectionUtils.isEmpty(attachThreeModelList)){
+            String write_content=GsonUtil.gsonString(attachThreeModelList.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_THREE_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_THREE_FILE, write_content, true);
                     LogUtils.d("save 缓存:" + result);
                 }
             }

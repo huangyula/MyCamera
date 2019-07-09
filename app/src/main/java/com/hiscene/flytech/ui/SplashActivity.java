@@ -6,8 +6,11 @@ import android.os.Message;
 
 import com.flyco.systembar.SystemBarHelper;
 import com.github.weiss.core.utils.AssetsUtils;
+import com.github.weiss.core.utils.FileUtils;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
+
+import static com.hiscene.flytech.C.FILE_DEVICE_FILE;
 
 /**
  * author weiss
@@ -37,6 +40,7 @@ public class SplashActivity extends EasyPermissionsActivity {
         System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
 
         SystemBarHelper.immersiveStatusBar(this);
+        FileUtils.createOrExistsDir(FILE_DEVICE_FILE);
     }
 
     @Override

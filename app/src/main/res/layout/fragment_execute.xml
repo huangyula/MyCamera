@@ -99,6 +99,7 @@
                 android:layout_weight="1"
                 android:text="密封工作票"
                 android:paddingLeft="@dimen/excel_left_padding_16"
+                android:paddingRight="@dimen/excel_left_padding_16"
                 style="@style/text_style_white"
                 android:textSize="@dimen/standard_size"/>
 

@@ -121,15 +121,15 @@
                             style="@style/text_style_white"
                             android:layout_weight="0.8"/>
 
-                        <Spinner
+                        <TextView
                             android:id="@+id/device_number"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:contentDescription="@string/device_number"
                             android:gravity="center"
-                            android:entries="@array/device_number"
-                            android:popupBackground="@color/app_blue"
+                            android:clickable="true"
+                            style="@style/text_style_white"
                             />
                         <TextView
                             android:layout_width="0dp"
@@ -139,15 +139,15 @@
                             android:layout_weight="0.8"
                             />
 
-                        <Spinner
+                        <TextView
                             android:id="@+id/check_code"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:contentDescription="@string/check_code"
                             android:gravity="center"
-                            android:entries="@array/check_code"
-                            android:popupBackground="@color/app_blue"/>
+                            android:clickable="true"
+                            style="@style/text_style_white"/>
                     </LinearLayout>
 
                 <LinearLayout
@@ -161,15 +161,15 @@
                         android:text="@string/device_version"
                         style="@style/text_style_white"
                         android:layout_weight="0.8"/>
-                    <Spinner
+                    <TextView
                         android:id="@+id/device_version"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/device_version"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:entries="@array/device_version"
-                        android:popupBackground="@color/app_blue"
+                        android:clickable="true"
+                        style="@style/text_style_white"
                         />
 
                     <TextView
@@ -178,15 +178,15 @@
                         android:text="@string/factory"
                         style="@style/text_style_white"
                         android:layout_weight="0.8"/>
-                    <Spinner
+                    <TextView
                         android:id="@+id/factory"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/factory"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:entries="@array/factory"
-                        android:popupBackground="@color/app_blue"
+                        android:clickable="true"
+                        style="@style/text_style_white"
                         />
                 </LinearLayout>
 

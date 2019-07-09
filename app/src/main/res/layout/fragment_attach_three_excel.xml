@@ -12,7 +12,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
@@ -60,7 +60,7 @@
                 android:padding="5dp"
                 android:drawablePadding="5dp"
                 />
-        </RelativeLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -101,195 +101,80 @@
                 android:layout_marginRight="24dp"
                 android:orientation="vertical">
                 <TextView
-                    android:id="@+id/device"
+                    android:id="@+id/item_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="主一装置通道"
                     style="@style/text_style_white"
                     android:layout_gravity="center_horizontal"/>
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:weightSum="3">
                     <TextView
-                        android:id="@+id/item"
+                        android:id="@+id/item_no"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="项目一"
-                        style="@style/text_style_white"/>
+                        style="@style/text_style_white"
+                        android:layout_weight="1"
+                        android:gravity="center"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="A通道"
                         style="@style/text_style_white"
-                        android:layout_centerHorizontal="true"/>
+                        android:layout_weight="1"
+                        android:gravity="center"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="B通道"
                         style="@style/text_style_white"
                         android:layout_alignParentRight="true"
-                        android:paddingRight="50dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         />
-                </RelativeLayout>
-                <RelativeLayout
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="3"
                     >
                     <TextView
+                        android:id="@+id/item_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="本侧光发功率"
                         style="@style/text_style_white"
-                        android:layout_centerVertical="true"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         />
                     <EditText
                         android:id="@+id/et_A"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
+                        android:inputType="numberDecimal|numberSigned"
+                        style="@style/MyEditText"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:contentDescription="A通道"
+                        />
 
                     <EditText
                         android:id="@+id/et_B"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="本侧光收功率"
-                        style="@style/text_style_white"
-                        android:layout_centerVertical="true"
-                        />
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
-
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="对侧光发功率"
-                        style="@style/text_style_white"
-                        android:layout_centerVertical="true"
-                        />
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
-
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="对侧光收功率"
-                        style="@style/text_style_white"
-                        android:layout_centerVertical="true"
-                        />
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
-
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="通道延时"
-                        style="@style/text_style_white"
-                        android:layout_centerVertical="true"
-                        />
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
-
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="通道误码"
-                        style="@style/text_style_white"
-                        android:layout_centerVertical="true"
-                        />
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"/>
-
-                    <EditText
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:inputType="numberDecimal"
-                        style="@style/text_style_white"
-                        android:layout_alignParentRight="true"/>
-                </RelativeLayout>
+                        android:inputType="numberDecimal|numberSigned"
+                        style="@style/MyEditText"
+                        android:layout_alignParentRight="true"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:contentDescription="B通道"/>
+                </LinearLayout>
             </LinearLayout>
 
 

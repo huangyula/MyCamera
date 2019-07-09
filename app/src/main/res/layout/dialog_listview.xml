@@ -8,11 +8,22 @@
 
     <ListView
         android:id="@+id/listview"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:cacheColorHint="#0000"
         android:divider="#d4d4d4"
         android:dividerHeight="0.5dip"
         >
     </ListView>
+    <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/close"
+        android:contentDescription="@string/close"
+        android:background="@mipmap/button_default"
+        style="@style/text_style_white_bold"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/listview"
+        android:layout_marginTop="10dp"/>
 </RelativeLayout>

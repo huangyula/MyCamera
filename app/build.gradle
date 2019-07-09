@@ -121,4 +121,5 @@ dependencies {
     implementation project(':medialibrary')
     implementation project(':screenrecorder')
     implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.lxj:xpopup:1.8.6'
 }

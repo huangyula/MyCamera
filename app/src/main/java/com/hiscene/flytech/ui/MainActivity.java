@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import com.github.weiss.core.UserManager;
 import com.github.weiss.core.bus.RxBus;
 
 import com.github.weiss.core.utils.AppUtils;
+import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.ScreenUtils;
@@ -45,6 +48,9 @@ import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
 import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
 import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
 import com.hiscene.flytech.util.PositionUtil;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.LoadingPopupView;
+import com.lxj.xpopup.interfaces.OnConfirmListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -55,8 +61,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observable;
 
+import static com.github.weiss.core.utils.Utils.getContext;
 import static com.hiscene.flytech.App.userManager;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 
 public class MainActivity extends BaseActivity implements IComponentContainer {
@@ -70,9 +78,12 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     public static final int START_EDIT = 4;//开始填写表单页
 
     public static final String BACK_TO_LOGIN ="BACK_TO_LOGIN" ;
-    public static final String START_EDIT_EXCEL ="START_EDIT" ;
+    public static final String START_EDIT_EXCEL ="START_EDIT_EXCEL" ;
     public static final String START_SCAN_LOGIN ="START_SCAN_LOGIN" ;
     public static final String HILEIA="HILEIA";
+
+    public static boolean recovery=true;
+    public boolean isClick=false;//是否点击过表单
     private LifeCycleComponentManager mComponentContainer = new LifeCycleComponentManager();
 
     @BindView(R.id.cameraLayout)
@@ -95,6 +106,8 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     StartEditExcelFragment startEditExcelFragment;
 
     ExcelFragmentManager excelFragmentManager;
+
+    LoadingPopupView xPopup;
 
     @Override
     protected int getLayoutId() {
@@ -203,7 +216,7 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     protected void onDestroy() {
         super.onDestroy();
         mComponentContainer.onDestroy();
-        SPUtils.put(RECOVERY, true);
+        SPUtils.put(RECOVERY, recovery);
         SPUtils.put(PositionUtil.POSITION, excelFragmentManager.pos);
 
         if (isLaunchHiLeia) {
@@ -258,13 +271,15 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 //    }
 
     public void startEdit() {
+        isClick=true;
         if (excelFragmentManager != null) {
          excelFragmentManager.init();
         cameraView.setVisibility(View.VISIBLE);
         cameraRecorder.init();
         isCameraRecord = true;
+        isClick=false;
        }else {
-           ToastUtils.show("正在加載表格，請稍後");
+           ToastUtils.show("正在加载表格中,请稍后");
        }
     }
 
@@ -285,18 +300,43 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
                 case HILEIA:
                     hileia();
                     break;
+                case C.LOADING:
+                    xPopup=new XPopup.Builder(MainActivity.this)
+                            .asLoading("正在生成文件中...");
+                    xPopup.show();
+                    break;
             }
         }
 
         @Subscribe(threadMode = ThreadMode.MAIN)
         public void  onEvent( com.hiscene.flytech.entity.Result result ){
             switch (result.code){
+                case C.EXCEL_LOADED:
+                    if(isClick)
+                        startEdit();
+                    break;
                 case C.EXCEL_WRITE_ERROR:
+                    if(xPopup!=null){
+                        xPopup.dismiss();
+                    }
                     LogUtils.d("文件写入数据出错："+result.msg);
                     break;
                 case C.EXCEL_WRITE_SUCCESS:
-                    showToast("操作已经是最后一步了,数据写入文件成功,已保存到设备中");
+                    if(xPopup!=null){
+                        xPopup.dismiss();
+                    }
                     // TODO: 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
+                    new XPopup.Builder(MainActivity.this).asConfirm("导出文件成功", "导出文件成功,是否结束本次表单填写？",
+                            new OnConfirmListener() {
+                                @Override
+                                public void onConfirm() {
+                                    recovery=false;
+                                    SPUtils.put(START_TIME,"");
+                                    //删除temp目录下所有的.json文件
+                                    FileUtils.listFilesInDirWithFilter(C.TEMP_PATH,".xlsx",false);
+                                    finish();
+                                }
+                            }).show();
                     break;
             }
         }
@@ -307,5 +347,12 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     @Override
     public void addComponent( LifeCycleComponent component ) {
         mComponentContainer.addComponent(component);
+    }
+
+    public void removeAllFragments(){
+        List<Fragment>  fragments=getSupportFragmentManager().getFragments();
+        for (Fragment fragment:fragments){
+            getSupportFragmentManager().beginTransaction().remove(fragment);
+        }
     }
 }

@@ -6,8 +6,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseRxFragment;
+import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.ImageUtils;
 import com.github.weiss.core.utils.SPUtils;
+import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
@@ -16,6 +18,7 @@ import com.hiscene.flytech.ui.MainActivity;
 import com.hiscene.flytech.util.PositionUtil;
 import com.hiscene.flytech.view.ShowImagesDialog;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -92,14 +95,15 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
         final List<Bitmap> bitmapList=new ArrayList<>();
-        bitmapList.add(ImageUtils.getBitmap(getAppResources(),R.drawable.pic1));
-        bitmapList.add(ImageUtils.getBitmap(getAppResources(),R.drawable.pic2));
-        bitmapList.add(ImageUtils.getBitmap(getAppResources(),R.drawable.pic3));
+        List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
+        for(File file:fileList){
+            bitmapList.add(ImageUtils.getBitmap(file));
+        }
         new ShowImagesDialog(getActivity(),bitmapList).show();
 
     }
 
     protected  void  init(){
-        rootView.postDelayed(()->rootView.performClick(),700);
+        rootView.postDelayed(()->rootView.performClick(),500);
     }
 }

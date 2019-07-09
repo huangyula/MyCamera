@@ -1,5 +1,6 @@
 package com.hiscene.flytech.ui.fragment;
 
+import android.app.Dialog;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.TextureView;
@@ -9,20 +10,26 @@ import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.TimeUtils;
+import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Result;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.excel.ExecuteExcel;
 import com.hiscene.flytech.excel.IExcel;
 import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.util.PositionUtil;
+import com.lxj.xpopup.XPopup;
 
 import java.util.List;
 import java.util.Objects;
 
 import static com.github.weiss.core.base.BaseApp.getAppContext;
+import static com.github.weiss.core.utils.Utils.getContext;
 import static com.hiscene.flytech.App.userManager;
 
 /**
@@ -75,6 +82,9 @@ public class ExcelFragmentManager {
             executeExcel.restore();
             pos = SPUtils.getString(PositionUtil.POSITION);
         }
+        //表格加载成功
+        Result result=new Result(C.EXCEL_LOADED,"");
+        EventCenter.getInstance().post(result);
         LogUtils.d("load time: "+(System.currentTimeMillis() - time));
     }
 
@@ -117,9 +127,19 @@ public class ExcelFragmentManager {
             String number= TextUtils.isEmpty(processExcelFragment.et_number.getText())?"":processExcelFragment.et_number.getText().toString().trim();
             processExcel.attachFirstModels.get(excelStep.step).result=number;
         }else if(excelStep.style==ExcelStyle.ATTACH_SECOND_EXCEL){//附表二的填写
-            String device_version= attachSecondExcelFragment.device_version.getSelectedItemPosition()==-1?"":attachSecondExcelFragment.device_version.getSelectedItem().toString();
-            processExcel.attachSecondModelList.get(excelStep.step).number=device_version;
-            LogUtils.d("device_name:"+device_version);
+            String device_version= TextUtils.isEmpty(attachSecondExcelFragment.device_version.getText())?"":attachSecondExcelFragment.device_version.getText().toString();
+            String device_number= TextUtils.isEmpty(attachSecondExcelFragment.device_number.getText())?"":attachSecondExcelFragment.device_number.getText().toString();
+            String check_code= TextUtils.isEmpty(attachSecondExcelFragment.check_code.getText())?"":attachSecondExcelFragment.check_code.getText().toString();
+            String factory= TextUtils.isEmpty(attachSecondExcelFragment.factory.getText())?"":attachSecondExcelFragment.factory.getText().toString();
+            processExcel.attachSecondModelList.get(excelStep.step).verison=device_version;
+            processExcel.attachSecondModelList.get(excelStep.step).number=device_number;
+            processExcel.attachSecondModelList.get(excelStep.step).check_code=check_code;
+            processExcel.attachSecondModelList.get(excelStep.step).factory=factory;
+        } else if(excelStep.style==ExcelStyle.ATTACH_THREE_EXCEL){//附表三的填写
+            String a= TextUtils.isEmpty(attachThreeExcelFragment.et_A.getText())?"":attachThreeExcelFragment.et_A.getText().toString().trim();
+            String b= TextUtils.isEmpty(attachThreeExcelFragment.et_B.getText())?"":attachThreeExcelFragment.et_B.getText().toString().trim();
+            processExcel.attachThreeModelList.get(excelStep.step).a=a;
+            processExcel.attachThreeModelList.get(excelStep.step).b=b;
         } else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){//附表四的填写
             String time_1= TextUtils.isEmpty(attachFourExcelFragment.time_1.getText())?"":attachFourExcelFragment.time_1.getText().toString().trim();
             String time_2= TextUtils.isEmpty(attachFourExcelFragment.time_2.getText())?"":attachFourExcelFragment.time_2.getText().toString().trim();
@@ -144,6 +164,7 @@ public class ExcelFragmentManager {
     public void lastStep() {
         laststep=true;
         recoverExcelFragment.nextStepBtn.setEnabled(false);
+        EventCenter.getInstance().post(C.LOADING);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -287,7 +308,8 @@ public class ExcelFragmentManager {
         int[] posArr=PositionUtil.pos2posArr(pos);
         excelStep = excelSteps.get(posArr[0]);
         ProcessModel processModel=processExcel.processExcelList.get(excelStep.step);
-        attachThreeExcelFragment.setData(processModel,excelStep.childSteps.get(posArr[1]).step,(posArr[1]+1)+"/"+excelStep.childSteps.size());
+        AttachThreeModel attachThreeModel=processExcel.attachThreeModelList.get(excelStep.childSteps.get(posArr[1]).step);
+        attachThreeExcelFragment.setData(processModel,attachThreeModel,excelStep.childSteps.get(posArr[1]).step,(posArr[1]+1)+"/"+excelStep.childSteps.size());
 
         currentExcel = processExcel;
         CURRENT_FRAGMENT=3;

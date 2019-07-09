@@ -1,10 +1,12 @@
 package com.hiscene.flytech.ui.fragment;
 
 import android.annotation.SuppressLint;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.ui.MainActivity;
@@ -26,14 +28,21 @@ public class AttachThreeExcelFragment extends BaseExcelFragment<AttachSecondMode
     TextView title;
     @BindView(R.id.rate)
     TextView tv_rate;
-    @BindView(R.id.device)
-    TextView device;
-    @BindView(R.id.item)
-    TextView item;
+    @BindView(R.id.item_name)
+    TextView item_name;
+    @BindView(R.id.item_no)
+    TextView item_no;
+    @BindView(R.id.item_title)
+    TextView item_title;
+    @BindView(R.id.et_A)
+    EditText et_A;
+    @BindView(R.id.et_B)
+    EditText et_B;
 
     int step;
     String rate="1";
     ProcessModel processModel;
+    AttachThreeModel attachThreeModel;
 
 
     public AttachThreeExcelFragment( ExcelFragmentManager excelFragmentManager) {
@@ -58,38 +67,33 @@ public class AttachThreeExcelFragment extends BaseExcelFragment<AttachSecondMode
 
     @Override
     protected void initView() {
-        if (processModel != null) {//第一次初始化setData还没Attach Activity
-            initData(processModel,step,rate);
+        if (processModel != null&&attachThreeModel!=null) {//第一次初始化setData还没Attach Activity
+            initData(processModel,attachThreeModel,step,rate);
         }
     }
 
-    public void setData( ProcessModel processModel, int step,String rate) {
+    public void setData( ProcessModel processModel,AttachThreeModel attachThreeModel, int step,String rate) {
         if (title != null) {
-            initData(processModel,step,rate);
+            initData(processModel,attachThreeModel,step,rate);
         } else {
             this.rate=rate;
             this.processModel = processModel;
+            this.attachThreeModel=attachThreeModel;
             this.step = step;
         }
     }
 
-    private void initData( ProcessModel processModel, int step ,String rate) {
+    private void initData( ProcessModel processModel, AttachThreeModel attachThreeModel,int step , String rate) {
         init();
         title.setText(processModel.content+"("+processModel.standard+")");
         tv_rate.setText(rate);
-        switch (step){
-            case 0:
-                device.setText("主一装置通道");
-                item.setText("项   目1");
-                break;
-            case 1:
-                device.setText("主二装置通道");
-                item.setText("项   目2");
-                break;
-            case 2:
-                device.setText("光电转换装置通道");
-                item.setText("项   目3");
-                break;
+        if(attachThreeModel!=null){
+            item_name.setText(attachThreeModel.item_name);
+            item_no.setText(attachThreeModel.item_no);
+            item_title.setText(attachThreeModel.title);
+            et_A.setText(attachThreeModel.a);
+            et_B.setText(attachThreeModel.b);
+            et_A.setSelection(et_A.getText().toString().length());
         }
     }
 

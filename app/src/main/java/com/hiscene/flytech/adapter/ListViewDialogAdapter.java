@@ -8,27 +8,30 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hiscene.flytech.R;
+
+import java.util.List;
+
 /**
  * 显示数组
  */
 public class ListViewDialogAdapter extends BaseAdapter {
 
     private Context mContext;
-    private String[] mItem ;
+    private List<String> mItem ;
 
-    public ListViewDialogAdapter( Context context, String[] mItem) {
+    public ListViewDialogAdapter( Context context, List<String> mItem) {
         this.mContext = context;
-        this.mItem = mItem.clone();
+        this.mItem = mItem;
     }
 
     @Override
     public int getCount() {
-        return mItem.length;
+        return mItem.size();
     }
 
     @Override
     public Object getItem( int position) {
-        return mItem[position];
+        return mItem.get(position);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class ListViewDialogAdapter extends BaseAdapter {
         } else {
             hold = (HoldClass) convertView.getTag();
         }
-        hold.text1.setText(mItem[position]);
+        hold.text1.setText(mItem.get(position));
         return convertView;
     }
 

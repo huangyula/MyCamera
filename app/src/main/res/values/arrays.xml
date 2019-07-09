@@ -2,7 +2,7 @@
 <resources>
     <string-array name="device_number">
         <item>PCS931N2</item>
-        <item>CSC103</item>
+        <item>CSC103BFN</item>
         <item>PSC923NX</item>
     </string-array>
 
@@ -15,9 +15,19 @@
     <string-array name="device_version">
          <item>2.10</item>
          <item>2.00</item>
+         <item>2.00</item>
     </string-array>
     <string-array name="factory">
         <item>南瑞继保</item>
         <item>北京四方</item>
+        <item>南瑞继保</item>
+    </string-array>
+    <string-array name="third_excel_title">
+        <item>本侧光发功率</item>
+        <item>本侧光收功率</item>
+        <item>对侧光发功率</item>
+        <item>对侧光收功率</item>
+        <item>通道延时</item>
+        <item>通道误码</item>
     </string-array>
 </resources>

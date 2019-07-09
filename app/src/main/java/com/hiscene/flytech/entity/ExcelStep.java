@@ -58,11 +58,6 @@ public class ExcelStep {
      * @return
      */
     public static List<ExcelStep> test() {
-//        List<ExcelStep> excelSteps = new ArrayList<>();
-//        int steps = 10;
-//        for (int i = 0; i < steps; i++) {
-//            excelSteps.add(new ExcelStep(ExcelStyle.PROCESS_EXCEL, i));
-//        }
 
         String json="[\n" +
                 "{\"style\":\"0\",\"step\":\"0\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
@@ -130,22 +125,6 @@ public class ExcelStep {
                 "{\"style\":\"6\",\"step\":\"29\",\"childSteps\":null,\"childCount\":\"0\"}" +
                 "]";
 
-
-//        Type type = new TypeToken<List<ExcelStep>>(){}.getType();
-//        List<ExcelStep> excelStepListTemp=new Gson().fromJson(json,type);
-//        List<ExcelStep> excelSteps= new ArrayList<>();
-//        List<ExcelStep> excelSteps_recover= new ArrayList<>();//恢复部分
-//        ExcelStep excelStep;
-//        for(int i=0;i<excelStepListTemp.size();i++){
-//            excelStep=excelStepListTemp.get(i);
-//            if(excelStep.childCount!=0){//是大步骤
-//                excelStep.childSteps=excelStepListTemp.subList(i+1,i+1+excelStep.childCount);
-//                excelSteps.add(excelStep);
-//                i=i+excelStep.childCount;
-//            }
-//
-//        }
-
         List<ExcelStep> excelSteps=jsonToList(json);
         List<ExcelStep> excelSteps_recover=jsonToList(json_recover);
 
@@ -181,10 +160,12 @@ public class ExcelStep {
                 excelStep.childSteps=stepList;
             }
             if(i==40){//附表三第一项
-                excelStep.childCount=1;
+                excelStep.childCount=12;
                 List<ExcelStep> stepList=new ArrayList<>();
-                stepList.add(new ExcelStep(ExcelStyle.ATTACH_THREE_EXCEL,0,0));
-                stepList.add(new ExcelStep(ExcelStyle.ATTACH_THREE_EXCEL,1,0));
+                //主一装置通道,主二裝置通道
+                for(int j=0;j<12;j++){
+                    stepList.add(new ExcelStep(ExcelStyle.ATTACH_THREE_EXCEL,j,0));
+                }
                 excelStep.childSteps=stepList;
             }
             if(i==41){//附表二第四项
@@ -193,16 +174,20 @@ public class ExcelStep {
                 stepList.add(new ExcelStep(ExcelStyle.ATTACH_SECOND_EXCEL,3,0));
                 excelStep.childSteps=stepList;
             }
+            if(i==42){//附表三第二项
+                excelStep.childCount=6;
+                List<ExcelStep> stepList=new ArrayList<>();
+                for(int k=12;k<18;k++){
+                    //光电转换装置通道
+                    stepList.add(new ExcelStep(ExcelStyle.ATTACH_THREE_EXCEL,k,0));
+                }
+                excelStep.childSteps=stepList;
+            }
+
             if(i==43){//附表四
                 excelStep.childCount=1;
                 List<ExcelStep> stepList=new ArrayList<>();
                 stepList.add(new ExcelStep(ExcelStyle.ATTACH_FOUR_EXCEL,0,0));
-                excelStep.childSteps=stepList;
-            }
-            if(i==51){//附表三第二项
-                excelStep.childCount=1;
-                List<ExcelStep> stepList=new ArrayList<>();
-                stepList.add(new ExcelStep(ExcelStyle.ATTACH_THREE_EXCEL,2,0));
                 excelStep.childSteps=stepList;
             }
             excelSteps.add(excelStep);
