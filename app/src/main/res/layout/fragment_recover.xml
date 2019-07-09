@@ -2,12 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="@dimen/app_padding"
-    android:id="@+id/parent">
-    <include layout="@layout/include_top_bar"></include>
+>
 
+    <include layout="@layout/include_top_bar"></include>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -28,7 +27,7 @@
                 android:background="@mipmap/bg"
                 style="@style/text_style_white_bold"
                 android:gravity="center_vertical"
-                android:text="@string/title_process"/>
+                android:text="@string/title_excute"/>
 
             <TextView
                 android:id="@+id/device_info"
@@ -65,11 +64,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:background="@mipmap/bg1"
             android:orientation="vertical"
-
             >
 
             <LinearLayout
@@ -83,7 +80,7 @@
                     android:text="作业过程"
                     android:paddingLeft="@dimen/excel_left_padding_15"
                     android:paddingTop="18dp"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="16dp"
                     style="@style/text_style_white_bold"/>
                 <TextView
                     android:id="@+id/rate"
@@ -95,106 +92,15 @@
                     />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/standard"
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/device_name"
-                    style="@style/text_style_white"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/device_name" />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:weightSum="4">
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/device_number"
-                            style="@style/text_style_white"
-                            android:layout_weight="0.8"/>
-
-                        <Spinner
-                            android:id="@+id/device_number"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/device_number"
-                            android:gravity="center"
-                            android:entries="@array/device_number"
-                            android:popupBackground="@color/app_blue"
-                            />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/check_code"
-                            style="@style/text_style_white"
-                            android:layout_weight="0.8"
-                            />
-
-                        <Spinner
-                            android:id="@+id/check_code"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:contentDescription="@string/check_code"
-                            android:gravity="center"
-                            android:entries="@array/check_code"
-                            android:popupBackground="@color/app_blue"/>
-                    </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:weightSum="4">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/device_version"
-                        style="@style/text_style_white"
-                        android:layout_weight="0.8"/>
-                    <Spinner
-                        android:id="@+id/device_version"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/device_version"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:entries="@array/device_version"
-                        android:popupBackground="@color/app_blue"
-                        />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/factory"
-                        style="@style/text_style_white"
-                        android:layout_weight="0.8"/>
-                    <Spinner
-                        android:id="@+id/factory"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="@string/factory"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:entries="@array/factory"
-                        android:popupBackground="@color/app_blue"
-                        />
-                </LinearLayout>
-
-
-
-            </LinearLayout>
-
-
+                android:text="密封工作票"
+                android:paddingLeft="@dimen/excel_left_padding_16"
+                style="@style/text_style_white"
+                android:textSize="@dimen/standard_size"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -204,6 +110,30 @@
                 android:weightSum="4"
                 android:gravity="center_horizontal"
                 >
+
+                <Button
+                    android:id="@+id/executed"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/recovered"
+                    android:contentDescription="@string/recovered"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/unexecuted"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:layout_marginLeft="26dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/unrecorver"
+                    android:contentDescription="@string/unrecorver"
+                    android:layout_weight="1"/>
+
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"

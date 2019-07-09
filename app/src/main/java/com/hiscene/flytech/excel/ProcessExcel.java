@@ -1,5 +1,10 @@
 package com.hiscene.flytech.excel;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+
+import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
@@ -10,8 +15,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.entity.AttachFirstModel;
+import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Result;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
 
@@ -35,6 +43,8 @@ import static com.hiscene.flytech.C.ATTACH_ONE_ROW_BEGIN;
 import static com.hiscene.flytech.C.ATTACH_ONE_ROW_END;
 import static com.hiscene.flytech.C.ATTACH_SECOND_ROW_BEGIN;
 import static com.hiscene.flytech.C.ATTACH_SECONG_ROW_END;
+import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
+import static com.hiscene.flytech.C.EXCEL_WRITE_SUCCESS;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 import static com.hiscene.flytech.C.PROCESS_ROW_BEGIN;
 import static com.hiscene.flytech.C.PROCESS_ROW_END;
@@ -52,6 +62,8 @@ public class ProcessExcel implements IExcel {
     public List<ProcessModel> processExcelList = new ArrayList<>();
     public List<AttachFirstModel> attachFirstModels = new ArrayList<>();
     public List<AttachSecondModel> attachSecondModelList = new ArrayList<>();
+    public List<AttachFourModel> attachFourModelList = new ArrayList<>();
+
 
 
     @Override
@@ -99,47 +111,62 @@ public class ProcessExcel implements IExcel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //附表4
+        attachFourModelList.add(new AttachFourModel("",""));
     }
 
     @Override
     public void write() {
-        try {
-            List<String> resultList=new ArrayList<>();
-            String result="";
-            for(ProcessModel processModel:processExcelList){
-                switch (processModel.getResult()){
-                    case 0:
-                        result="确认(×)";
-                        break;
-                    case 1:
-                        result="确认(√)";
-                        break;
-                    case -1:
-                        result="确认(无)";
-                        break;
+                try {
+                    List<String> resultList=new ArrayList<>();
+                    String result="";
+                    for(ProcessModel processModel:processExcelList){
+                        switch (processModel.getResult()){
+                            case 0:
+                                result="确认(×)";
+                                break;
+                            case 1:
+                                result="确认(√)";
+                                break;
+                            case -1:
+                                result="确认(无)";
+                                break;
+                        }
+                        resultList.add(result);
+                    }
+                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,PROCESS_ROW_BEGIN,4,resultList);
+
+                    //附表1
+                    List<String> results=new ArrayList<>();
+                    for(AttachFirstModel attachFirstModel:attachFirstModels){
+                        results.add(attachFirstModel.result);
+                    }
+                    POIUtil.setCellValueAt(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,ATTACH_ONE_ROW_BEGIN,4,results);
+
+                    //基本信息 列D,F
+                    int[] col_array=new int[]{4,6};
+                    results.clear();
+                    LogUtils.d(SPUtils.getString(START_TIME));
+                    results.add(SPUtils.getString(START_TIME,""));//作业开始时间
+                    results.add(TimeUtils.getNowTimeString());//作业结束时间
+                    POIUtil.setCellValueAtMulCol(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,START_TIME_BEGIN,col_array,results);
+
+                    //及时刷新文件
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    intent.setData(Uri.fromFile(new File((OUTPUT_PATH + C.PROCESS_FILE)))); // 需要更新的文件路径
+                    BaseApp.getAppContext().sendBroadcast(intent);
+
+
+                    EventCenter.getInstance().post(new Result(EXCEL_WRITE_SUCCESS,""));
+                    LogUtils.d("已成功修改表格内容");
+                } catch (Exception e) {
+                    Result result=new Result(EXCEL_WRITE_ERROR,e.getMessage());
+                    EventCenter.getInstance().post(result);
+                    LogUtils.d(e.getMessage());
+                    e.printStackTrace();
                 }
-                resultList.add(result);
             }
-            POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,PROCESS_ROW_BEGIN,4,resultList);
-            LogUtils.d("已成功修改表格内容");
-
-            //附表1
-            List<String> results=new ArrayList<>();
-            for(AttachFirstModel attachFirstModel:attachFirstModels){
-                results.add(String.valueOf(attachFirstModel.result));
-            }
-            POIUtil.setCellValueAt(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,ATTACH_ONE_ROW_BEGIN,4,results);
-
-            //基本信息 列D,F
-            int[] col_array=new int[]{4,6};
-            results.clear();
-            results.add(SPUtils.getString(START_TIME,""));//作业开始时间
-            results.add(TimeUtils.getNowTimeString());//作业结束时间
-            POIUtil.setCellValueAtMulCol(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,START_TIME_BEGIN,col_array,results);
-        } catch (Exception e) {
-            LogUtils.d(e.getMessage());
-            e.printStackTrace();
-        }
 /*        Workbook wb = new XSSFWorkbook();
         try {
             Sheet sheet = wb.createSheet("Sheet1");
@@ -172,7 +199,6 @@ public class ProcessExcel implements IExcel {
         } finally {
             wb.close();
         }*/
-    }
 
     @Override
     public void restore() {
@@ -182,14 +208,18 @@ public class ProcessExcel implements IExcel {
         processExcelList=new Gson().fromJson(read_content,type);
 
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FIRST_FILE,"utf-8");
-        type=new TypeToken<AttachFirstModel>(){}.getType();
+        type=new TypeToken<List<AttachFirstModel>>(){}.getType();
         attachFirstModels=new Gson().fromJson(read_content,type);
 
         //附表2
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_SECOND_FILE,"utf-8");
-        type=new TypeToken<AttachSecondModel>(){}.getType();
+        type=new TypeToken<List<AttachSecondModel>>(){}.getType();
         attachSecondModelList=new Gson().fromJson(read_content,type);
 
+        //附表4
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FOUR_FILE,"utf-8");
+        type=new TypeToken<List<AttachFourModel>>(){}.getType();
+        attachFourModelList=new Gson().fromJson(read_content,type);
     }
 
     @Override
@@ -220,6 +250,16 @@ public class ProcessExcel implements IExcel {
             if(!StringUtils.isEmpty(write_content)) {
                 if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_SECOND_FILE)) {
                     boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_SECOND_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
+                }
+            }
+        }
+        //附表4
+        if(!CollectionUtils.isEmpty(attachFourModelList)){
+            String write_content=GsonUtil.gsonString(attachFourModelList.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_FOUR_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_FOUR_FILE, write_content, true);
                     LogUtils.d("save 缓存:" + result);
                 }
             }

@@ -100,7 +100,7 @@
                 android:text="密封工作票"
                 android:paddingLeft="@dimen/excel_left_padding_16"
                 style="@style/text_style_white"
-                android:textSize="14sp"/>
+                android:textSize="@dimen/standard_size"/>
             <LinearLayout
                 android:id="@+id/liner_attach_first_excel"
                 android:layout_width="wrap_content"
@@ -128,9 +128,9 @@
                         android:id="@+id/number"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
-                        android:inputType="numberDecimal"
+                        android:inputType="numberDecimal|numberSigned"
                         android:focusable="true"
-                        style="@style/text_style_white"
+                        style="@style/MyEditText"
                         />
                     <TextView
                         android:layout_width="wrap_content"

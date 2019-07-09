@@ -4,14 +4,11 @@ import android.annotation.SuppressLint;
 import android.widget.TextView;
 
 import com.hiscene.flytech.R;
-import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ExecuteModel;
-import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.ui.MainActivity;
-import com.squareup.haha.perflib.Main;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ import butterknife.OnClick;
  * @des 二次措施单执行
  */
 @SuppressLint("ValidFragment")
-public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
+public class RecoverExcelFragment extends BaseExcelFragment<ExecuteModel> {
 
     @BindView(R.id.title)
     TextView title;
@@ -35,18 +32,18 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
     int pos=0;
     ExcelStep excelStep;
 
-    public ExecuteExcelFragment(ExcelFragmentManager excelFragmentManager) {
+    public RecoverExcelFragment(ExcelFragmentManager excelFragmentManager) {
         super(excelFragmentManager);
     }
 
-    public static ExecuteExcelFragment newInstance(ExcelFragmentManager excelFragmentManager) {
-        ExecuteExcelFragment executeExcelFragment = new ExecuteExcelFragment(excelFragmentManager);
-        return executeExcelFragment;
+    public static RecoverExcelFragment newInstance(ExcelFragmentManager excelFragmentManager) {
+        RecoverExcelFragment recoverExcelFragment = new RecoverExcelFragment(excelFragmentManager);
+        return recoverExcelFragment;
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.fragment_execute;
+        return R.layout.fragment_recover;
     }
 
 
@@ -68,11 +65,10 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
 
 
     private void initData(List<ExecuteModel> dataList,ExcelStep excelStep,int pos) {
-        init();
-        if(dataList.get(excelStep.childSteps.get(pos).step).excute_result==1){
+        if(dataList.get(excelStep.childSteps.get(pos).step).recover_result==1){
             executed.setSelected(true);
             unexecuted.setSelected(false);
-        }else if(dataList.get(excelStep.childSteps.get(pos).step).excute_result==0){
+        }else if(dataList.get(excelStep.childSteps.get(pos).step).recover_result==0){
             executed.setSelected(false);
             unexecuted.setSelected(true);
         }else {

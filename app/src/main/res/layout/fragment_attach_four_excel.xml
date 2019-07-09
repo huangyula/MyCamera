@@ -64,10 +64,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@mipmap/bg1"
             android:orientation="vertical"
-
+            android:layout_weight="1"
             >
 
             <LinearLayout
@@ -95,56 +95,74 @@
 
            <LinearLayout
                android:layout_width="match_parent"
-               android:layout_height="wrap_content"
+               android:layout_height="0dp"
                android:orientation="vertical"
+               android:layout_weight="1"
                android:padding="15dp"
                >
 
 
-               <RelativeLayout
+               <LinearLayout
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content">
                    <TextView
-                       android:layout_width="wrap_content"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:text="动作时间记录"
-                       style="@style/text_style_white"/>
+                       style="@style/text_style_white"
+                       android:layout_weight="1"
+                       />
                    <TextView
-                       android:layout_width="wrap_content"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:text="第一组跳闸mS"
                        style="@style/text_style_white"
-                       android:layout_centerHorizontal="true"/>
+                       android:layout_centerHorizontal="true"
+                       android:layout_weight="1"
+                       />
                    <TextView
-                       android:layout_width="wrap_content"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:text="第二组跳闸mS"
                        style="@style/text_style_white"
-                       android:layout_alignParentRight="true"/>
-               </RelativeLayout>
-               <RelativeLayout
+                       android:layout_alignParentRight="true"
+                       android:layout_weight="1"
+               />
+               </LinearLayout>
+               <LinearLayout
                    android:layout_width="match_parent"
                    android:layout_height="wrap_content"
+                   android:weightSum="3"
                    >
                    <TextView
-                       android:layout_width="wrap_content"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
                        android:text="开关三相不一致"
                        style="@style/text_style_white"
-                       android:layout_centerVertical="true"/>
+                       android:layout_centerVertical="true"
+                       android:layout_weight="1"
+                       />
                    <EditText
-                       android:layout_width="wrap_content"
+                       android:id="@+id/time_1"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
-                       style="@style/text_style_white"
+                       style="@style/MyEditText"
                        android:layout_centerHorizontal="true"
-                       android:inputType="numberDecimal"/>
+                       android:inputType="numberDecimal"
+                       android:layout_weight="0.8"
+                       android:gravity="center"
+                       />
                    <EditText
-                       android:layout_width="wrap_content"
+                       android:id="@+id/time_2"
+                       android:layout_width="0dp"
                        android:layout_height="wrap_content"
-                       style="@style/text_style_white"
+                       style="@style/MyEditText"
                        android:layout_alignParentRight="true"
-                       android:inputType="numberDecimal"/>
-               </RelativeLayout>
+                       android:inputType="numberDecimal"
+                       android:layout_weight="0.8"
+                       android:gravity="center"
+                       android:layout_marginLeft="40dp"/>
+               </LinearLayout>
 
            </LinearLayout>
 
