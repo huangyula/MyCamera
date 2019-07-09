@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.github.weiss.core.UserManager;
 import com.github.weiss.core.bus.RxBus;
+
 import com.github.weiss.core.utils.AppUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
@@ -79,8 +80,9 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 
     CameraView cameraView;
     CameraRecorder cameraRecorder;
-    ScreenRecorderManager screenRecorderManager;
+    //    ScreenRecorderManager screenRecorderManager;
     boolean isLaunchHiLeia = false;
+    boolean isCameraRecord = false;
 
     LoginFragment loginFragment;
 
@@ -102,7 +104,7 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     @Override
     protected void initView() {
         EventCenter.bindContainerAndHandler(this, mEventHandler);
-        screenRecorderManager = new ScreenRecorderManager(this);
+//        screenRecorderManager = new ScreenRecorderManager(this);
         if(userManager.isLogin()){
             startEditExcelFragment=StartEditExcelFragment.newInstance();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
@@ -146,7 +148,8 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 
     public void hileia() {
         if (AppUtils.isInstallApp(this, "com.hiscene.hileia")) {
-            screenRecorderManager.startCaptureIntent();
+            launchHileia();
+//            screenRecorderManager.startCaptureIntent();
         }
     }
 
@@ -170,17 +173,24 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia");
             isLaunchHiLeia = false;
-            screenRecorderManager.cancelRecorder();
-            cameraRecorder.init();
+//            screenRecorderManager.cancelRecorder();
 //            cameraView.resume();
         }
+        if (isCameraRecord) {
+            cameraRecorder.init();
+        }
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        LogUtils.d("onPause");
         mComponentContainer.onBecomesPartiallyInvisible();
 //        cameraView.pause();
+        if (isCameraRecord) {
+            cameraRecorder.destroy();
+        }
     }
 
     @Override
@@ -199,8 +209,8 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
             isLaunchHiLeia = false;
-            screenRecorderManager.cancelRecorder();
-        }else {
+//            screenRecorderManager.cancelRecorder();
+        } else {
             cameraRecorder.destroy();
             cameraRecorder.shutdown();
         }
@@ -210,13 +220,17 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ScreenRecorderManager.REQUEST_MEDIA_PROJECTION) {
-            cameraRecorder.destroy();
-            LogUtils.d("onActivityResult");
-            screenRecorderManager.onActivityResult(requestCode, resultCode, data);
-            AppUtils.launchAppForURLScheme(this, "com.hiscene.hileia",
-                    "hileia://host:8080/launch?username=15920400762&password=qq137987751");
-            cameraLayout.postDelayed(() -> isLaunchHiLeia = true, 800);
+//            screenRecorderManager.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void launchHileia() {
+//        cameraRecorder.destroy();
+        LogUtils.d("onActivityResult");
+        AppUtils.launchAppForURLScheme(this, "com.hiscene.hileia",
+                "hileia://host:8080/launch?username=15920400762&password=qq137987751");
+        isLaunchHiLeia = true;
+//        cameraLayout.postDelayed(() -> isLaunchHiLeia = true, 800);
     }
 
     public void scanLogin() {
@@ -240,14 +254,15 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 //        scanDeviceFragment = ScanDeviceFragment.newInstance();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanDeviceFragment).commitNowAllowingStateLoss();
 //        FLAG = SCAN_DEVICE;
-//        qrVision.startQRRecognize();
+//        cameraRecorder.startQRRecognize();
 //    }
 
     public void startEdit() {
-       if(excelFragmentManager!=null){
+        if (excelFragmentManager != null) {
          excelFragmentManager.init();
         cameraView.setVisibility(View.VISIBLE);
         cameraRecorder.init();
+        isCameraRecord = true;
        }else {
            ToastUtils.show("正在加載表格，請稍後");
        }
