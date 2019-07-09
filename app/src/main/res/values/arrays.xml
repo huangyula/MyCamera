@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="languages">
+        <item>小明</item>
+        <item>小红 </item>
+        <item>小蓝</item>
+        <item>小青</item>
+        <item>小白</item>
+    </string-array>
+    <string-array name="device_number">
+        <item>PCS931N2</item>
+        <item>CSC103</item>
+        <item>PSC923NX</item>
+    </string-array>
+
+    <string-array name="check_code">
+        <item>5FA268E5</item>
+        <item>1AE76EC4</item>
+        <item>7EACED81</item>
+    </string-array>
+    
+    <string-array name="device_version">
+         <item>2.10</item>
+         <item>2.00</item>
+    </string-array>
+    <string-array name="factory">
+        <item>南瑞继保</item>
+        <item>北京四方</item>
+    </string-array>
+</resources>
