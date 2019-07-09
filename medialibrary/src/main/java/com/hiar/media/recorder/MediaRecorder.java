@@ -51,11 +51,12 @@ public class MediaRecorder extends QueueRunnable implements AudioRecorder.OnAudi
     }
 
     public void encodeAndWriteVideo(byte[] data) {
-        runAllQueue();
-        if (ptr > 0) {
-            encodeAndWriteVideo(ptr, data);
+        queueEvent(()->{
+            if (ptr > 0) {
+                encodeAndWriteVideo(ptr, data);
 //            LogUtils.d("encodeAndWriteVideo data size:"+data.length);
-        }
+            }
+        });
     }
 
     public void writeH264Video(byte[] data, int length) {
@@ -81,14 +82,13 @@ public class MediaRecorder extends QueueRunnable implements AudioRecorder.OnAudi
 
     @Override
     public void onAudioBuffer(byte[] data, int length) {
-        queueEvent(()->{
+        runAllQueue();
             lock.lock();
             if (ptr > 0) {
                 encodeAndWriteAudio(ptr, data.clone(), length);
 
             }
             lock.unlock();
-        });
     }
 
 
