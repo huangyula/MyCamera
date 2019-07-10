@@ -30,6 +30,8 @@ public class StartEditExcelFragment extends BaseFragment {
     Button edit;
     @BindView(R.id.logout)
     TextView logout;
+    @BindView(R.id.button)
+    Button button;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_start_edit_excel;
@@ -57,4 +59,9 @@ public class StartEditExcelFragment extends BaseFragment {
         EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        button.performClick();
+    }
 }

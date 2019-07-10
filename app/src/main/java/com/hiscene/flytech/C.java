@@ -1,5 +1,7 @@
 package com.hiscene.flytech;
 
+import com.github.weiss.core.utils.SDCardUtils;
+
 import java.io.File;
 
 /**
@@ -12,13 +14,13 @@ public class C {
     public static final int PAGE_COUNT = 10;
 
     //根目录
-    public static final String BASE_PATH = App.getAppContext().getExternalCacheDir().getPath();
+    public static final String BASE_PATH = SDCardUtils.getSDCardPath()+"中调定检助手"+File.separator;
 
     //assets原表格资源目录
-    public static final String ASSETS_PATH = BASE_PATH + File.separator + "assets" + File.separator + "res" + File.separator;
+    public static final String ASSETS_PATH = BASE_PATH + File.separator + "assets" + File.separator;
 
     //临时目录
-    public static final String TEMP_PATH = BASE_PATH + File.separator + "temp" + File.separator;
+    public static final String TEMP_PATH = BASE_PATH+File.separator+ "temp" + File.separator;
 
     //输出目录
     public static final String OUTPUT_PATH = BASE_PATH + File.separator + "output" + File.separator;
@@ -57,6 +59,6 @@ public class C {
     public static final String EXCEL_LOADED="EXCEL_LOADED";
 
     //设备资料路径
-    public static final String FILE_DEVICE_FILE=BASE_PATH+File.separator + "device" + File.separator;//设备资料
+    public static final String FILE_DEVICE_FILE=BASE_PATH+File.separator + "设备资料" + File.separator;//设备资料
 
 }

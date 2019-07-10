@@ -1,57 +1,37 @@
 package com.hiscene.flytech.ui;
 
-import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
-import android.media.projection.MediaProjection;
-import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.github.weiss.core.UserManager;
-import com.github.weiss.core.bus.RxBus;
 
 import com.github.weiss.core.utils.AppUtils;
-import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
-import com.github.weiss.core.utils.ScreenUtils;
-import com.github.weiss.core.utils.StringUtils;
 import com.github.weiss.core.utils.ToastUtils;
 import com.github.weiss.core.utils.helper.RxSchedulers;
 import com.google.zxing.Result;
 import com.hiscene.camera.listener.OnQrRecognizeListener;
 import com.hiscene.camera.view.CameraView;
-import com.hiscene.camera.vision.QRVision;
 import com.hiscene.flytech.BaseActivity;
-import com.hiscene.flytech.C;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.UserModel;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.event.SimpleEventHandler;
-import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.lifecycle.IComponentContainer;
 import com.hiscene.flytech.lifecycle.LifeCycleComponent;
 import com.hiscene.flytech.lifecycle.LifeCycleComponentManager;
 import com.hiscene.flytech.recorder.CameraRecorder;
 import com.hiscene.flytech.recorder.ScreenRecorderManager;
-import com.hiscene.flytech.ui.fragment.DeviceFragment;
-import com.hiscene.flytech.recorder.CameraRecorder;
-import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
-import com.hiscene.flytech.ui.fragment.LoginFragment;
-import com.hiscene.flytech.ui.fragment.ScanDeviceFragment;
-import com.hiscene.flytech.ui.fragment.ScanLoginFragment;
-import com.hiscene.flytech.ui.fragment.StartEditExcelFragment;
+import com.hiscene.flytech.ui.dialog.ExcelDialogManager;
+import com.hiscene.flytech.ui.dialog.LoginDialog;
+import com.hiscene.flytech.ui.dialog.ScanLoginDialog;
+import com.hiscene.flytech.ui.dialog.StartEditExcelDialog;
 import com.hiscene.flytech.util.PositionUtil;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
-import com.lxj.xpopup.interfaces.OnConfirmListener;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -59,16 +39,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 
-import static com.github.weiss.core.utils.Utils.getContext;
 import static com.hiscene.flytech.App.userManager;
-import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
-import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.RECOVERY;
 
 
-public class MainActivity extends BaseActivity implements IComponentContainer {
+public class TestActivity extends BaseActivity implements IComponentContainer {
     private static final int REQUEST_SCREEN_LIVE = 1;
 
     private int FLAG = -1;
@@ -96,18 +73,14 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     boolean isLaunchHiLeia = false;
     boolean isCameraRecord = false;
 
-    LoginFragment loginFragment;
+    LoginDialog loginDialog;
 
-    ScanLoginFragment scanLoginFragment;
+    ScanLoginDialog scanloginDialog;
+    
+    StartEditExcelDialog startEditExcelDialog;
 
-    DeviceFragment deviceFragment;
-
-    ScanDeviceFragment scanDeviceFragment;
-
-    StartEditExcelFragment startEditExcelFragment;
-
-    ExcelFragmentManager excelFragmentManager;
-
+    ExcelDialogManager excelDialogManager;
+    
     LoadingPopupView xPopup;
 
     @Override
@@ -121,13 +94,15 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
         EventCenter.bindContainerAndHandler(this, mEventHandler);
 //        screenRecorderManager = new ScreenRecorderManager(this);
         if(userManager.isLogin()){
-            startEditExcelFragment=StartEditExcelFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
+            startEditExcelDialog=StartEditExcelDialog.newInstance(this);
+            startEditExcelDialog.show();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelDialog).commitNowAllowingStateLoss();
         }else {
-            loginFragment = LoginFragment.newInstance();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commitNowAllowingStateLoss();
+            loginDialog = LoginDialog.newInstance(this);
+            loginDialog.show();
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginDialog).commitNowAllowingStateLoss();
         }
-        new Thread(() -> excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager())).start();
+        new Thread(() -> excelDialogManager = new ExcelDialogManager(this)).start();
         FLAG = LOGIN;
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
@@ -147,12 +122,16 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
                                 if("User:508f567cc3015cba395858d4493dd706".equals(resultStr)){
                                     cameraView.setVisibility(View.GONE);
                                     userManager.login(new UserModel(user[1]));
-                                    startEditExcelFragment=StartEditExcelFragment.newInstance();
-                                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelFragment).commitNowAllowingStateLoss();
+                                    if(scanloginDialog.isShowing()){
+                                        scanloginDialog.dismiss();
+                                    }
+                                    startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
+                                    startEditExcelDialog.show();
+//                                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelDialog).commitNowAllowingStateLoss();
                                 }
                             }
                         }, e -> e.printStackTrace()));
-//                excelFragmentManager = new ExcelFragmentManager(getSupportFragmentManager());
+//                excelDialogManager = new excelDialogManager(getSupportFragmentManager());
                 if(SCAN_LOGIN==FLAG||SCAN_DEVICE==FLAG) return false;
                 return true;
             }
@@ -219,11 +198,11 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
         super.onDestroy();
         mComponentContainer.onDestroy();
 //        //需要恢复,true :
-//        excelFragmentManager.laststep=false;
+//        excelDialogManager.laststep=false;
 //        //不需要恢复
-//        excelFragmentManager.laststep=true && success=true
-        SPUtils.put(RECOVERY, excelFragmentManager.laststep);
-        SPUtils.put(PositionUtil.POSITION, excelFragmentManager.pos);
+//        excelDialogManager.laststep=true && success=true
+        SPUtils.put(RECOVERY, excelDialogManager.laststep);
+        SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
 
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
@@ -253,18 +232,23 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
     }
 
     public void scanLogin() {
-        scanLoginFragment = ScanLoginFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanLoginFragment).commitNowAllowingStateLoss();
+        if(loginDialog.isShowing()){
+            loginDialog.dismiss();
+        }
+        scanloginDialog = ScanLoginDialog.newInstance(this);
+        scanloginDialog.show();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanloginDialog).commitNowAllowingStateLoss();
         FLAG = SCAN_LOGIN;
         cameraRecorder.startQRRecognize();
         cameraView.setVisibility(View.VISIBLE);
     }
 
     public void Login(){
-        if(loginFragment==null){
-            loginFragment=LoginFragment.newInstance();
+        if(loginDialog==null){
+            loginDialog=LoginDialog.newInstance(this);
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginFragment).commit();
+        loginDialog.show();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginDialog).commit();
     }
 
 
@@ -278,8 +262,8 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
 
     public void startEdit() {
         isClick=true;
-        if (excelFragmentManager != null) {
-         excelFragmentManager.init();
+        if (excelDialogManager != null) {
+         excelDialogManager.init();
         cameraView.setVisibility(View.VISIBLE);
         cameraRecorder.init();
         isCameraRecord = true;
@@ -307,7 +291,7 @@ public class MainActivity extends BaseActivity implements IComponentContainer {
                     hileia();
                     break;
                 case C.LOADING:
-                    xPopup=new XPopup.Builder(MainActivity.this)
+                    xPopup=new XPopup.Builder(TestActivity.this)
                             .asLoading("正在生成文件中...");
                     xPopup.show();
                     break;

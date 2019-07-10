@@ -18,13 +18,6 @@
             android:id="@+id/fragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <Button
-            android:id="@+id/hileia"
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:visibility="gone"
-            android:contentDescription="启动远程协作" />
     </FrameLayout>
 
 

@@ -66,7 +66,7 @@ public class SplashActivity extends EasyPermissionsActivity {
     };
 
     public void getHome() {
-        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+        Intent intent = new Intent(SplashActivity.this, TestActivity.class);
         startActivity(intent);
         finish();
     }

@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.TestActivity"
             android:configChanges="mcc|mnc|orientation|keyboardHidden|screenSize|keyboard|touchscreen|layoutDirection|navigation|fontScale"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
