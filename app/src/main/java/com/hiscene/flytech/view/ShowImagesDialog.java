@@ -106,7 +106,7 @@ public class ShowImagesDialog extends Dialog{
             }
         };
         for (int i = 0; i < bitmapList.size(); i++) {
-            final PhotoView photoView = new uk.co.senab.photoview.PhotoView(mContext);
+            final PhotoView photoView = new PhotoView(mContext);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             photoView.setLayoutParams(layoutParams);
             photoView.setOnPhotoTapListener(listener);

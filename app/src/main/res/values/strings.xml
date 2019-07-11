@@ -40,4 +40,6 @@
     <string name="user_name">巡检员</string>
     <string name="recovered">已恢复</string>
     <string name="unrecorver">未恢复</string>
+    <string name="continue_edit">继续填写</string>
+    <string name="restart_edit">开始填写</string>
 </resources>

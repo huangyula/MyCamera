@@ -102,6 +102,7 @@ public class ExecuteExcelDialog extends BaseExcelDialog<ExecuteModel> {
     protected void logout() {
         excelDialogManager.exit();
         EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
+        dismiss();
     }
 
     @OnClick(R.id.executed)

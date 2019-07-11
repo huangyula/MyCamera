@@ -2,6 +2,7 @@ package com.hiscene.flytech.ui;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import com.hiscene.flytech.ui.dialog.ExcelDialogManager;
 import com.hiscene.flytech.ui.dialog.LoginDialog;
 import com.hiscene.flytech.ui.dialog.ScanLoginDialog;
 import com.hiscene.flytech.ui.dialog.StartEditExcelDialog;
+import com.hiscene.flytech.util.POIUtil;
 import com.hiscene.flytech.util.PositionUtil;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
@@ -43,6 +45,7 @@ import io.reactivex.Observable;
 
 import static com.hiscene.flytech.App.userManager;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.RECOVERY;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.START_TIME;
 
 
 public class TestActivity extends BaseActivity implements IComponentContainer {
@@ -96,11 +99,9 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         if(userManager.isLogin()){
             startEditExcelDialog=StartEditExcelDialog.newInstance(this);
             startEditExcelDialog.show();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelDialog).commitNowAllowingStateLoss();
         }else {
             loginDialog = LoginDialog.newInstance(this);
             loginDialog.show();
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginDialog).commitNowAllowingStateLoss();
         }
         new Thread(() -> excelDialogManager = new ExcelDialogManager(this)).start();
         FLAG = LOGIN;
@@ -127,11 +128,9 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                                     }
                                     startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
                                     startEditExcelDialog.show();
-//                                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment,startEditExcelDialog).commitNowAllowingStateLoss();
                                 }
                             }
                         }, e -> e.printStackTrace()));
-//                excelDialogManager = new excelDialogManager(getSupportFragmentManager());
                 if(SCAN_LOGIN==FLAG||SCAN_DEVICE==FLAG) return false;
                 return true;
             }
@@ -197,12 +196,17 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     protected void onDestroy() {
         super.onDestroy();
         mComponentContainer.onDestroy();
-//        //需要恢复,true :
-//        excelDialogManager.laststep=false;
-//        //不需要恢复
-//        excelDialogManager.laststep=true && success=true
-        SPUtils.put(RECOVERY, excelDialogManager.laststep);
-        SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
+        boolean result;
+        if(excelDialogManager.laststep&&success){
+            SPUtils.put(RECOVERY, false);
+            SPUtils.put(START_TIME,"");
+            SPUtils.put(PositionUtil.POSITION,"0,0");
+        }else {
+            SPUtils.put(RECOVERY, true);
+            SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
+        }
+
+
 
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
@@ -232,12 +236,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     }
 
     public void scanLogin() {
-        if(loginDialog.isShowing()){
-            loginDialog.dismiss();
-        }
         scanloginDialog = ScanLoginDialog.newInstance(this);
         scanloginDialog.show();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, scanloginDialog).commitNowAllowingStateLoss();
         FLAG = SCAN_LOGIN;
         cameraRecorder.startQRRecognize();
         cameraView.setVisibility(View.VISIBLE);
@@ -248,7 +248,6 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
             loginDialog=LoginDialog.newInstance(this);
         }
         loginDialog.show();
-//        getSupportFragmentManager().beginTransaction().replace(R.id.fragment, loginDialog).commit();
     }
 
 
@@ -264,6 +263,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         isClick=true;
         if (excelDialogManager != null) {
          excelDialogManager.init();
+         startEditExcelDialog.dismiss();
         cameraView.setVisibility(View.VISIBLE);
         cameraRecorder.init();
         isCameraRecord = true;
@@ -295,6 +295,14 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                             .asLoading("正在生成文件中...");
                     xPopup.show();
                     break;
+                case C.CONTINUE_EDIT:
+
+                    break;
+                case C.RESTART_EDIT:
+                    SPUtils.put(RECOVERY,false);
+                    SPUtils.put(PositionUtil.POSITION,"0,0");
+                    SPUtils.put(START_TIME,"");
+                    break;
             }
         }
 
@@ -316,7 +324,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     if(xPopup!=null){
                         xPopup.dismiss();
                     }
-                    ToastUtils.show("当前已经表单操作的最后一步,文件已经生成成功,请在  /中调定检助手/output/ 中查看文件",4000);
+                    ToastUtils.show("当前已经表单操作的最后一步,文件已经生成成功,请在  /中调定检助手/output/ 中查看文件",5000);
                     success=true;
                    // 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
 //                    new XPopup.Builder(MainActivity.this).asConfirm("导出文件成功", "导出文件成功,是否结束本次表单填写？",
@@ -347,5 +355,14 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         for (Fragment fragment:fragments){
             getSupportFragmentManager().beginTransaction().remove(fragment);
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            LogUtils.d("activity back");
+            finish();
+        }
+        return super.dispatchKeyEvent(event);
     }
 }

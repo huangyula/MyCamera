@@ -2,7 +2,6 @@ package com.hiscene.flytech.ui.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.github.weiss.core.utils.LogUtils;
@@ -40,21 +39,21 @@ public class StartEditExcelDialog extends BaseDialog {
 
     @Override
     protected void initView() {
-        logout.setText("test");
     }
 
     @OnClick(R.id.edit)
-    void edit(){
+    protected void edit(){
         LogUtils.d("edit");
         EventCenter.getInstance().post(START_EDIT_EXCEL);
+        dismiss();
     }
 
     @OnClick(R.id.logout)
-    void logout(){
+    protected void logout(){
         LogUtils.d("logout");
-//        /this.dismiss();
         userManager.logout();
         EventCenter.getInstance().post(TestActivity.BACK_TO_LOGIN);
+        dismiss();
     }
 
 }

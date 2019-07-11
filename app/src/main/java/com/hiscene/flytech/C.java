@@ -58,6 +58,10 @@ public class C {
     public static final String LOADING="LOADING";
     public static final String EXCEL_LOADED="EXCEL_LOADED";
 
+    //表单是否重新填写
+    public static final String RESTART_EDIT="RESTART_EDIT";
+    public static final String CONTINUE_EDIT="CONTINUE_EDIT";
+
     //设备资料路径
     public static final String FILE_DEVICE_FILE=BASE_PATH+File.separator + "设备资料" + File.separator;//设备资料
 

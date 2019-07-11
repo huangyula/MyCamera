@@ -43,6 +43,7 @@ public class LoginDialog extends BaseDialog {
     @OnClick(R.id.iv_scan)
     protected void startFragment(){
         EventCenter.getInstance().post(START_SCAN_LOGIN);
+        dismiss();
     }
 
 

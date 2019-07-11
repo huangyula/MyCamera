@@ -104,6 +104,7 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
     protected void logout() {
         excelDialogManager.exit();
         EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
+        dismiss();
     }
 
     private void initData(ProcessModel data) {

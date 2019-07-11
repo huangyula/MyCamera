@@ -1,7 +1,9 @@
 package com.hiscene.flytech.ui.dialog;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,6 +28,8 @@ import com.bumptech.glide.request.transition.Transition;
 import com.github.weiss.core.utils.DisplayUtil;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.adapter.ShowImagesAdapter;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 import com.hiscene.flytech.util.AnimUtils;
 import com.hiscene.flytech.view.ShowImagesViewPager;
 import com.lxj.xpopup.impl.FullScreenPopupView;
@@ -43,12 +48,12 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * 嵌套了viewpager的图片浏览
  */
 
-public abstract class BaseDialog extends Dialog{
+public abstract class BaseDialog extends Dialog {
     private View mView;
     public Context mContext;
 
     public BaseDialog( @NonNull Context context) {
-        super(context, R.style.transparentBgDialog);
+        super(context, R.style.Dialog_Fullscreen);
         this.mContext = context;
     }
 
@@ -60,7 +65,29 @@ public abstract class BaseDialog extends Dialog{
         ButterKnife.bind(this,mView);
         this.setCancelable(true);
         this.setCanceledOnTouchOutside(false);
+        initView();
+        initData();
+    }
 
+    protected void initData() {
+        setOnKeyListener(new OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    dialog.dismiss();
+                }
+                return false;
+            }
+        });
+    }
+
+    protected abstract int getLayoutId();
+
+    protected abstract void initView();
+
+    @Override
+    public void show() {
+        super.show();
         Window window = getWindow();
         WindowManager.LayoutParams wl = window.getAttributes();
         wl.x = 0;
@@ -69,18 +96,6 @@ public abstract class BaseDialog extends Dialog{
         wl.height = (int) (DisplayUtil.getScreenHeight(mContext));
         wl.gravity = Gravity.CENTER;
         window.setAttributes(wl);
-
-        initView();
-        initData();
     }
-
-    protected void initData() {
-
-    }
-
-    protected abstract int getLayoutId();
-
-    protected abstract void initView();
-
 
 }

@@ -40,6 +40,6 @@ public class CustomAlertDialog {
     }
 
     public interface IAlertListDialogItemClickListener {
-        void onItemClick(int position);
+        void onItemClick( int position );
     }
 }

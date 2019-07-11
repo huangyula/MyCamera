@@ -11,5 +11,5 @@ import retrofit2.http.Path;
 public interface ApiService {
 
     @GET("data/{gank}/10/{page}")
-    Observable<HttpResult<List<String>>> getGankData(@Path("gank") String gank, @Path("page") int page);
+    Observable<HttpResult<List<String>>> getGankData( @Path("gank") String gank, @Path("page") int page );
 }

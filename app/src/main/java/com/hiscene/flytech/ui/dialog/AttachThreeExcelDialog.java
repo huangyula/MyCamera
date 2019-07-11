@@ -109,6 +109,7 @@ public class AttachThreeExcelDialog extends BaseExcelDialog<AttachSecondModel> {
     protected void logout() {
         excelDialogManager.exit();
         EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
+        dismiss();
     }
 
 
