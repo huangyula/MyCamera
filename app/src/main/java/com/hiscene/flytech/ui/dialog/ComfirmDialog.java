@@ -4,12 +4,21 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 
+import com.github.weiss.core.utils.DisplayUtil;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.entity.Result;
 import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.TestActivity;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.core.BasePopupView;
+import com.lxj.xpopup.interfaces.XPopupCallback;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,14 +61,26 @@ public class ComfirmDialog extends Dialog {
 
     @OnClick(R.id.continue_edit)
     protected void continue_edit(){
-        EventCenter.getInstance().post(C.CONTINUE_EDIT);
         dismiss();
     }
 
     @OnClick(R.id.restart_edit)
     protected void restart_edit(){
-        EventCenter.getInstance().post(C.RESTART_EDIT);
+        Result result=new Result(C.RESTART_EDIT,"");
+        EventCenter.getInstance().post(result);
         dismiss();
     }
 
+    @Override
+    public void show() {
+        super.show();
+        Window window = getWindow();
+        WindowManager.LayoutParams wl = window.getAttributes();
+        wl.x = 0;
+        wl.y = 0;
+        wl.width = (int) (DisplayUtil.getScreenWidth(mContext)*(2/3f));
+        wl.height = (int) (DisplayUtil.getScreenHeight(mContext));
+        wl.gravity = Gravity.CENTER;
+        window.setAttributes(wl);
+    }
 }

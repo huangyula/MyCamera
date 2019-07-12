@@ -75,14 +75,6 @@ public class ShowImagesDialog extends Dialog{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mView);
-        Window window = getWindow();
-        WindowManager.LayoutParams wl = window.getAttributes();
-        wl.x = 0;
-        wl.y = 0;
-        wl.width = (int) (DisplayUtil.getScreenHeight(mContext)*1.5 );
-        wl.height = (int) (DisplayUtil.getScreenWidth(mContext) / 1.5);
-        wl.gravity = Gravity.CENTER;
-        window.setAttributes(wl);
     }
 
     private void initView() {
@@ -171,4 +163,16 @@ public class ShowImagesDialog extends Dialog{
         dismiss();
     }
 
+    @Override
+    public void show() {
+        super.show();
+        Window window = getWindow();
+        WindowManager.LayoutParams wl = window.getAttributes();
+        wl.x = 0;
+        wl.y = 0;
+        wl.width = (int) (DisplayUtil.getScreenWidth(mContext));
+        wl.height = (int) (DisplayUtil.getScreenHeight(mContext));
+        wl.gravity = Gravity.CENTER;
+        window.setAttributes(wl);
+    }
 }

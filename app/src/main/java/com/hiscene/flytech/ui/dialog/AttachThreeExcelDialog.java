@@ -83,7 +83,7 @@ public class AttachThreeExcelDialog extends BaseExcelDialog<AttachSecondModel> {
 
     private void initData( ProcessModel processModel, AttachThreeModel attachThreeModel,int step , String rate) {
         init();
-        title.setText(processModel.content+"("+processModel.standard+")");
+        title.setText(processModel.id+". "+processModel.content+"("+processModel.standard+")");
         tv_rate.setText(rate);
         if(attachThreeModel!=null){
             item_name.setText(attachThreeModel.item_name);

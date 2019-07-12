@@ -49,6 +49,7 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void read() {
         try {
+            executeModelList.clear();
             XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_READ_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);

@@ -107,7 +107,7 @@ public class AttachSecondExcelDialog extends BaseExcelDialog<AttachSecondModel> 
         check_code_array=CollectionUtils.arrayToList(BaseApp.getAppResources().getStringArray(R.array.check_code));
         setListener();
 
-        title.setText(processModel.content+"("+processModel.standard+")");
+        title.setText(processModel.id+". "+processModel.content+"("+processModel.standard+")");
         device_name.setText("装置名称："+attachSecondModel.name);
         if(attachSecondModel!=null){
             device_number.setText(attachSecondModel.number);

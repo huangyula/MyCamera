@@ -4,12 +4,14 @@
              android:layout_height="match_parent"
              android:orientation="vertical"
              android:gravity="center"
+             android:padding="@dimen/app_padding"
              >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="310dp"
-        android:background="@mipmap/bg2">
+        android:layout_height="0dp"
+        android:background="@mipmap/bg2"
+        android:layout_weight="1">
         <com.hiscene.flytech.view.ShowImagesViewPager
             android:id="@+id/vp_images"
             android:layout_width="match_parent"

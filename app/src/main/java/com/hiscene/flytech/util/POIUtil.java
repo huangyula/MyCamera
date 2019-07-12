@@ -455,10 +455,10 @@ public class POIUtil {
         //列：2，3，8，9
         insureExcelType(filePath);
         ExecuteModel executeModel;
+        String execute_result="";
+        String recover_result="";
         for(int i=0;i<executeModelList.size();i++){
             executeModel=executeModelList.get(i);
-            String execute_result="";
-            String recover_result="";
             switch (executeModel.excute_result){
                 case 0:
                     execute_result="×";

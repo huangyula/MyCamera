@@ -26,7 +26,7 @@ public class ProcessModel extends Entity {
     }
 
     public ProcessModel(int id, String content, String standard) {
-        this(id, content, standard, -1);
+        this(id, content, standard, -2);
     }
 
     public ProcessModel(int id, String content, String standard, int result) {

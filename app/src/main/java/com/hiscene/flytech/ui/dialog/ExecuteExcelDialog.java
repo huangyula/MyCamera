@@ -109,14 +109,14 @@ public class ExecuteExcelDialog extends BaseExcelDialog<ExecuteModel> {
     protected void executed() {
         executed.setSelected(true);
         unexecuted.setSelected(false);
-//        excelFragmentManager.setResult(1);
+        excelDialogManager.setResult(1);
     }
 
     @OnClick(R.id.unexecuted)
     protected void unexecuted() {
         unexecuted.setSelected(true);
         executed.setSelected(false);
-//        excelFragmentManager.setResult(0);
+        excelDialogManager.setResult(0);
     }
 
 

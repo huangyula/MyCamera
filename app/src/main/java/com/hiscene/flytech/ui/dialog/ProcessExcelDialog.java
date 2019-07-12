@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
     EditText et_number;
     @BindView(R.id.attach_first_content)
     TextView attach_first_content;
+    @BindView(R.id.un_exsit)
+    Button un_exsit;
 
     ProcessModel data;
     List<AttachFirstModel> attachFirstModels;
@@ -112,19 +115,27 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
         standard.setVisibility(View.VISIBLE);
         executed.setVisibility(View.VISIBLE);
         unexecuted.setVisibility(View.VISIBLE);
+        un_exsit.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.GONE);
-        title.setText(data.content);
+        title.setText(data.id+". "+data.content);
         standard.setText(data.standard);
         rate.setText("");
         if(data.result==1){
             executed.setSelected(true);
             unexecuted.setSelected(false);
+            un_exsit.setSelected(false);
         }else if(data.result==0){
             executed.setSelected(false);
+            un_exsit.setSelected(false);
             unexecuted.setSelected(true);
-        }else {
+        }else if(data.result==-1){
+            un_exsit.setSelected(true);
             executed.setSelected(false);
             unexecuted.setSelected(false);
+        }else{
+            executed.setSelected(false);
+            unexecuted.setSelected(false);
+            un_exsit.setSelected(false);
         }
     }
 
@@ -132,14 +143,24 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
     protected void executed() {
         executed.setSelected(true);
         unexecuted.setSelected(false);
+        un_exsit.setSelected(false);
         excelDialogManager.setResult(1);
     }
 
     @OnClick(R.id.unexecuted)
     protected void unexecuted() {
         executed.setSelected(false);
+        un_exsit.setSelected(false);
         unexecuted.setSelected(true);
         excelDialogManager.setResult(0);
+    }
+
+    @OnClick(R.id.un_exsit)
+    protected void unexsit(){
+        un_exsit.setSelected(true);
+        executed.setSelected(false);
+        unexecuted.setSelected(false);
+        excelDialogManager.setResult(-1);
     }
 
     public void setData2(ProcessModel data,List<AttachFirstModel> attachFirstModels, ExcelStep excelStep, int pos) {
@@ -159,10 +180,11 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
         if(pos<0){
             pos=0;
         }
-        title.setText(data.content+"("+data.standard+")");
+        title.setText(data.id+". "+data.content+"("+data.standard+")");
         standard.setVisibility(View.GONE);
         executed.setVisibility(View.GONE);
         unexecuted.setVisibility(View.GONE);
+        un_exsit.setVisibility(View.GONE);
         linearLayout.setVisibility(View.VISIBLE);
         attach_first_content.setText(dataList.get(pos).content+"\n"+
                 dataList.get(pos).standard);

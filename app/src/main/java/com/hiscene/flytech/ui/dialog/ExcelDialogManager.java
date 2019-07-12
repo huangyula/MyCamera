@@ -3,6 +3,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
+import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
@@ -90,9 +91,9 @@ public class ExcelDialogManager {
 
     public void init() {
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
-//        if(!SPUtils.getBoolean(RECOVERY)){
-//            new ComfirmDialog(mContext).show();
-//        }
+        if(SPUtils.getBoolean(RECOVERY)){
+            new ComfirmDialog(mContext).show();
+        }
 
     }
 
@@ -103,7 +104,8 @@ public class ExcelDialogManager {
     public void previousStep() {
         LogUtils.d("上一步");
         if(laststep){
-            recoverExcelDialog.nextStepBtn.setEnabled(true);
+//            recoverExcelDialog.nextStepBtn.setEnabled(true);
+            recoverExcelDialog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
             laststep=false;
         }
         if (PositionUtil.isFirstStep(pos, excelSteps)) {
@@ -123,6 +125,7 @@ public class ExcelDialogManager {
      * 下一步
      */
     public void nextStep() {
+        //保存上一步数据
         LogUtils.d("下一步");
         if(firststep){
             executeExcelDialog.previousStepBtn.setEnabled(true);
@@ -153,16 +156,27 @@ public class ExcelDialogManager {
             processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;
             processExcel.attachFourModelList.get(excelStep.step).time_1=time_2;
         }
-
-
         currentExcel.svae();
-        String index = PositionUtil.nextStep(pos, excelSteps);
-        if (PositionUtil.islastStep(index, excelSteps)) {
+//        String index = PositionUtil.nextStep(pos, excelSteps);
+//        if (PositionUtil.islastStep(index, excelSteps)) {
+//            lastStep();
+//        } else {
+//            pos=PositionUtil.nextStep(pos, excelSteps);
+//            SPUtils.put(PositionUtil.POSITION,pos);
+//            showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
+//        }
+        if(laststep){
+                LogUtils.d("导出表单");
+                export();
+//                return;
+        }
+
+        //显示下一步的内容
+        pos=PositionUtil.nextStep(pos, excelSteps);
+        SPUtils.put(PositionUtil.POSITION,pos);
+        showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
+        if (PositionUtil.islastStep(pos, excelSteps)) {
             lastStep();
-        } else {
-            pos=PositionUtil.nextStep(pos, excelSteps);
-            SPUtils.put(PositionUtil.POSITION,pos);
-            showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
         }
     }
 
@@ -172,7 +186,11 @@ public class ExcelDialogManager {
     public void lastStep() {
         laststep=true;
         ToastUtils.show("当前已经是最后一步了");
-        recoverExcelDialog.nextStepBtn.setEnabled(false);
+//        recoverExcelDialog.nextStepBtn.setEnabled(false);
+        recoverExcelDialog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.export_excel));
+    }
+
+    private void export(){
         EventCenter.getInstance().post(C.LOADING);
         new Thread(new Runnable() {
             @Override
@@ -346,7 +364,7 @@ public class ExcelDialogManager {
         CURRENT_DIALOG=ATTACH_FOUR_DIALOG;
     }
 
-    private void dismissCurrentDialog() {
+    public void dismissCurrentDialog() {
         switch (CURRENT_DIALOG){
             case EXECUTE_DIALOG:
                 if(executeExcelDialog!=null){
@@ -403,7 +421,20 @@ public class ExcelDialogManager {
     }
 
 
-
+    public void restart(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                processExcel.read();
+                executeExcel.read();
+                processExcel.svae();
+                executeExcel.svae();
+                //表格加载成功
+                Result result=new Result(C.RESTART_EXCEL,"");
+                EventCenter.getInstance().post(result);
+            }
+        }).start();
+    }
 
 
 }

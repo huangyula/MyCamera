@@ -6,10 +6,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseRxFragment;
+import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.ImageUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
+import com.github.weiss.core.utils.ToastUtils;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
@@ -99,6 +101,10 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
     protected void deviceInfo(){
         final List<Bitmap> bitmapList=new ArrayList<>();
         List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
+        if(CollectionUtils.isEmpty(fileList)){
+            ToastUtils.show("暂无资料");
+            return;
+        }
         Collections.sort(fileList, new FileComparator());
         for(File file:fileList){
             LogUtils.d(file.getName());

@@ -73,7 +73,8 @@ public class ProcessExcel implements IExcel {
     @Override
     public void read() {
         try {
-
+            clearData();
+            LogUtils.d("processExcelList:"+processExcelList.size());
             // 延迟解析比率
 //            ZipSecureFile.setMinInflateRatio(-1.0d);
             XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(new File(ASSETS_PATH + C.PROCESS_FILE)));
@@ -165,18 +166,21 @@ public class ProcessExcel implements IExcel {
                             case -1:
                                 result="确认(无)";
                                 break;
+                            case -2:
+                                result="确认( )";
+                                break;
                         }
                         resultList.add(result);
                     }
                     String path= OUTPUT_PATH+C.PROCESS+"-"+SPUtils.getString(START_TIME)+".xlsx";//OUTPUT_PATH+C.PROCESS_FILE
-                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,4,resultList);
+                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList);
 
                     //附表1
                     List<String> results=new ArrayList<>();
                     for(AttachFirstModel attachFirstModel:attachFirstModels){
                         results.add(attachFirstModel.result+" MΩ");
                     }
-                    POIUtil.setCellValueAt(path,path,ATTACH_ONE_ROW_BEGIN,4,results);
+                    POIUtil.setCellValueAt(path,path,ATTACH_ONE_ROW_BEGIN,6,results);
 
                     //附表2 列3，4，5，6
                     POIUtil.setCellValueAtSecond(path,path, ATTACH_SECOND_ROW_BEGIN,attachSecondModelList);
@@ -322,6 +326,15 @@ public class ProcessExcel implements IExcel {
                 }
             }
         }
+    }
+
+
+    private void clearData(){
+        processExcelList.clear();
+        attachFirstModels.clear();
+        attachSecondModelList.clear();
+        attachThreeModelList.clear();
+        attachFourModelList.clear();
     }
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">中调定检助手</string>
+    <string name="app_name">AR定检助手</string>
     <string name="action_settings">Settings</string>
     <string name="doit">DOIT</string>
     <string name="ask_saving_picture">是否保存图片？</string>
@@ -41,5 +41,9 @@
     <string name="recovered">已恢复</string>
     <string name="unrecorver">未恢复</string>
     <string name="continue_edit">继续填写</string>
-    <string name="restart_edit">开始填写</string>
+    <string name="restart_edit">重新开始</string>
+    <string name="status_good">状态良好</string>
+    <string name="status_not_good">状态不良</string>
+    <string name="no_this_item">没有该项目</string>
+    <string name="export_excel">导出表单</string>
 </resources>

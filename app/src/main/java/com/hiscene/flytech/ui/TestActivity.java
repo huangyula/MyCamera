@@ -200,7 +200,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         if(excelDialogManager.laststep&&success){
             SPUtils.put(RECOVERY, false);
             SPUtils.put(START_TIME,"");
-            SPUtils.put(PositionUtil.POSITION,"0,0");
+            SPUtils.put(PositionUtil.POSITION,"0.0");
         }else {
             SPUtils.put(RECOVERY, true);
             SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
@@ -298,11 +298,6 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                 case C.CONTINUE_EDIT:
 
                     break;
-                case C.RESTART_EDIT:
-                    SPUtils.put(RECOVERY,false);
-                    SPUtils.put(PositionUtil.POSITION,"0,0");
-                    SPUtils.put(START_TIME,"");
-                    break;
             }
         }
 
@@ -338,6 +333,22 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 //                                    finish();
 //                                }
 //                            }).show();
+                    break;
+                case C.RESTART_EDIT:
+                    xPopup=new XPopup.Builder(TestActivity.this)
+                            .asLoading("正在重新加载表单,请稍后...");
+                    xPopup.show();
+                    excelDialogManager.restart();
+                    break;
+                case C.RESTART_EXCEL://重新打开表单成功
+                    if(xPopup!=null){
+                        xPopup.dismiss();
+                    }
+                    excelDialogManager.pos="0.0";
+                    SPUtils.put(PositionUtil.POSITION,"0.0");
+                    SPUtils.put(RECOVERY,false);
+                    SPUtils.put(START_TIME,"");
+                    excelDialogManager.init();
                     break;
             }
         }

@@ -145,7 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="24dp"
                 android:layout_marginRight="24dp"
-                android:weightSum="4"
+                android:weightSum="5"
                 android:gravity="center_horizontal"
                 >
 
@@ -156,27 +156,41 @@
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
-                    android:text="@string/executed"
-                    android:contentDescription="@string/executed"
-                    android:layout_weight="1"/>
+                    android:text="@string/status_good"
+                    android:contentDescription="@string/status_good"
+                    android:layout_weight="1"
+                    />
 
                 <Button
                     android:id="@+id/unexecuted"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/buutton_height"
-                    android:layout_marginLeft="26dp"
+                    android:layout_marginLeft="20dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
-                    android:text="@string/unexecuted"
-                    android:contentDescription="@string/unexecuted"
+                    android:text="@string/status_not_good"
+                    android:contentDescription="@string/status_not_good"
+                    android:layout_weight="1"/>
+
+
+                <Button
+                    android:id="@+id/un_exsit"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/no_this_item"
+                    android:contentDescription="@string/no_this_item"
                     android:layout_weight="1"/>
 
                 <Button
                     android:id="@+id/previousStepBtn"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/buutton_height"
-                    android:layout_marginLeft="26dp"
+                    android:layout_marginLeft="20dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
                     android:textSize="14sp"
@@ -188,7 +202,7 @@
                     android:id="@+id/nextStepBtn"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/buutton_height"
-                    android:layout_marginLeft="26dp"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginBottom="16dp"
                     android:background="@drawable/selector_button_bg"
                     style="@style/text_style_white_bold"
