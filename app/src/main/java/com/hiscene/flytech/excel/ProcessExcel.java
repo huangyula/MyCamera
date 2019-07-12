@@ -49,9 +49,11 @@ import static com.hiscene.flytech.C.ATTACH_SECONG_ROW_END;
 import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.EXCEL_WRITE_SUCCESS;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.C.PROCESS_FILE;
 import static com.hiscene.flytech.C.PROCESS_ROW_BEGIN;
 import static com.hiscene.flytech.C.PROCESS_ROW_END;
 import static com.hiscene.flytech.C.START_TIME_BEGIN;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
@@ -172,7 +174,7 @@ public class ProcessExcel implements IExcel {
                         }
                         resultList.add(result);
                     }
-                    String path= OUTPUT_PATH+C.PROCESS+"-"+SPUtils.getString(START_TIME)+".xlsx";//OUTPUT_PATH+C.PROCESS_FILE
+                    String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+PROCESS_FILE;//OUTPUT_PATH+C.PROCESS_FILE
                     POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList);
 
                     //附表1
@@ -276,7 +278,6 @@ public class ProcessExcel implements IExcel {
 
     @Override
     public void svae() {
-
         //将List转化为json,并写入缓存目录
         if(processExcelList!=null&&processExcelList.size()>0){
             String write_content=GsonUtil.gsonString(processExcelList.toArray());

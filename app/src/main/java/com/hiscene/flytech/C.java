@@ -18,13 +18,16 @@ public class C {
     public static final String BASE_PATH = SDCardUtils.getSDCardPath()+ BaseApp.getAppContext().getResources().getString(R.string.app_name) +File.separator;
 
     //assets原表格资源目录
-    public static final String ASSETS_PATH = BASE_PATH + File.separator + "assets" + File.separator;
+    public static final String ASSETS_PATH = BASE_PATH + File.separator + "form" + File.separator;
 
     //临时目录
     public static final String TEMP_PATH = BASE_PATH+File.separator+ "temp" + File.separator;
 
     //输出目录
-    public static final String OUTPUT_PATH = BASE_PATH + File.separator + "output" + File.separator;
+    public static final String OUTPUT_PATH = BASE_PATH + File.separator + "export" + File.separator;
+
+    //配置文件目录
+    public static final String SETTING_PATH=BASE_PATH+File.separator+"setting"+File.separator;
 
     //作业过程表格文件名
     public static final String PROCESS_FILE = "芬莱作业过程.xlsx";
@@ -65,6 +68,6 @@ public class C {
     public static final String RESTART_EXCEL="RESTART_EXCEL";//重新打开表单
 
     //设备资料路径
-    public static final String FILE_DEVICE_FILE=BASE_PATH+File.separator + "设备资料" + File.separator;//设备资料
+    public static final String FILE_DEVICE_FILE=BASE_PATH+File.separator + "info" + File.separator;//设备资料
 
 }

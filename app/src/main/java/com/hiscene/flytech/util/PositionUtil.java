@@ -54,7 +54,7 @@ public class PositionUtil {
     public static String nextStep(String pos, List<ExcelStep> excelSteps) {
         //pos指向下一步
         int[] posArr=pos2posArr(pos);
-        ExcelStep excelStep = excelSteps.get(excelSteps.size()-1);
+        ExcelStep excelStep = excelSteps.get(posArr[0]);
         if (!CollectionUtils.isEmpty(excelStep.childSteps)) {//如果有小步骤
             if (excelStep.childSteps.size() > posArr[1] + 1) {
                 posArr[1]++;

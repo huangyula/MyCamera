@@ -5,6 +5,7 @@ import com.github.weiss.core.utils.LogUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.entity.ExcelStep;
+import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.util.GsonUtil;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args){
-        testStep();
+        testStep_1();
     }
 
     public static  void testStep(){
@@ -77,5 +78,33 @@ public class Test {
         }
         System.out.println(excelSteps.toString());
     }
+
+    private static void  testStep_1(){
+        List<ExcelStep> excelSteps= new ArrayList<>();
+        List<ExcelStep> childSteps= new ArrayList<>();
+        ExcelStep excelStep;
+        int step=0;
+        int childCount=0;
+
+        String execute_setting="4.4.1.3.3.2.2.3";
+        String[] bigStep=execute_setting.split("\\.");
+
+        for(int i=0;i<bigStep.length;i++){
+            childCount=Integer.valueOf(bigStep[i]);
+            excelStep=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,step,childCount);
+            childSteps=new ArrayList<>();
+            for(int j=0;j<childCount;j++){
+                childSteps.add(new ExcelStep(ExcelStyle.EXCUTE_EXCEL,++step,0));
+            }
+            excelStep.childSteps=childSteps;
+            excelSteps.add(excelStep);
+            step++;
+        }
+        System.out.println(excelSteps.size()+"");
+    }
+
+
+
+
 
 }

@@ -59,76 +59,81 @@ public class ExcelStep {
      */
     public static List<ExcelStep> test() {
 
-        String json="[\n" +
-                "{\"style\":\"0\",\"step\":\"0\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
-                "{\"style\":\"0\",\"step\":\"1\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"2\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"3\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"4\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"5\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
-                "{\"style\":\"0\",\"step\":\"6\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"7\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"8\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"9\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"10\",\"childSteps\":null,\"childCount\":\"1\"},\n" +
-                "{\"style\":\"0\",\"step\":\"11\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"12\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"0\",\"step\":\"13\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"14\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"15\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"16\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"0\",\"step\":\"17\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"18\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"19\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"20\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
-                "{\"style\":\"0\",\"step\":\"21\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"22\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"23\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
-                "{\"style\":\"0\",\"step\":\"24\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"25\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"26\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"0\",\"step\":\"27\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"28\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"0\",\"step\":\"29\",\"childSteps\":null,\"childCount\":\"0\"}" +
-                "]";
+//        String json="[\n" +
+//                "{\"style\":\"0\",\"step\":\"0\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"1\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"2\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"3\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"4\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"5\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"6\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"7\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"8\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"9\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"10\",\"childSteps\":null,\"childCount\":\"1\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"11\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"12\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"13\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"14\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"15\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"16\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"17\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"18\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"19\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"20\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"21\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"22\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"23\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"24\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"25\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"26\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"27\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"28\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"0\",\"step\":\"29\",\"childSteps\":null,\"childCount\":\"0\"}" +
+//                "]";
+//
+//        String json_recover="[\n" +
+//                "{\"style\":\"6\",\"step\":\"0\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"1\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"2\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"3\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"4\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"5\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"6\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"7\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"8\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"9\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"10\",\"childSteps\":null,\"childCount\":\"1\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"11\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"12\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"13\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"14\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"15\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"16\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"17\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"18\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"19\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"20\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"21\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"22\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"23\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"24\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"25\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"26\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"27\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"28\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
+//                "{\"style\":\"6\",\"step\":\"29\",\"childSteps\":null,\"childCount\":\"0\"}" +
+//                "]";
+//
+//        List<ExcelStep> excelSteps=jsonToList(json);
+//        List<ExcelStep> excelSteps_recover=jsonToList(json_recover);
 
-        String json_recover="[\n" +
-                "{\"style\":\"6\",\"step\":\"0\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
-                "{\"style\":\"6\",\"step\":\"1\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"2\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"3\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"4\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"5\",\"childSteps\":null,\"childCount\":\"4\"},\n" +
-                "{\"style\":\"6\",\"step\":\"6\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"7\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"8\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"9\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"10\",\"childSteps\":null,\"childCount\":\"1\"},\n" +
-                "{\"style\":\"6\",\"step\":\"11\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"12\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"6\",\"step\":\"13\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"14\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"15\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"16\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"6\",\"step\":\"17\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"18\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"19\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"20\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
-                "{\"style\":\"6\",\"step\":\"21\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"22\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"23\",\"childSteps\":null,\"childCount\":\"2\"},\n" +
-                "{\"style\":\"6\",\"step\":\"24\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"25\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"26\",\"childSteps\":null,\"childCount\":\"3\"},\n" +
-                "{\"style\":\"6\",\"step\":\"27\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"28\",\"childSteps\":null,\"childCount\":\"0\"},\n" +
-                "{\"style\":\"6\",\"step\":\"29\",\"childSteps\":null,\"childCount\":\"0\"}" +
-                "]";
+//        LogUtils.d("执行步骤: "+excelSteps.size());
 
-        List<ExcelStep> excelSteps=jsonToList(json);
-        List<ExcelStep> excelSteps_recover=jsonToList(json_recover);
+        //二次措施单执行步骤
+        List<ExcelStep> excelSteps=new ArrayList<>();
+        excelSteps.addAll(getExcuteSteps(ExcelStyle.EXCUTE_EXCEL));
 
-        LogUtils.d("执行步骤: "+excelSteps.size());
         //作业过程步骤
         ExcelStep excelStep;
         for(int i=0;i<=PROCESS_ROW_END-PROCESS_ROW_BEGIN;i++){
@@ -193,7 +198,7 @@ public class ExcelStep {
             excelSteps.add(excelStep);
         }
         //恢复部分
-        excelSteps.addAll(excelSteps_recover);
+        excelSteps.addAll(getExcuteSteps(ExcelStyle.RECOVER_EXCEL));
         return excelSteps;
     }
 
@@ -213,4 +218,29 @@ public class ExcelStep {
         }
         return excelSteps;
     }
+
+    private static List<ExcelStep>  getExcuteSteps(int style){
+        List<ExcelStep> excelSteps= new ArrayList<>();
+        List<ExcelStep> childSteps= new ArrayList<>();
+        ExcelStep excelStep;
+        int step=0;
+        int childCount=0;
+
+        String execute_setting="4.4.1.3.3.2.2.3";
+        String[] bigStep=execute_setting.split("\\.");
+
+        for(int i=0;i<bigStep.length;i++){
+            childCount=Integer.valueOf(bigStep[i]);
+            excelStep=new ExcelStep(style,step,childCount);
+            childSteps=new ArrayList<>();
+            for(int j=0;j<childCount;j++){
+                childSteps.add(new ExcelStep(style,++step,0));
+            }
+            excelStep.childSteps=childSteps;
+            excelSteps.add(excelStep);
+            step++;
+        }
+        return excelSteps;
+    }
+
 }

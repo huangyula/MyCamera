@@ -16,12 +16,14 @@ import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
+import com.hiscene.flytech.util.PositionUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.util.ArrayUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bouncycastle.math.ec.ScaleYPointMap;
 
@@ -36,6 +38,7 @@ import java.util.List;
 import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 import static com.hiscene.flytech.C.START_TIME_BEGIN;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
@@ -49,11 +52,20 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void read() {
         try {
+            String execute_start_end="6.36";//起始行
+            String execute_skip="32";//跳过行数
+            int[] start_end= StringUtils.strArrayToIntArray(execute_start_end.split("\\."));
+
+
+
             executeModelList.clear();
-            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_READ_FILE));
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            for (int i = start_end[0]-1; i <= start_end[1]-1; i++) {
+                if(i==Integer.parseInt(execute_skip)-1){
+                    continue;
+                }
                 Row row = sheet.getRow(i);
                 if(row==null){
                     break;
@@ -77,8 +89,8 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void write() {
         try {
-            String path= OUTPUT_PATH+C.EXECUTE+"-"+SPUtils.getString(START_TIME)+".xlsx";
-            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,path,C.EXECUTE_BEGIN,executeModelList);
+            String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+C.EXECUTE_FILE;
+            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,path,executeModelList);
             LogUtils.d("已成功修改表格内容");
             //及时刷新文件
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

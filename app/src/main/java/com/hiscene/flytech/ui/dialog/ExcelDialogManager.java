@@ -1,14 +1,17 @@
 package com.hiscene.flytech.ui.dialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.CollectionUtils;
+import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.TimeUtils;
 import com.github.weiss.core.utils.ToastUtils;
+import com.hiscene.flytech.App;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
@@ -29,6 +32,8 @@ import java.util.List;
 
 import static com.github.weiss.core.base.BaseApp.getAppContext;
 import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
 
 /**
  * @author Minamo
@@ -62,9 +67,11 @@ public class ExcelDialogManager {
     private IExcel currentExcel;
     //临界点判断
     public boolean laststep=false;
-    public boolean firststep=false;
+    public boolean firststep=true;
 
     private Context mContext;
+
+    private BaseExcelDialog mCurrentDailog;
 
     public ExcelDialogManager( Context context ) {
         mContext=context;
@@ -105,17 +112,17 @@ public class ExcelDialogManager {
         LogUtils.d("上一步");
         if(laststep){
 //            recoverExcelDialog.nextStepBtn.setEnabled(true);
-            recoverExcelDialog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
+            mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
             laststep=false;
         }
         if (PositionUtil.isFirstStep(pos, excelSteps)) {
             ToastUtils.show("当前已经是第一步了");
             firststep=true;
-            executeExcelDialog.previousStepBtn.setEnabled(false);
             return;
         }
         pos = PositionUtil.previousStep(pos, excelSteps);
         SPUtils.put(PositionUtil.POSITION,pos);
+        SPUtils.put(RECOVERY,true);
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
 
 
@@ -128,7 +135,6 @@ public class ExcelDialogManager {
         //保存上一步数据
         LogUtils.d("下一步");
         if(firststep){
-            executeExcelDialog.previousStepBtn.setEnabled(true);
             firststep=false;
         }
         //附表1的填写
@@ -157,27 +163,24 @@ public class ExcelDialogManager {
             processExcel.attachFourModelList.get(excelStep.step).time_1=time_2;
         }
         currentExcel.svae();
-//        String index = PositionUtil.nextStep(pos, excelSteps);
-//        if (PositionUtil.islastStep(index, excelSteps)) {
-//            lastStep();
-//        } else {
-//            pos=PositionUtil.nextStep(pos, excelSteps);
-//            SPUtils.put(PositionUtil.POSITION,pos);
-//            showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
-//        }
+
+        //显示下一步的内容,若是最后一步,则直接导出数据,无需再显示。
         if(laststep){
                 LogUtils.d("导出表单");
-                export();
-//                return;
-        }
+                if(mCurrentDailog!=null&&mCurrentDailog.nextStepBtn.getText().equals(App.getAppResources().getString(R.string.export_excel))){
+                    export();
+                    return;
+                }
 
-        //显示下一步的内容
+        }
         pos=PositionUtil.nextStep(pos, excelSteps);
         SPUtils.put(PositionUtil.POSITION,pos);
+        SPUtils.put(RECOVERY,true);
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
         if (PositionUtil.islastStep(pos, excelSteps)) {
             lastStep();
         }
+
     }
 
     /**
@@ -186,8 +189,7 @@ public class ExcelDialogManager {
     public void lastStep() {
         laststep=true;
         ToastUtils.show("当前已经是最后一步了");
-//        recoverExcelDialog.nextStepBtn.setEnabled(false);
-        recoverExcelDialog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.export_excel));
+        mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.export_excel));
     }
 
     private void export(){
@@ -195,6 +197,7 @@ public class ExcelDialogManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                SPUtils.put(END_TIME,TimeUtils.getNowTimeString());
                 executeExcel.write();
                 processExcel.write();
             }
@@ -262,6 +265,7 @@ public class ExcelDialogManager {
 //        processExcelDialog.setData(processExcel.processExcelList.get(excelStep.step));
         currentExcel = processExcel;
         CURRENT_DIALOG=PROCESS_DIALOG;
+        mCurrentDailog=processExcelDialog;
 
     }
 
@@ -288,6 +292,7 @@ public class ExcelDialogManager {
         }
         currentExcel = executeExcel;
         CURRENT_DIALOG=EXECUTE_DIALOG;
+        mCurrentDailog=executeExcelDialog;
     }
 
     private void showRecoverExcel( ExcelStep excelStep) {
@@ -308,6 +313,7 @@ public class ExcelDialogManager {
         }
         currentExcel = executeExcel;
         CURRENT_DIALOG=RECOVER_DIALOG;
+        mCurrentDailog=recoverExcelDialog;
     }
 
     private void showAttachSecondExcel( ExcelStep excelStep ) {
@@ -327,6 +333,7 @@ public class ExcelDialogManager {
 
         currentExcel = processExcel;
         CURRENT_DIALOG=ATTACH_SECOND_DIALOG;
+        mCurrentDailog=attachSecondExcelDialog;
     }
 
     private void showAttachThreeExcel( ExcelStep excelStep ) {
@@ -345,6 +352,7 @@ public class ExcelDialogManager {
 
         currentExcel = processExcel;
         CURRENT_DIALOG=ATTACH_THIRD_DIALOG;
+        mCurrentDailog=attachThreeExcelDialog;
     }
 
     private void showAttachFourExcel( ExcelStep excelStep ) {
@@ -362,6 +370,7 @@ public class ExcelDialogManager {
 
         currentExcel = processExcel;
         CURRENT_DIALOG=ATTACH_FOUR_DIALOG;
+        mCurrentDailog=attachFourExcelDialog;
     }
 
     public void dismissCurrentDialog() {
@@ -436,5 +445,21 @@ public class ExcelDialogManager {
         }).start();
     }
 
+    public void reset(){ //重新初始化值
+        pos="0.0";
+        CURRENT_DIALOG=-2;
+        currentExcel=null;
+        firststep=true;
+        laststep=false;
+        if(mCurrentDailog!=null){
+            mCurrentDailog.dismiss();
+        }
+        SPUtils.put(PositionUtil.POSITION,"0.0");
+        SPUtils.put(RECOVERY,false);
+        SPUtils.put(START_TIME,"");
+    }
 
+    public Dialog getCurrentDailog() {
+        return mCurrentDailog;
+    }
 }

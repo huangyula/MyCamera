@@ -44,6 +44,7 @@ import butterknife.BindView;
 import io.reactivex.Observable;
 
 import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.END_TIME;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.RECOVERY;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.START_TIME;
 
@@ -197,14 +198,14 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         super.onDestroy();
         mComponentContainer.onDestroy();
         boolean result;
-        if(excelDialogManager.laststep&&success){
-            SPUtils.put(RECOVERY, false);
-            SPUtils.put(START_TIME,"");
-            SPUtils.put(PositionUtil.POSITION,"0.0");
-        }else {
+//        if(excelDialogManager.laststep&&success){
+//            SPUtils.put(RECOVERY, false);
+//            SPUtils.put(START_TIME,"");
+//            SPUtils.put(PositionUtil.POSITION,"0.0");
+//        }else {
             SPUtils.put(RECOVERY, true);
             SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
-        }
+//        }
 
 
 
@@ -316,25 +317,19 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     LogUtils.d("文件写入数据出错："+result.msg);
                     break;
                 case C.EXCEL_WRITE_SUCCESS:
+                    success=true;
                     if(xPopup!=null){
                         xPopup.dismiss();
                     }
-                    ToastUtils.show("当前已经表单操作的最后一步,文件已经生成成功,请在  /中调定检助手/output/ 中查看文件",5000);
-                    success=true;
-                   // 退出应用,清除缓存数据,recovery,position,表单填写时间需要重置
-//                    new XPopup.Builder(MainActivity.this).asConfirm("导出文件成功", "导出文件成功,是否结束本次表单填写？",
-//                            new OnConfirmListener() {
-//                                @Override
-//                                public void onConfirm() {
-//                                    recovery=false;
-//                                    SPUtils.put(START_TIME,"");
-//                                    //删除temp目录下所有的.json文件
-////                                    FileUtils.deleteFilesInDir(C.TEMP_PATH);
-//                                    finish();
-//                                }
-//                            }).show();
+                    ToastUtils.show("表单已保存至"+C.OUTPUT_PATH+SPUtils.getString(END_TIME)+"文件夹",5000);
+
+//                    excelDialogManager.getCurrentDailog().dismiss();
+                    if(startEditExcelDialog==null){
+                        startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
+                    }
+                    startEditExcelDialog.show();
                     break;
-                case C.RESTART_EDIT:
+                case C.RESTART_EDIT://准备重新打开表单,重新读取数据
                     xPopup=new XPopup.Builder(TestActivity.this)
                             .asLoading("正在重新加载表单,请稍后...");
                     xPopup.show();
@@ -344,10 +339,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     if(xPopup!=null){
                         xPopup.dismiss();
                     }
-                    excelDialogManager.pos="0.0";
-                    SPUtils.put(PositionUtil.POSITION,"0.0");
-                    SPUtils.put(RECOVERY,false);
-                    SPUtils.put(START_TIME,"");
+                    excelDialogManager.reset();
                     excelDialogManager.init();
                     break;
             }

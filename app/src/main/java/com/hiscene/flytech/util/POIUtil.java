@@ -1,6 +1,8 @@
 package com.hiscene.flytech.util;
 
+import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.StringUtils;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
@@ -32,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -449,9 +452,22 @@ public class POIUtil {
      * @param descPath  保存文件的目的地
      * @param executeModelList 要设置得内容
      */
-    public static void setCellValueAtExecute(String filePath, String descPath, int rowIndex,List<ExecuteModel> executeModelList) throws
+    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList) throws
             Exception {
-        //行：从第5行开始，中间第32行不是步骤
+        String execute_start_end="6.36";//起始行
+        String execute_skip="32";//跳过行数
+        int[] start_end= StringUtils.strArrayToIntArray(execute_start_end.split("\\."));
+        List<String> skip=new ArrayList<>();
+        if(execute_skip.length()>0){
+            if(execute_skip.contains(".")){
+                skip= CollectionUtils.arrayToList(execute_skip.split("."));
+            }else {
+                skip.add(execute_skip);
+            }
+
+        }
+
+        int rowIndex=start_end[0];
         //列：2，3，8，9
         insureExcelType(filePath);
         ExecuteModel executeModel;
@@ -467,7 +483,7 @@ public class POIUtil {
                     execute_result="√";
                     break;
                 case -1:
-                    execute_result="无";
+                    execute_result="";
                     break;
             }
             switch (executeModel.recover_result){
@@ -478,7 +494,7 @@ public class POIUtil {
                     recover_result="√";
                     break;
                 case -1:
-                    recover_result="无";
+                    recover_result="";
                     break;
             }
             Cell cell_1 = getCellInSheet(rowIndex,2);//执行结果
@@ -490,7 +506,7 @@ public class POIUtil {
             setCellValue(workbook,cell_3,recover_result);
             setCellValue(workbook,cell_4,executeModel.recover_date);
             rowIndex++;
-            if(rowIndex==32){
+            if(skip.contains(rowIndex+"")){
                 rowIndex++;
             }
         }
