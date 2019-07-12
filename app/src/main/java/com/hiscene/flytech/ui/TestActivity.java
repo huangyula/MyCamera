@@ -15,6 +15,7 @@ import com.github.weiss.core.utils.helper.RxSchedulers;
 import com.google.zxing.Result;
 import com.hiscene.camera.listener.OnQrRecognizeListener;
 import com.hiscene.camera.view.CameraView;
+import com.hiscene.camera.vision.QRVision;
 import com.hiscene.flytech.BaseActivity;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
@@ -71,8 +72,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     LinearLayout cameraLayout;
 
     CameraView cameraView;
-    CameraRecorder cameraRecorder;
-    //    ScreenRecorderManager screenRecorderManager;
+    QRVision cameraRecorder;
+    ScreenRecorderManager screenRecorderManager;
     boolean isLaunchHiLeia = false;
     boolean isCameraRecord = false;
 
@@ -95,7 +96,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     protected void initView() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventCenter.bindContainerAndHandler(this, mEventHandler);
-//        screenRecorderManager = new ScreenRecorderManager(this);
+        screenRecorderManager = new ScreenRecorderManager(this);
         if(userManager.isLogin()){
             startEditExcelDialog=StartEditExcelDialog.newInstance(this);
             startEditExcelDialog.show();
@@ -108,7 +109,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         cameraView = new CameraView(this);
         cameraLayout.addView(cameraView);
         cameraView.setVisibility(View.GONE);
-        cameraRecorder = new CameraRecorder();
+        cameraRecorder = new QRVision();
         cameraRecorder.setOnQrRecognizeListener(new OnQrRecognizeListener() {
             @Override
             public boolean OnRecognize(Result result) {
@@ -170,7 +171,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 //            cameraView.resume();
         }
         if (isCameraRecord) {
-            cameraRecorder.init();
+//            cameraRecorder.init();
+            screenRecorderManager.startCaptureIntent();
         }
 
     }
@@ -182,7 +184,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         mComponentContainer.onBecomesPartiallyInvisible();
 //        cameraView.pause();
         if (isCameraRecord) {
-            cameraRecorder.destroy();
+            screenRecorderManager.cancelRecorder();
+//            cameraRecorder.destroy();
         }
     }
 
@@ -213,7 +216,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
             isLaunchHiLeia = false;
 //            screenRecorderManager.cancelRecorder();
         } else {
-            cameraRecorder.destroy();
+//            cameraRecorder.destroy();
             cameraRecorder.shutdown();
         }
     }
@@ -222,7 +225,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ScreenRecorderManager.REQUEST_MEDIA_PROJECTION) {
-//            screenRecorderManager.onActivityResult(requestCode, resultCode, data);
+            screenRecorderManager.onActivityResult(requestCode, resultCode, data);
+            isCameraRecord = true;
         }
     }
 
@@ -265,8 +269,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
          excelDialogManager.init();
          startEditExcelDialog.dismiss();
         cameraView.setVisibility(View.VISIBLE);
-        cameraRecorder.init();
-        isCameraRecord = true;
+        screenRecorderManager.startCaptureIntent();
+//        cameraRecorder.init();
         isClick=false;
        }else {
            ToastUtils.show("正在加载表格中,请稍后");
