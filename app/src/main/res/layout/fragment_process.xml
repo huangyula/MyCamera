@@ -92,16 +92,21 @@
                     />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/standard"
-                android:layout_width="wrap_content"
+            <ScrollView
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="密封工作票"
-                android:paddingLeft="@dimen/excel_left_padding_16"
-                style="@style/text_style_white"
-                android:textSize="@dimen/standard_size"
-                android:paddingRight="@dimen/excel_left_padding_16"/>
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/standard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="密封工作票"
+                    android:paddingLeft="@dimen/excel_left_padding_16"
+                    style="@style/text_style_white"
+                    android:textSize="@dimen/standard_size"
+                    android:paddingRight="@dimen/excel_left_padding_16"/>
+            </ScrollView>
+
             <LinearLayout
                 android:id="@+id/liner_attach_first_excel"
                 android:layout_width="wrap_content"

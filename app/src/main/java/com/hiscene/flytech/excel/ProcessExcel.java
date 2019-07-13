@@ -21,6 +21,7 @@ import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.entity.Result;
+import com.hiscene.flytech.entity.Setting;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.zip.ZipFile;
 
 import static com.hiscene.flytech.C.ASSETS_PATH;
+import static com.hiscene.flytech.C.ATTACH_FOUR_ROW_BEGIN;
+import static com.hiscene.flytech.C.ATTACH_FOUR_ROW_END;
 import static com.hiscene.flytech.C.ATTACH_ONE_ROW_BEGIN;
 import static com.hiscene.flytech.C.ATTACH_ONE_ROW_END;
 import static com.hiscene.flytech.C.ATTACH_SECOND_ROW_BEGIN;
@@ -69,7 +72,8 @@ public class ProcessExcel implements IExcel {
     public List<AttachSecondModel> attachSecondModelList = new ArrayList<>();
     public List<AttachThreeModel> attachThreeModelList = new ArrayList<>();
     public List<AttachFourModel> attachFourModelList = new ArrayList<>();
-
+    public List<Setting> settingList=new ArrayList<>();
+    List<String> skipList=new ArrayList<>();
 
 
     @Override
@@ -83,7 +87,19 @@ public class ProcessExcel implements IExcel {
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
             //作业过程：行10-59  列
+            boolean flag=false;
             for (int i = PROCESS_ROW_BEGIN-1; i <PROCESS_ROW_END; i++) {
+                flag=false;
+                for(String s:skipList){//跳过不需要读写的行数
+                    if(i==Integer.parseInt(s)-1){
+                        flag=true;
+                        break;
+                    }
+
+                }
+                if(flag){
+                    continue;
+                }
                 Row row = sheet.getRow(i);
                 if(row==null){//防止空行导致获取到的总行数不正确
                     break;
@@ -175,7 +191,7 @@ public class ProcessExcel implements IExcel {
                         resultList.add(result);
                     }
                     String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+PROCESS_FILE;//OUTPUT_PATH+C.PROCESS_FILE
-                    POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList);
+                    POIUtil.setCellValueAtProcess(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList,skipList);
 
                     //附表1
                     List<String> results=new ArrayList<>();
@@ -338,4 +354,27 @@ public class ProcessExcel implements IExcel {
         attachFourModelList.clear();
     }
 
+    public void setSettingList( List<Setting> settingList ) {
+        this.settingList = settingList;
+        PROCESS_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[0];
+        PROCESS_ROW_END=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[1];
+        ATTACH_ONE_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(2).start_end.split("\\."))[0];
+        ATTACH_ONE_ROW_END=StringUtils.strArrayToIntArray(settingList.get(2).start_end.split("\\."))[1];
+        ATTACH_SECOND_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(3).start_end.split("\\."))[0];
+        ATTACH_SECONG_ROW_END=StringUtils.strArrayToIntArray(settingList.get(3).start_end.split("\\."))[1];
+        ATTACH_FOUR_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(5).start_end.split("\\."))[0];
+        ATTACH_FOUR_ROW_END=StringUtils.strArrayToIntArray(settingList.get(5).start_end.split("\\."))[1];
+        C.ATTACH_THIRD_ROW_BEGIN_1=StringUtils.strArrayToIntArray(settingList.get(4).start_end.split("\\."))[0];
+        C.ATTACH_THIRD_ROW_END_1=StringUtils.strArrayToIntArray(settingList.get(4).start_end.split("\\."))[1];
+        C.ATTACH_THIRD_ROW_BEGIN_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[0];
+        C.ATTACH_THIRD_ROW_END_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[1];
+        String skip=settingList.get(0).skip;
+        if(skip.length()>0){
+            if(settingList.get(0).skip.contains(".")){
+                skipList= CollectionUtils.arrayToList(skip.split("\\."));
+            }else {
+                skipList.add(skip);
+            }
+        }
+    }
 }

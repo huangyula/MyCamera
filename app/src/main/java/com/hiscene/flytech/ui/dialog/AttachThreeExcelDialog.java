@@ -92,6 +92,9 @@ public class AttachThreeExcelDialog extends BaseExcelDialog<AttachSecondModel> {
             et_A.setText(attachThreeModel.a);
             et_B.setText(attachThreeModel.b);
             et_A.setSelection(et_A.getText().toString().length());
+            et_B.setSelection(et_B.getText().toString().length());
+        }else {
+            et_A.setFocusable(true);
         }
     }
 

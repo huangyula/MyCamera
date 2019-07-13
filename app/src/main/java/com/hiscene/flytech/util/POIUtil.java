@@ -452,28 +452,20 @@ public class POIUtil {
      * @param descPath  保存文件的目的地
      * @param executeModelList 要设置得内容
      */
-    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList) throws
+    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList,List<String> skipList) throws
             Exception {
-        String execute_start_end="6.36";//起始行
-        String execute_skip="32";//跳过行数
-        int[] start_end= StringUtils.strArrayToIntArray(execute_start_end.split("\\."));
-        List<String> skip=new ArrayList<>();
-        if(execute_skip.length()>0){
-            if(execute_skip.contains(".")){
-                skip= CollectionUtils.arrayToList(execute_skip.split("."));
-            }else {
-                skip.add(execute_skip);
-            }
 
-        }
-
-        int rowIndex=start_end[0];
+        int rowIndex=C.EXECUTE_BEGIN;
         //列：2，3，8，9
         insureExcelType(filePath);
         ExecuteModel executeModel;
         String execute_result="";
         String recover_result="";
         for(int i=0;i<executeModelList.size();i++){
+            if(skipList.contains(rowIndex+"")){
+                rowIndex++;
+                continue;
+            }
             executeModel=executeModelList.get(i);
             switch (executeModel.excute_result){
                 case 0:
@@ -506,9 +498,6 @@ public class POIUtil {
             setCellValue(workbook,cell_3,recover_result);
             setCellValue(workbook,cell_4,executeModel.recover_date);
             rowIndex++;
-            if(skip.contains(rowIndex+"")){
-                rowIndex++;
-            }
         }
         try{
             if(!FileUtils.isFileExists(descPath)){
@@ -656,6 +645,36 @@ public class POIUtil {
         for(int j=0;j<colIndex.length;j++){
                 Cell cell=getCellInSheet(rowIndex,colIndex[j]);
                 setCellValue(workbook,cell,list.get(j));
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+    public static void setCellValueAtProcess(String filePath, String descPath, int rowIndex, int colIndex, List<String> list,List<String> skipList) throws Exception {
+
+        insureExcelType(filePath);
+        for(int i=0;i<list.size();i++){
+            if(skipList.contains(rowIndex+"")){
+                rowIndex++;
+                continue;
+            }
+            Cell cell = getCellInSheet(rowIndex,colIndex);//
+            setCellValue(workbook,cell,list.get(i));
+            rowIndex++;
+
         }
         try{
             if(!FileUtils.isFileExists(descPath)){

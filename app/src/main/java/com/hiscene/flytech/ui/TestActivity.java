@@ -86,7 +86,9 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 
     ExcelDialogManager excelDialogManager;
     
-    LoadingPopupView xPopup;
+    LoadingPopupView xLoadExcelPopup;
+
+    LoadingPopupView xExportExcelPopup;
 
     @Override
     protected int getLayoutId() {
@@ -296,9 +298,10 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     hileia();
                     break;
                 case C.LOADING:
-                    xPopup=new XPopup.Builder(TestActivity.this)
+                    LogUtils.d("正在生成文件中");
+                    xExportExcelPopup=new XPopup.Builder(TestActivity.this)
                             .asLoading("正在生成文件中...");
-                    xPopup.show();
+                    xExportExcelPopup.show();
                     break;
                 case C.CONTINUE_EDIT:
 
@@ -315,15 +318,15 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     break;
                 case C.EXCEL_WRITE_ERROR:
                     success=false;
-                    if(xPopup!=null){
-                        xPopup.dismiss();
+                    if(xExportExcelPopup!=null){
+                        xExportExcelPopup.dismiss();
                     }
                     LogUtils.d("文件写入数据出错："+result.msg);
                     break;
                 case C.EXCEL_WRITE_SUCCESS:
                     success=true;
-                    if(xPopup!=null){
-                        xPopup.dismiss();
+                    if(xExportExcelPopup!=null){
+                        xExportExcelPopup.dismiss();
                     }
                     ToastUtils.show("表单已保存至"+C.OUTPUT_PATH+SPUtils.getString(END_TIME)+"文件夹",5000);
 
@@ -334,17 +337,24 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     startEditExcelDialog.show();
                     break;
                 case C.RESTART_EDIT://准备重新打开表单,重新读取数据
-                    xPopup=new XPopup.Builder(TestActivity.this)
+                    xLoadExcelPopup=new XPopup.Builder(TestActivity.this)
                             .asLoading("正在重新加载表单,请稍后...");
-                    xPopup.show();
+                    xLoadExcelPopup.show();
                     excelDialogManager.restart();
                     break;
                 case C.RESTART_EXCEL://重新打开表单成功
-                    if(xPopup!=null){
-                        xPopup.dismiss();
+                    if(xLoadExcelPopup!=null){
+                        xLoadExcelPopup.dismiss();
+                    }
+                    if(xExportExcelPopup!=null&&xExportExcelPopup.isShow()){
+                        xExportExcelPopup.dismiss();
                     }
                     excelDialogManager.reset();
                     excelDialogManager.init();
+                    break;
+                case C.SETTING_ERROR:
+                    ToastUtils.show(result.msg);
+                    finish();
                     break;
             }
         }

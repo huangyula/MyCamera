@@ -18,8 +18,10 @@ import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
+import com.hiscene.flytech.entity.ProcessAttachStep;
 import com.hiscene.flytech.entity.ProcessModel;
 import com.hiscene.flytech.entity.Result;
+import com.hiscene.flytech.entity.Setting;
 import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.excel.ExecuteExcel;
 import com.hiscene.flytech.excel.IExcel;
@@ -33,6 +35,8 @@ import java.util.List;
 import static com.github.weiss.core.base.BaseApp.getAppContext;
 import static com.hiscene.flytech.App.userManager;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.entity.ExcelStep.readProcessStep;
+import static com.hiscene.flytech.entity.ExcelStep.readSetting;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
 
 /**
@@ -50,6 +54,10 @@ public class ExcelDialogManager {
     private FragmentManager manager;
     //填表格步骤
     private List<ExcelStep> excelSteps;
+    //配置文件
+    //读取配置文件
+    List<Setting> settingList;
+    List<ProcessAttachStep> processAttachStepList;
     //当前步骤，-1 没有小步骤 比如：2.3 大步骤2，小步骤3。
     public String pos = "0.0";
     public int CURRENT_DIALOG=-2;
@@ -63,6 +71,7 @@ public class ExcelDialogManager {
     private AttachFourExcelDialog attachFourExcelDialog;
     private ProcessExcel processExcel;
     private ExecuteExcel executeExcel;
+
     //当前表格
     private IExcel currentExcel;
     //临界点判断
@@ -76,9 +85,21 @@ public class ExcelDialogManager {
     public ExcelDialogManager( Context context ) {
         mContext=context;
         long time = System.currentTimeMillis();
-        excelSteps = ExcelStep.test();
+        try {
+            //读取配置文件
+            settingList=readSetting();
+            processAttachStepList=readProcessStep();
+            excelSteps = ExcelStep.test(settingList,processAttachStepList);
+        }catch (Exception e){
+            Result result=new Result(C.SETTING_ERROR,"配置文件有错误："+e.getMessage());
+            EventCenter.getInstance().post(result);
+        }
         processExcel = new ProcessExcel();
         executeExcel = new ExecuteExcel();
+        processExcel.setSettingList(settingList);
+        executeExcel.setSettingList(settingList);
+
+
 
         if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
             processExcel.read();
@@ -95,6 +116,7 @@ public class ExcelDialogManager {
         EventCenter.getInstance().post(result);
         LogUtils.d("load time: "+(System.currentTimeMillis() - time));
     }
+
 
     public void init() {
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
@@ -160,7 +182,7 @@ public class ExcelDialogManager {
             String time_1= TextUtils.isEmpty(attachFourExcelDialog.time_1.getText())?"":attachFourExcelDialog.time_1.getText().toString().trim();
             String time_2= TextUtils.isEmpty(attachFourExcelDialog.time_2.getText())?"":attachFourExcelDialog.time_2.getText().toString().trim();
             processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;
-            processExcel.attachFourModelList.get(excelStep.step).time_1=time_2;
+            processExcel.attachFourModelList.get(excelStep.step).time_2=time_2;
         }
         currentExcel.svae();
 
@@ -425,7 +447,7 @@ public class ExcelDialogManager {
             executeExcel.executeModelList.get(index).recover_result = result;
             executeExcel.executeModelList.get(index).recover_date = TimeUtils.getNowTimeString();
         } else if (excelStep.style == ExcelStyle.PROCESS_EXCEL) {
-            processExcel.processExcelList.get(index).result = result;
+            processExcel.processExcelList.get(excelStep.step).result = result;
         }
     }
 
@@ -462,4 +484,7 @@ public class ExcelDialogManager {
     public Dialog getCurrentDailog() {
         return mCurrentDailog;
     }
+
+
+
 }

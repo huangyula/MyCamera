@@ -70,7 +70,7 @@ public class ExcelFragmentManager {
     public ExcelFragmentManager( FragmentManager fm ) {
         long time = System.currentTimeMillis();
         this.manager = fm;
-        excelSteps = ExcelStep.test();
+        excelSteps = ExcelStep.test(null,null);
         processExcel = new ProcessExcel();
         executeExcel = new ExecuteExcel();
 

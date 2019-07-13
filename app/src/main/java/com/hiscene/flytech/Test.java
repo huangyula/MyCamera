@@ -7,7 +7,9 @@ import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ExecuteModel;
+import com.hiscene.flytech.entity.ProcessAttachStep;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Setting;
 import com.hiscene.flytech.util.GsonUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -80,27 +82,42 @@ public class Test {
     }
 
     private static void  testStep_1(){
-        List<ExcelStep> excelSteps= new ArrayList<>();
-        List<ExcelStep> childSteps= new ArrayList<>();
-        ExcelStep excelStep;
-        int step=0;
-        int childCount=0;
+        List<Setting> settingList=new ArrayList<>();
+        String read_content="[\n" +
+                "{\"row\":\"13\",\"attach\":\"1\",\"count\":\"3\",\"step\":\"1.2.3\"},\n" +
+                "{\"row\":\"17\",\"attach\":\"2\",\"count\":\"1\",\"step\":\"1\"},\n" +
+                "{\"row\":\"28\",\"attach\":\"2\",\"count\":\"1\",\"step\":\"2\"},\n" +
+                "{\"row\":\"39\",\"attach\":\"2\",\"count\":\"1\",\"step\":\"3\"},\n" +
+                "{\"row\":\"50\",\"attach\":\"3\",\"count\":\"12\",\"step\":\"1.2.3.4.5.6.7.8.9.10.11.12\"},\n" +
+                "{\"row\":\"51\",\"attach\":\"2\",\"count\":\"1\",\"step\":\"4\"},\n" +
+                "{\"row\":\"52\",\"attach\":\"3\",\"count\":\"6\",\"step\":\"13.14.15.16.17.18\"},\n" +
+                "{\"row\":\"53\",\"attach\":\"4\",\"count\":\"1\",\"step\":\"1\"}\n" +
+                "]";
 
-        String execute_setting="4.4.1.3.3.2.2.3";
-        String[] bigStep=execute_setting.split("\\.");
-
-        for(int i=0;i<bigStep.length;i++){
-            childCount=Integer.valueOf(bigStep[i]);
-            excelStep=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,step,childCount);
-            childSteps=new ArrayList<>();
-            for(int j=0;j<childCount;j++){
-                childSteps.add(new ExcelStep(ExcelStyle.EXCUTE_EXCEL,++step,0));
-            }
-            excelStep.childSteps=childSteps;
-            excelSteps.add(excelStep);
-            step++;
-        }
-        System.out.println(excelSteps.size()+"");
+        Type type = new TypeToken<List<ProcessAttachStep>>(){}.getType();
+        settingList=new Gson().fromJson(read_content,type);
+        System.out.println(settingList);
+//        List<ExcelStep> excelSteps= new ArrayList<>();
+//        List<ExcelStep> childSteps= new ArrayList<>();
+//        ExcelStep excelStep;
+//        int step=0;
+//        int childCount=0;
+//
+//        String execute_setting="4.4.1.3.3.2.2.3";
+//        String[] bigStep=execute_setting.split("\\.");
+//
+//        for(int i=0;i<bigStep.length;i++){
+//            childCount=Integer.valueOf(bigStep[i]);
+//            excelStep=new ExcelStep(ExcelStyle.EXCUTE_EXCEL,step,childCount);
+//            childSteps=new ArrayList<>();
+//            for(int j=0;j<childCount;j++){
+//                childSteps.add(new ExcelStep(ExcelStyle.EXCUTE_EXCEL,++step,0));
+//            }
+//            excelStep.childSteps=childSteps;
+//            excelSteps.add(excelStep);
+//            step++;
+//        }
+//        System.out.println(excelSteps.size()+"");
     }
 
 

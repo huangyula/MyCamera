@@ -95,20 +95,23 @@
                     />
             </LinearLayout>
 
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="24dp"
-                android:layout_marginRight="24dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/device_name"
-                    style="@style/text_style_white"
-                    android:layout_width="wrap_content"
+                android:layout_weight="1">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/device_name" />
+                    android:layout_marginLeft="24dp"
+                    android:layout_marginRight="24dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/device_name"
+                        style="@style/text_style_white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/device_name" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -148,51 +151,51 @@
                             android:gravity="center"
                             android:clickable="true"
                             style="@style/text_style_white"/>
+
+
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:weightSum="4">
-                    <TextView
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/device_version"
-                        style="@style/text_style_white"
-                        android:layout_weight="0.8"/>
-                    <TextView
-                        android:id="@+id/device_version"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="hf_no_overlay"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:clickable="true"
-                        style="@style/text_style_white"
-                        />
+                        android:layout_marginTop="5dp"
+                        android:weightSum="4">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/device_version"
+                            style="@style/text_style_white"
+                            android:layout_weight="0.8"/>
+                        <TextView
+                            android:id="@+id/device_version"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="hf_no_overlay"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:clickable="true"
+                            style="@style/text_style_white"
+                            />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/factory"
-                        style="@style/text_style_white"
-                        android:layout_weight="0.8"/>
-                    <TextView
-                        android:id="@+id/factory"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:contentDescription="hf_no_overlay"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:clickable="true"
-                        style="@style/text_style_white"
-                        />
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/factory"
+                            style="@style/text_style_white"
+                            android:layout_weight="0.8"/>
+                        <TextView
+                            android:id="@+id/factory"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="hf_no_overlay"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:clickable="true"
+                            style="@style/text_style_white"
+                            />
+                    </LinearLayout>
                 </LinearLayout>
-
-
-
-            </LinearLayout>
+            </ScrollView>
 
 
 
