@@ -96,55 +96,59 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
-                <TextView
-                    android:id="@+id/standard"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="密封工作票"
-                    android:paddingLeft="@dimen/excel_left_padding_16"
-                    style="@style/text_style_white"
-                    android:textSize="@dimen/standard_size"
-                    android:paddingRight="@dimen/excel_left_padding_16"/>
-            </ScrollView>
-
-            <LinearLayout
-                android:id="@+id/liner_attach_first_excel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/excel_left_padding_15"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:visibility="gone"
-                >
-                <TextView
-                    android:id="@+id/attach_first_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/text_style_white"
-                    />
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                     <TextView
+                        android:id="@+id/standard"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="实际值："
-                        style="@style/text_style_white"/>
-                    <EditText
-                        android:id="@+id/number"
-                        android:layout_width="100dp"
-                        android:layout_height="wrap_content"
-                        android:inputType="numberDecimal|numberSigned"
-                        android:focusable="true"
-                        style="@style/MyEditText"
-                        />
-                    <TextView
+                        android:text="密封工作票"
+                        android:paddingLeft="@dimen/excel_left_padding_16"
+                        style="@style/text_style_white"
+                        android:textSize="@dimen/standard_size"
+                        android:paddingRight="@dimen/excel_left_padding_16"/>
+
+                    <LinearLayout
+                        android:id="@+id/liner_attach_first_excel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="MΩ"
-                        style="@style/text_style_white"/>
+                        android:layout_marginLeft="@dimen/excel_left_padding_15"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+
+                        >
+                        <TextView
+                            android:id="@+id/attach_first_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="@style/text_style_white"
+                            />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="实际值："
+                                style="@style/text_style_white"/>
+                            <EditText
+                                android:id="@+id/number"
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:focusable="true"
+                                style="@style/MyEditText"
+                                />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="MΩ"
+                                style="@style/text_style_white"/>
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </ScrollView>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -462,10 +462,6 @@ public class POIUtil {
         String execute_result="";
         String recover_result="";
         for(int i=0;i<executeModelList.size();i++){
-            if(skipList.contains(rowIndex+"")){
-                rowIndex++;
-                continue;
-            }
             executeModel=executeModelList.get(i);
             switch (executeModel.excute_result){
                 case 0:
@@ -498,6 +494,9 @@ public class POIUtil {
             setCellValue(workbook,cell_3,recover_result);
             setCellValue(workbook,cell_4,executeModel.recover_date);
             rowIndex++;
+            while (skipList.contains(rowIndex+"")){
+                rowIndex++;
+            }
         }
         try{
             if(!FileUtils.isFileExists(descPath)){

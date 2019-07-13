@@ -368,7 +368,7 @@ public class ProcessExcel implements IExcel {
         C.ATTACH_THIRD_ROW_END_1=StringUtils.strArrayToIntArray(settingList.get(4).start_end.split("\\."))[1];
         C.ATTACH_THIRD_ROW_BEGIN_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[0];
         C.ATTACH_THIRD_ROW_END_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[1];
-        String skip=settingList.get(0).skip;
+        String skip=settingList.get(1).skip;
         if(skip.length()>0){
             if(settingList.get(0).skip.contains(".")){
                 skipList= CollectionUtils.arrayToList(skip.split("\\."));
