@@ -15,6 +15,7 @@ import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.github.weiss.core.utils.DisplayUtil;
 import com.github.weiss.core.utils.ScreenUtils;
 import com.github.weiss.core.utils.ToastUtils;
 import com.hiscene.flytech.App;
@@ -53,7 +54,7 @@ public class ScreenRecorderManager {
      * instead of a foreground Activity in this demonstrate.
      */
     private ScreenRecorder mRecorder;
-    private boolean audioEnabled = false;
+    private boolean audioEnabled = true;
     private boolean isLandscape = true;
     private Activity activity;
     // I-frames
@@ -70,7 +71,7 @@ public class ScreenRecorderManager {
     private ScreenRecorder newRecorder(MediaProjection mediaProjection, VideoEncodeConfig video,
                                        AudioEncodeConfig audio, File output) {
         ScreenRecorder r = new ScreenRecorder(video, audio,
-                1, mediaProjection, output.getAbsolutePath());
+                DisplayUtil.getScreenDensityDPI(com.github.weiss.core.utils.Utils.getContext()), mediaProjection, output.getAbsolutePath());
         r.setCallback(new ScreenRecorder.Callback() {
             long startTime = 0;
 
