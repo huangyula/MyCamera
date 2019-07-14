@@ -1,24 +1,39 @@
 package com.hiscene.flytech.ui.fragment;
 
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.github.weiss.core.base.BaseRxFragment;
+import com.github.weiss.core.utils.CollectionUtils;
+import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.ImageUtils;
+import com.github.weiss.core.utils.LogUtils;
 import com.github.weiss.core.utils.SPUtils;
+import com.github.weiss.core.utils.ToastUtils;
+import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 import com.hiscene.flytech.util.PositionUtil;
 import com.hiscene.flytech.view.ShowImagesDialog;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.github.weiss.core.base.BaseApp.getAppResources;
 import static com.hiscene.flytech.App.userManager;
+import static com.hiscene.flytech.ui.MainActivity.HILEIA;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.RECOVERY;
 
 /**
@@ -75,32 +90,41 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
 
     @OnClick(R.id.opration_risk)
     protected void oprationRisk(){
-
+        EventCenter.getInstance().post(HILEIA);
     }
 
-//    @OnClick(R.id.executed)
-//    protected abstract void executed();
-//
-//    @OnClick(R.id.unexecuted)
-//    protected abstract void unexecuted();
 
     @OnClick(R.id.logout)
     protected abstract void logout();
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
-        final List<String> urls = new ArrayList<>();
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-05-05-18251898_1013302395468665_8734429858911748096_n.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-05-04-18299181_1306649979420798_1108869403736276992_n.jpg");
-        urls.add("http://ww1.sinaimg.cn/large/61e74233ly1feuogwvg27j20p00zkqe7.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-05-02-926821_1453024764952889_775781470_n.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-28-18094719_120129648541065_8356500748640452608_n.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-27-17934080_117414798808566_8957027985114791936_n.jpg?imageslim");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-25-13651793_897557617014845_571817176_n.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-24-18013547_1532023163498554_215541963087151104_n.jpg");
-        urls.add("http://7xi8d6.com1.z0.glb.clouddn.com/2017-04-24-18094714_158946097967074_5909424912493182976_n.jpg");
-
-        new ShowImagesDialog(getActivity(), urls).show();
+        final List<Bitmap> bitmapList=new ArrayList<>();
+        List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
+        if(CollectionUtils.isEmpty(fileList)){
+            ToastUtils.show("暂无资料");
+            return;
+        }
+        Collections.sort(fileList, new FileComparator());
+        for(File file:fileList){
+            LogUtils.d(file.getName());
+            bitmapList.add(ImageUtils.getBitmap(file));
+        }
+        new ShowImagesDialog(getActivity(),bitmapList).show();
 
     }
+
+    protected  void  init(){
+        rootView.postDelayed(()->rootView.performClick(),500);
+    }
+
+    /** * 将文件按名字降序排列 */
+    class FileComparator implements Comparator<File> {
+        @Override
+        public int compare( File file1, File file2)
+        {
+            return file1.getName().compareTo(file2.getName());
+        }
+    }
+
 }

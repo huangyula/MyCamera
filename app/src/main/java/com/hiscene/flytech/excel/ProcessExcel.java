@@ -1,5 +1,10 @@
 package com.hiscene.flytech.excel;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+
+import com.github.weiss.core.base.BaseApp;
 import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
@@ -9,9 +14,15 @@ import com.github.weiss.core.utils.TimeUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
+import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachFirstModel;
+import com.hiscene.flytech.entity.AttachFourModel;
 import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Result;
+import com.hiscene.flytech.entity.Setting;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
 
@@ -26,19 +37,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.security.acl.LastOwnerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipFile;
 
 import static com.hiscene.flytech.C.ASSETS_PATH;
+import static com.hiscene.flytech.C.ATTACH_FOUR_ROW_BEGIN;
+import static com.hiscene.flytech.C.ATTACH_FOUR_ROW_END;
 import static com.hiscene.flytech.C.ATTACH_ONE_ROW_BEGIN;
 import static com.hiscene.flytech.C.ATTACH_ONE_ROW_END;
 import static com.hiscene.flytech.C.ATTACH_SECOND_ROW_BEGIN;
 import static com.hiscene.flytech.C.ATTACH_SECONG_ROW_END;
+import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
+import static com.hiscene.flytech.C.EXCEL_WRITE_SUCCESS;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.C.PROCESS_FILE;
 import static com.hiscene.flytech.C.PROCESS_ROW_BEGIN;
 import static com.hiscene.flytech.C.PROCESS_ROW_END;
 import static com.hiscene.flytech.C.START_TIME_BEGIN;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
@@ -52,19 +70,36 @@ public class ProcessExcel implements IExcel {
     public List<ProcessModel> processExcelList = new ArrayList<>();
     public List<AttachFirstModel> attachFirstModels = new ArrayList<>();
     public List<AttachSecondModel> attachSecondModelList = new ArrayList<>();
+    public List<AttachThreeModel> attachThreeModelList = new ArrayList<>();
+    public List<AttachFourModel> attachFourModelList = new ArrayList<>();
+    public List<Setting> settingList=new ArrayList<>();
+    List<String> skipList=new ArrayList<>();
 
 
     @Override
     public void read() {
         try {
-
+            clearData();
+            LogUtils.d("processExcelList:"+processExcelList.size());
             // 延迟解析比率
 //            ZipSecureFile.setMinInflateRatio(-1.0d);
             XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(new File(ASSETS_PATH + C.PROCESS_FILE)));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
             //作业过程：行10-59  列
+            boolean flag=false;
             for (int i = PROCESS_ROW_BEGIN-1; i <PROCESS_ROW_END; i++) {
+                flag=false;
+                for(String s:skipList){//跳过不需要读写的行数
+                    if(i==Integer.parseInt(s)-1){
+                        flag=true;
+                        break;
+                    }
+
+                }
+                if(flag){
+                    continue;
+                }
                 Row row = sheet.getRow(i);
                 if(row==null){//防止空行导致获取到的总行数不正确
                     break;
@@ -92,54 +127,111 @@ public class ProcessExcel implements IExcel {
                 Row row=sheet.getRow(i);
                 if(row!=null){
                     row.getCell(0).setCellType(CellType.NUMERIC);
-                    attachSecondModelList.add(new AttachSecondModel((int)row.getCell(0).getNumericCellValue(),row.getCell(1).getStringCellValue()));
+                    String name=row.getCell(1).getStringCellValue();
+                    attachSecondModelList.add(new AttachSecondModel((int)row.getCell(0).getNumericCellValue(),name));
+                    LogUtils.d("name:",attachSecondModelList.get(0).name);
                 }
+            }
+
+
+            //附表3
+            AttachThreeModel attachThreeModel;
+            List<String> titles=CollectionUtils.arrayToList(BaseApp.getAppContext().getResources().getStringArray(R.array.third_excel_title));
+            String item_name="",item_no="";
+            int result_1,result_2;
+            for(int i=0;i<18;i++){//主一裝置通道
+                result_1=i/6;
+                result_2=i%6;
+                switch (result_1){
+                    case 0:
+                        item_name="主一装置通道";
+                        item_no="项目1";
+                        break;
+                    case 1:
+                        item_name="主二装置通道";
+                        item_no="项目2";
+                        break;
+                    case 2:
+                        item_name="光电转换装置通道";
+                        item_no="项目3";
+                        break;
+                }
+                attachThreeModel=new AttachThreeModel(item_name,item_no,titles.get(result_2),"","");
+                attachThreeModelList.add(attachThreeModel);
             }
             wb.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //附表4
+        attachFourModelList.add(new AttachFourModel("",""));
     }
 
     @Override
     public void write() {
-        try {
-            List<String> resultList=new ArrayList<>();
-            String result="";
-            for(ProcessModel processModel:processExcelList){
-                switch (processModel.getResult()){
-                    case 0:
-                        result="确认(×)";
-                        break;
-                    case 1:
-                        result="确认(√)";
-                        break;
-                    case -1:
-                        result="确认(无)";
-                        break;
+                try {
+                    List<String> resultList=new ArrayList<>();
+                    String result="";
+                    for(ProcessModel processModel:processExcelList){
+                        switch (processModel.getResult()){
+                            case 0:
+                                result="确认(×)";
+                                break;
+                            case 1:
+                                result="确认(√)";
+                                break;
+                            case -1:
+                                result="确认(无)";
+                                break;
+                            case -2:
+                                result="确认( )";
+                                break;
+                        }
+                        resultList.add(result);
+                    }
+                    String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+PROCESS_FILE;//OUTPUT_PATH+C.PROCESS_FILE
+                    POIUtil.setCellValueAtProcess(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList,skipList);
+
+                    //附表1
+                    List<String> results=new ArrayList<>();
+                    for(AttachFirstModel attachFirstModel:attachFirstModels){
+                        results.add(attachFirstModel.result+" MΩ");
+                    }
+                    POIUtil.setCellValueAt(path,path,ATTACH_ONE_ROW_BEGIN,6,results);
+
+                    //附表2 列3，4，5，6
+                    POIUtil.setCellValueAtSecond(path,path, ATTACH_SECOND_ROW_BEGIN,attachSecondModelList);
+
+                    //附表3
+                    POIUtil.setCellValueAtThird(path,path,C.ATTACH_THIRD_ROW_BEGIN_1,attachThreeModelList);
+
+                    //附表4
+                    POIUtil.setCellValueAtFour(path,path,C.ATTACH_FOUR_ROW_BEGIN,attachFourModelList);
+
+                    //基本信息 列D,F
+                    int[] col_array=new int[]{4,6};
+                    results.clear();
+                    LogUtils.d(SPUtils.getString(START_TIME));
+                    results.add(SPUtils.getString(START_TIME));//作业开始时间
+                    results.add(TimeUtils.getNowTimeString());//作业结束时间
+                    POIUtil.setCellValueAtMulCol(path,path,START_TIME_BEGIN,col_array,results);
+
+                    //及时刷新文件
+                    Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                    intent.setData(Uri.fromFile(new File((path)))); // 需要更新的文件路径
+                    BaseApp.getAppContext().sendBroadcast(intent);
+
+
+                    EventCenter.getInstance().post(new Result(EXCEL_WRITE_SUCCESS,""));
+                    LogUtils.d("已成功修改表格内容");
+                } catch (Exception e) {
+                    Result result=new Result(EXCEL_WRITE_ERROR,e.getMessage());
+                    EventCenter.getInstance().post(result);
+                    LogUtils.d(e.getMessage());
+                    e.printStackTrace();
                 }
-                resultList.add(result);
             }
-            POIUtil.setCellValueAt(ASSETS_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,PROCESS_ROW_BEGIN,4,resultList);
-            LogUtils.d("已成功修改表格内容");
-
-            //附表1
-            List<String> results=new ArrayList<>();
-            for(AttachFirstModel attachFirstModel:attachFirstModels){
-                results.add(String.valueOf(attachFirstModel.result));
-            }
-            POIUtil.setCellValueAt(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,ATTACH_ONE_ROW_BEGIN,4,results);
-
-            //基本信息 列D,F
-            int[] col_array=new int[]{4,6};
-            results.clear();
-            results.add(SPUtils.getString(START_TIME,""));//作业开始时间
-            results.add(TimeUtils.getNowTimeString());//作业结束时间
-            POIUtil.setCellValueAtMulCol(OUTPUT_PATH + C.PROCESS_FILE,OUTPUT_PATH+C.PROCESS_FILE,START_TIME_BEGIN,col_array,results);
-        } catch (Exception e) {
-            LogUtils.d(e.getMessage());
-            e.printStackTrace();
-        }
 /*        Workbook wb = new XSSFWorkbook();
         try {
             Sheet sheet = wb.createSheet("Sheet1");
@@ -172,7 +264,6 @@ public class ProcessExcel implements IExcel {
         } finally {
             wb.close();
         }*/
-    }
 
     @Override
     public void restore() {
@@ -182,19 +273,27 @@ public class ProcessExcel implements IExcel {
         processExcelList=new Gson().fromJson(read_content,type);
 
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FIRST_FILE,"utf-8");
-        type=new TypeToken<AttachFirstModel>(){}.getType();
+        type=new TypeToken<List<AttachFirstModel>>(){}.getType();
         attachFirstModels=new Gson().fromJson(read_content,type);
 
         //附表2
         read_content=FileUtils.readFile2String(C.TEMP_ATTACH_SECOND_FILE,"utf-8");
-        type=new TypeToken<AttachSecondModel>(){}.getType();
+        type=new TypeToken<List<AttachSecondModel>>(){}.getType();
         attachSecondModelList=new Gson().fromJson(read_content,type);
 
+        //附表3
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_THREE_FILE,"utf-8");
+        type=new TypeToken<List<AttachThreeModel>>(){}.getType();
+        attachThreeModelList=new Gson().fromJson(read_content,type);
+
+        //附表4
+        read_content=FileUtils.readFile2String(C.TEMP_ATTACH_FOUR_FILE,"utf-8");
+        type=new TypeToken<List<AttachFourModel>>(){}.getType();
+        attachFourModelList=new Gson().fromJson(read_content,type);
     }
 
     @Override
     public void svae() {
-
         //将List转化为json,并写入缓存目录
         if(processExcelList!=null&&processExcelList.size()>0){
             String write_content=GsonUtil.gsonString(processExcelList.toArray());
@@ -224,6 +323,58 @@ public class ProcessExcel implements IExcel {
                 }
             }
         }
+        //附表3
+        if(!CollectionUtils.isEmpty(attachThreeModelList)){
+            String write_content=GsonUtil.gsonString(attachThreeModelList.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_THREE_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_THREE_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
+                }
+            }
+        }
+        //附表4
+        if(!CollectionUtils.isEmpty(attachFourModelList)){
+            String write_content=GsonUtil.gsonString(attachFourModelList.toArray());
+            if(!StringUtils.isEmpty(write_content)) {
+                if (FileUtils.createFileByDeleteOldFile(C.TEMP_ATTACH_FOUR_FILE)) {
+                    boolean result = FileUtils.writeFileFromString(C.TEMP_ATTACH_FOUR_FILE, write_content, true);
+                    LogUtils.d("save 缓存:" + result);
+                }
+            }
+        }
     }
 
+
+    private void clearData(){
+        processExcelList.clear();
+        attachFirstModels.clear();
+        attachSecondModelList.clear();
+        attachThreeModelList.clear();
+        attachFourModelList.clear();
+    }
+
+    public void setSettingList( List<Setting> settingList ) {
+        this.settingList = settingList;
+        PROCESS_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[0];
+        PROCESS_ROW_END=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[1];
+        ATTACH_ONE_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(2).start_end.split("\\."))[0];
+        ATTACH_ONE_ROW_END=StringUtils.strArrayToIntArray(settingList.get(2).start_end.split("\\."))[1];
+        ATTACH_SECOND_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(3).start_end.split("\\."))[0];
+        ATTACH_SECONG_ROW_END=StringUtils.strArrayToIntArray(settingList.get(3).start_end.split("\\."))[1];
+        ATTACH_FOUR_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(5).start_end.split("\\."))[0];
+        ATTACH_FOUR_ROW_END=StringUtils.strArrayToIntArray(settingList.get(5).start_end.split("\\."))[1];
+        C.ATTACH_THIRD_ROW_BEGIN_1=StringUtils.strArrayToIntArray(settingList.get(4).start_end.split("\\."))[0];
+        C.ATTACH_THIRD_ROW_END_1=StringUtils.strArrayToIntArray(settingList.get(4).start_end.split("\\."))[1];
+        C.ATTACH_THIRD_ROW_BEGIN_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[0];
+        C.ATTACH_THIRD_ROW_END_2=StringUtils.strArrayToIntArray(settingList.get(4).start_end_1.split("\\."))[1];
+        String skip=settingList.get(0).skip;
+        if(skip.length()>0){
+            if(settingList.get(0).skip.contains(".")){
+                skipList= CollectionUtils.arrayToList(skip.split("\\."));
+            }else {
+                skipList.add(skip);
+            }
+        }
+    }
 }

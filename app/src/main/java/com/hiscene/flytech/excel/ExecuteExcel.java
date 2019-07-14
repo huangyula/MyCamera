@@ -1,21 +1,31 @@
 package com.hiscene.flytech.excel;
 
+import android.content.Intent;
+import android.net.Uri;
+
+import com.github.weiss.core.base.BaseApp;
+import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
 import com.github.weiss.core.utils.LogUtils;
+import com.github.weiss.core.utils.SPUtils;
 import com.github.weiss.core.utils.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.entity.Setting;
+import com.hiscene.flytech.event.EventCenter;
 import com.hiscene.flytech.util.GsonUtil;
 import com.hiscene.flytech.util.POIUtil;
+import com.hiscene.flytech.util.PositionUtil;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.util.ArrayUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bouncycastle.math.ec.ScaleYPointMap;
 
@@ -27,7 +37,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
+import static com.hiscene.flytech.C.START_TIME_BEGIN;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
  * @author huangyu
@@ -36,14 +50,29 @@ import static com.hiscene.flytech.C.OUTPUT_PATH;
 public class ExecuteExcel implements IExcel {
 
     public List<ExecuteModel> executeModelList = new ArrayList<>();
+    private List<Setting> settingList=new ArrayList<>();
+    List<String> skipList=new ArrayList<>();
 
     @Override
     public void read() {
         try {
-            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_READ_FILE));
+            boolean flag=false;
+            executeModelList.clear();
+            XSSFWorkbook wb = new XSSFWorkbook(new FileInputStream(C.ASSETS_PATH + C.EXECUTE_FILE));
             // replace the dummy-content to show that we could write and read the cell-values
             Sheet sheet = wb.getSheetAt(0);
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+            for (int i = C.EXECUTE_BEGIN-1; i <= C.EXECUTE_END-1; i++) {
+                flag=false;
+                for(String s:skipList){//跳过不需要读写的行数
+                    if(i==Integer.parseInt(s)-1){
+                        flag=true;
+                        break;
+                    }
+
+                }
+                if(flag){
+                    continue;
+                }
                 Row row = sheet.getRow(i);
                 if(row==null){
                     break;
@@ -67,28 +96,15 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void write() {
         try {
-//            List<String> execute_result_List=new ArrayList<>();
-//            List<Date> execute_date_List=new ArrayList<>();
-//            String execute_result="";
-//            Date execute_date=new Date();
-//            for(ExecuteModel executeModel:executeModelList){
-//                switch (executeModel.getExcute_result()){
-//                    case 0:
-//                        execute_result="确认(×)";
-//                        break;
-//                    case 1:
-//                        execute_result="确认(√)";
-//                        break;
-//                    case -1:
-//                        execute_result="确认(无)";
-//                        break;
-//                }
-//                execute_date_List.add(execute_date);
-//                execute_result_List.add(execute_result);
-//            }
-            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,OUTPUT_PATH+C.EXECUTE_FILE,executeModelList);
+            String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+C.EXECUTE_FILE;
+            POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,path,executeModelList,skipList);
             LogUtils.d("已成功修改表格内容");
+            //及时刷新文件
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+            intent.setData(Uri.fromFile(new File((path)))); // 需要更新的文件路径
+            BaseApp.getAppContext().sendBroadcast(intent);
         } catch (Exception e) {
+            EventCenter.getInstance().post(EXCEL_WRITE_ERROR);
             LogUtils.d(e.getMessage());
             e.printStackTrace();
         }
@@ -147,5 +163,19 @@ public class ExecuteExcel implements IExcel {
             }
         }
 
+    }
+
+    public void setSettingList( List<Setting> settingList ) {
+        this.settingList = settingList;
+        C.EXECUTE_BEGIN=StringUtils.strArrayToIntArray(settingList.get(0).start_end.split("\\."))[0];
+        C.EXECUTE_END=StringUtils.strArrayToIntArray(settingList.get(0).start_end.split("\\."))[1];
+        String skip=settingList.get(0).skip;
+        if(skip.length()>0){
+            if(settingList.get(0).skip.contains(".")){
+                skipList= CollectionUtils.arrayToList(skip.split("\\."));
+            }else {
+                skipList.add(skip);
+            }
+        }
     }
 }

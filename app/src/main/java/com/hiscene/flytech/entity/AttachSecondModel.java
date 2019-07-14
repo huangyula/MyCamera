@@ -30,8 +30,7 @@ public class AttachSecondModel extends Entity {
     }
 
     public AttachSecondModel( int id, String name ) {
-        this.id = id;
-        this.name = name;
+        this(id,name,"","","","");
     }
 
     public AttachSecondModel( int id, String name, String number, String check_code, String verison, String factory) {

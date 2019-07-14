@@ -2,6 +2,7 @@ package com.hiscene.flytech.view;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -58,14 +59,14 @@ public class ShowImagesDialog extends Dialog{
     private View mView;
     private ShowImagesAdapter mAdapter;
     private Context mContext;
-    private List<String> mImgUrls;
+    private List<Bitmap> bitmapList;
     private List<String> mTitles;
     private List<View> mViews;
 
-    public ShowImagesDialog(@NonNull Context context, List<String> imgUrls) {
+    public ShowImagesDialog(@NonNull Context context, List<Bitmap> bitmapList) {
         super(context, R.style.transparentBgDialog);//R.style.transparentBgDialog
         this.mContext = context;
-        this.mImgUrls = imgUrls;
+        this.bitmapList = bitmapList;
         initView();
         initData();
     }
@@ -74,14 +75,6 @@ public class ShowImagesDialog extends Dialog{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(mView);
-        Window window = getWindow();
-        WindowManager.LayoutParams wl = window.getAttributes();
-        wl.x = 0;
-        wl.y = 0;
-        wl.width = (int) (DisplayUtil.getScreenHeight(mContext)*1.5 );
-        wl.height = DisplayUtil.getScreenWidth(mContext) / 2;
-        wl.gravity = Gravity.CENTER;
-        window.setAttributes(wl);
     }
 
     private void initView() {
@@ -104,8 +97,8 @@ public class ShowImagesDialog extends Dialog{
                 dismiss();
             }
         };
-        for (int i = 0; i < mImgUrls.size(); i++) {
-            final PhotoView photoView = new uk.co.senab.photoview.PhotoView(mContext);
+        for (int i = 0; i < bitmapList.size(); i++) {
+            final PhotoView photoView = new PhotoView(mContext);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             photoView.setLayoutParams(layoutParams);
             photoView.setOnPhotoTapListener(listener);
@@ -120,7 +113,7 @@ public class ShowImagesDialog extends Dialog{
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher);
             Glide.with(mContext)
-                    .load(mImgUrls.get(i))
+                    .load(bitmapList.get(i))
                     .apply(requestOptions)
                     .into(new SimpleTarget<Drawable>() {
                         @Override
@@ -170,4 +163,16 @@ public class ShowImagesDialog extends Dialog{
         dismiss();
     }
 
+    @Override
+    public void show() {
+        super.show();
+        Window window = getWindow();
+        WindowManager.LayoutParams wl = window.getAttributes();
+        wl.x = 0;
+        wl.y = 0;
+        wl.width = (int) (DisplayUtil.getScreenWidth(mContext));
+        wl.height = (int) (DisplayUtil.getScreenHeight(mContext));
+        wl.gravity = Gravity.CENTER;
+        window.setAttributes(wl);
+    }
 }

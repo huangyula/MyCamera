@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/app_padding"
+>
+
+    <include layout="@layout/include_top_bar"></include>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="6dp"
+            >
+            <TextView
+                android:id="@+id/tv_first_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="@dimen/excel_left_padding_15"
+                android:background="@mipmap/bg"
+                style="@style/text_style_white_bold"
+                android:gravity="center_vertical"
+                android:text="@string/title_excute"/>
+
+            <TextView
+                android:id="@+id/device_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:drawableLeft="@mipmap/icon_equipmentinformation"
+                android:background="@mipmap/button"
+                style="@style/text_style_white_bold"
+                android:textSize="12sp"
+                android:drawablePadding="5dp"
+                android:padding="5dp"
+                android:text="@string/device_info"
+                />
+
+            <TextView
+                android:id="@+id/opration_risk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="15dp"
+                android:layout_toLeftOf="@id/device_info"
+                android:clickable="true"
+                android:text="@string/help"
+                android:contentDescription="@string/help"
+                android:drawableLeft="@mipmap/hileia"
+                android:background="@mipmap/button"
+                style="@style/text_style_white_bold"
+                android:textSize="12sp"
+                android:padding="5dp"
+                android:drawablePadding="5dp"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@mipmap/bg1"
+            android:orientation="vertical"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="作业过程"
+                    android:paddingLeft="@dimen/excel_left_padding_15"
+                    android:paddingTop="18dp"
+                    android:paddingBottom="16dp"
+                    style="@style/text_style_white_bold"/>
+                <TextView
+                    android:id="@+id/rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/half_white"
+                    android:layout_marginRight="@dimen/excel_left_padding_15"
+                    />
+            </LinearLayout>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/standard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="密封工作票"
+                    android:paddingLeft="@dimen/excel_left_padding_16"
+                    android:paddingRight="@dimen/excel_left_padding_16"
+                    style="@style/text_style_white"
+                    android:textSize="@dimen/standard_size"/>
+            </ScrollView>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:weightSum="4"
+                android:gravity="center_horizontal"
+                >
+
+                <Button
+                    android:id="@+id/executed"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/recovered"
+                    android:contentDescription="@string/recovered"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/unexecuted"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:layout_marginLeft="26dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/unrecorver"
+                    android:contentDescription="@string/unrecorver"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/previousStepBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:layout_marginLeft="26dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/pre_operation"
+                    android:contentDescription="@string/pre_operation"
+                    android:layout_weight="1"/>
+
+                <Button
+                    android:id="@+id/nextStepBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/buutton_height"
+                    android:layout_marginLeft="26dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/selector_button_bg"
+                    style="@style/text_style_white_bold"
+                    android:textSize="14sp"
+                    android:text="@string/next_operation"
+                    android:contentDescription="@string/next_operation"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

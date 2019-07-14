@@ -3,6 +3,7 @@ package com.hiscene.flytech.util;
 import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.LogUtils;
 import com.hiscene.flytech.entity.ExcelStep;
+import com.hiscene.flytech.entity.ExcelStyle;
 
 import java.util.List;
 
@@ -70,13 +71,21 @@ public class PositionUtil {
     }
 
     public static boolean islastStep(String pos, List<ExcelStep> excelSteps) {
+        //判断最后一步
+        //两种情况：1.最后一步是是大步骤,没有小步骤 2.最后一步是小步骤
         int[] posArr=pos2posArr(pos);
-        if(posArr[0]>=excelSteps.size()) {
-            LogUtils.d("posArr[0],excelSteps.size() "+posArr[0]+" "+excelSteps.size());
-            LogUtils.d("已经是最后一步了");
-            return true;
+        ExcelStep excelStep=excelSteps.get(excelSteps.size()-1);//最后一个大步骤
+        if(!CollectionUtils.isEmpty(excelStep.childSteps)){//最后大步骤有小步骤
+            if(posArr[0]>=excelSteps.size()-1 && posArr[1]>=excelStep.childSteps.size()-1){
+                LogUtils.d("已经是最后一步了");
+                return true;
+            }
+        }else {
+            if(posArr[0]>=excelSteps.size()-1){
+                LogUtils.d("已经是最后一步了");
+                return true;
+            }
         }
-
         return false;
     }
 

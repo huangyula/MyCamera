@@ -6,6 +6,8 @@ import android.widget.TextView;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.entity.AttachSecondModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 
 import butterknife.BindView;
 
@@ -24,7 +26,10 @@ public class AttachFourExcelFragment extends BaseExcelFragment<AttachSecondModel
     TextView title;
     @BindView(R.id.rate)
     TextView tv_rate;
-
+    @BindView(R.id.time_1)
+    TextView time_1;
+    @BindView(R.id.time_2)
+    TextView time_2;
     int step;
     String rate="1";
     ProcessModel processModel;
@@ -68,6 +73,7 @@ public class AttachFourExcelFragment extends BaseExcelFragment<AttachSecondModel
     }
 
     private void initData( ProcessModel processModel, int step ,String rate) {
+        init();
         title.setText(processModel.content+"("+processModel.standard+")");
         tv_rate.setText(rate);
     }
@@ -85,7 +91,7 @@ public class AttachFourExcelFragment extends BaseExcelFragment<AttachSecondModel
     @Override
     protected void logout() {
         excelFragmentManager.exit();
-        getActivity().finish();
+        EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
 

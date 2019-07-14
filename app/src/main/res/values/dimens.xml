@@ -14,11 +14,12 @@
     <dimen name="app_padding">40dp</dimen>
     <dimen name="qrcode_width">200dp</dimen>
     <dimen name="qrcode_height">200dp</dimen>
-    <dimen name="app_name_size">18sp</dimen>
-    <dimen name="scan_text_size">16sp</dimen>
-    <dimen name="top_bar_text_size">16sp</dimen>
+    <dimen name="app_name_size">22sp</dimen>
+    <dimen name="scan_text_size">18sp</dimen>
+    <dimen name="top_bar_text_size">18sp</dimen>
     <dimen name="scan_magin_top">54dp</dimen>
     <dimen name="excel_left_padding_15">15dp</dimen>
     <dimen name="excel_left_padding_16">16dp</dimen>
     <dimen name="buutton_height">40dp</dimen>
+    <dimen name="standard_size">16sp</dimen>
 </resources>

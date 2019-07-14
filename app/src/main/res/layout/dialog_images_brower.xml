@@ -4,12 +4,14 @@
              android:layout_height="match_parent"
              android:orientation="vertical"
              android:gravity="center"
+             android:padding="@dimen/app_padding"
              >
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@mipmap/bg2">
+        android:layout_height="0dp"
+        android:background="@mipmap/bg2"
+        android:layout_weight="1">
         <com.hiscene.flytech.view.ShowImagesViewPager
             android:id="@+id/vp_images"
             android:layout_width="match_parent"
@@ -20,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:drawableLeft="@mipmap/iconleftback"
+            android:drawableLeft="@mipmap/iconrightback"
             android:layout_marginLeft="8dp"
             android:drawablePadding="5dp"
             android:text="@string/pre_page"
@@ -34,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:drawableRight="@mipmap/iconrightback"
+            android:drawableRight="@mipmap/iconleftback"
             android:layout_marginRight="8dp"
             android:drawablePadding="5dp"
             android:text="@string/next_page"

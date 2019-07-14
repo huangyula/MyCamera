@@ -192,7 +192,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
         ALOGE("Error encoding video frame: %s", av_err2str(ret));
         return -1;
     }
-    ALOGI("encode video frame sucess! got frame = %d\n", got_frame);
+//    ALOGI("encode video frame sucess! got frame = %d\n", got_frame);
 
     // 编码成功则将数据写入文件
     if (got_frame == 1) {
@@ -205,7 +205,7 @@ int MediaRecorder::encodeAndWriteVideo(uint8_t *data) {
             return -1;
         }
         ost->countIndex++;
-        ALOGI("write video frame sucess!\n");
+//        ALOGI("write video frame sucess!\n");
     } else {
         ret = 0;
         // 释放AVPacket
@@ -243,7 +243,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
     frame->pts = audioStream->next_pts;
     // 计算pts
     audioStream->next_pts += frame->nb_samples;
-    ALOGI("nb_samples = %d", frame->nb_samples);
+//    ALOGI("nb_samples = %d", frame->nb_samples);
     // 如果音频编码帧存在，则进入音频编码阶段
     if (frame) {
         // TODO 计算输出的dst_nb_samples，否则没法输出声音
@@ -262,7 +262,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
         frame->pts = av_rescale_q(ost->samples_count, (AVRational) {1, context->sample_rate},
                                   context->time_base);
         ost->samples_count += dst_nb_samples;
-        ALOGI("dst_nb_samples = %d", dst_nb_samples);
+//        ALOGI("dst_nb_samples = %d", dst_nb_samples);
     }
 
     // 音频编码
@@ -271,7 +271,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
         ALOGE("Error encoding audio frame: %s\n", av_err2str(ret));
         return -1;
     }
-    ALOGI("encode audio frame sucess! got frame = %d\n", got_frame);
+//    ALOGI("encode audio frame sucess! got frame = %d\n", got_frame);
     pkt.pts = frame->pts;
 
     // 如果编码成功，则写入文件
@@ -284,7 +284,7 @@ int MediaRecorder::encodeAndWriteAudio(uint8_t *data, int len) {
             ALOGE("Error while writing audio frame: %s\n", av_err2str(ret));
             return -1;
         }
-        ALOGI("writing audio frame sucess!\n");
+//        ALOGI("writing audio frame sucess!\n");
         return 0;
     } else{
         // 释放资源

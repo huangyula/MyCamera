@@ -13,7 +13,7 @@
         android:textSize="@dimen/app_name_size"
         android:textStyle="bold"
         android:textColor="@color/app_blue"
-        android:text="@string/app_name"/>
+        android:text="@string/app_name" />
     <ImageView
         android:layout_marginTop="6dp"
         android:layout_width="wrap_content"
@@ -26,12 +26,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
-        <ImageView
+        <Button
             android:id="@+id/iv_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:background="@mipmap/saomiaodenglu"
+            android:contentDescription="@string/scan_login_hint"
             />
         <ImageView
             android:layout_width="wrap_content"
@@ -49,7 +50,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="21dp"
         android:text="@string/scan_login_hint"
-        android:contentDescription="@string/scan_login_hint"
         android:textColor="@color/white"
         android:textSize="@dimen/scan_text_size"
         android:textStyle="bold" />

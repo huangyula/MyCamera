@@ -18,16 +18,16 @@ public class AttachFirstModel extends Entity {
     public String standard;
 
     //电阻值 false=0, true=1, null=-1
-    public float result;
+    public String result;
 
     public AttachFirstModel() {
     }
 
     public AttachFirstModel(int id, String content, String standard) {
-        this(id, content, standard, -1);
+        this(id, content, standard, "");
     }
 
-    public AttachFirstModel(int id, String content, String standard, float result) {
+    public AttachFirstModel(int id, String content, String standard, String result) {
         this.id = id;
         this.content = content;
         this.standard = standard;

@@ -9,6 +9,8 @@ import com.hiscene.flytech.entity.ExcelStep;
 import com.hiscene.flytech.entity.ExcelStyle;
 import com.hiscene.flytech.entity.ExecuteModel;
 import com.hiscene.flytech.entity.ProcessModel;
+import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.MainActivity;
 
 import java.util.List;
 
@@ -65,17 +67,16 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
 
 
     private void initData(List<ExecuteModel> dataList,ExcelStep excelStep,int pos) {
-        if(excelStep.style== ExcelStyle.EXCUTE_EXCEL){
-            executed.setText("已执行");
-            unexecuted.setText("未执行");
-            executed.setContentDescription("已执行");
-            unexecuted.setContentDescription("未执行");
-
-        }else if(excelStep.style== ExcelStyle.RECOVER_EXCEL){
-            executed.setText("已恢复");
-            unexecuted.setText("未恢复");
-            executed.setContentDescription("已恢复");
-            unexecuted.setContentDescription("未恢复");
+        init();
+        if(dataList.get(excelStep.childSteps.get(pos).step).excute_result==1){
+            executed.setSelected(true);
+            unexecuted.setSelected(false);
+        }else if(dataList.get(excelStep.childSteps.get(pos).step).excute_result==0){
+            executed.setSelected(false);
+            unexecuted.setSelected(true);
+        }else {
+            executed.setSelected(false);
+            unexecuted.setSelected(false);
         }
         if(pos<0){
             pos=0;
@@ -100,23 +101,27 @@ public class ExecuteExcelFragment extends BaseExcelFragment<ExecuteModel> {
     @Override
     protected void logout() {
         excelFragmentManager.exit();
-        getActivity().finish();
+        EventCenter.getInstance().post(MainActivity.BACK_TO_LOGIN);
     }
 
     @OnClick(R.id.executed)
     protected void executed() {
+        executed.setSelected(true);
+        unexecuted.setSelected(false);
         excelFragmentManager.setResult(1);
     }
 
     @OnClick(R.id.unexecuted)
     protected void unexecuted() {
+        unexecuted.setSelected(true);
+        executed.setSelected(false);
         excelFragmentManager.setResult(0);
     }
 
 
     public void setData2(List<ExecuteModel> executeModelList, ExcelStep excelStep, int pos) {
         if (title != null) {
-            initData(dataList,excelStep,pos);
+            initData(executeModelList,excelStep,pos);
         } else {
             this.dataList=executeModelList;
             this.excelStep=excelStep;

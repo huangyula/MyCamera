@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/tanchuang"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:padding="5dp">
+
+        <TextView
+            style="@style/text_style_white_bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="存在未完成的作业表单，您是否继续填写？" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:weightSum="4">
+
+            <Button
+                android:id="@+id/continue_edit"
+                style="@style/text_style_white_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/buutton_height"
+                android:background="@mipmap/button_default"
+                android:clickable="true"
+                android:text="@string/continue_edit"
+                android:layout_weight="1"/>
+
+            <Button
+                android:layout_marginLeft="40dp"
+                android:id="@+id/restart_edit"
+                style="@style/text_style_white_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/buutton_height"
+                android:background="@mipmap/button_default"
+                android:clickable="true"
+                android:text="@string/restart_edit"
+                android:layout_weight="1"
+
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

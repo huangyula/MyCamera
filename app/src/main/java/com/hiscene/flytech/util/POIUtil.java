@@ -1,6 +1,12 @@
 package com.hiscene.flytech.util;
 
+import com.github.weiss.core.utils.CollectionUtils;
 import com.github.weiss.core.utils.FileUtils;
+import com.github.weiss.core.utils.StringUtils;
+import com.hiscene.flytech.C;
+import com.hiscene.flytech.entity.AttachFourModel;
+import com.hiscene.flytech.entity.AttachSecondModel;
+import com.hiscene.flytech.entity.AttachThreeModel;
 import com.hiscene.flytech.entity.ExecuteModel;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -28,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -445,17 +452,21 @@ public class POIUtil {
      * @param descPath  保存文件的目的地
      * @param executeModelList 要设置得内容
      */
-    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList) throws
+    public static void setCellValueAtExecute(String filePath, String descPath, List<ExecuteModel> executeModelList,List<String> skipList) throws
             Exception {
-        //行：从第5行开始，中间第32行不是步骤
+
+        int rowIndex=C.EXECUTE_BEGIN;
         //列：2，3，8，9
-        int rowIndex=6;
         insureExcelType(filePath);
         ExecuteModel executeModel;
+        String execute_result="";
+        String recover_result="";
         for(int i=0;i<executeModelList.size();i++){
+            if(skipList.contains(rowIndex+"")){
+                rowIndex++;
+                continue;
+            }
             executeModel=executeModelList.get(i);
-            String execute_result="";
-            String recover_result="";
             switch (executeModel.excute_result){
                 case 0:
                     execute_result="×";
@@ -464,18 +475,18 @@ public class POIUtil {
                     execute_result="√";
                     break;
                 case -1:
-                    execute_result="无";
+                    execute_result="";
                     break;
             }
             switch (executeModel.recover_result){
                 case 0:
-                    recover_result="确认(×)";
+                    recover_result="×";
                     break;
                 case 1:
-                    recover_result="确认(√)";
+                    recover_result="√";
                     break;
                 case -1:
-                    recover_result="确认(无)";
+                    recover_result="";
                     break;
             }
             Cell cell_1 = getCellInSheet(rowIndex,2);//执行结果
@@ -487,8 +498,92 @@ public class POIUtil {
             setCellValue(workbook,cell_3,recover_result);
             setCellValue(workbook,cell_4,executeModel.recover_date);
             rowIndex++;
-            if(rowIndex==32){
-                rowIndex++;
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+    public static void setCellValueAtSecond(String filePath, String descPath,int rowIndex, List<AttachSecondModel> attachSecondModels) throws
+            Exception {
+        //列3，4，5，6
+        insureExcelType(filePath);
+        AttachSecondModel attachSecondModel;
+        for(int i=0;i<attachSecondModels.size();i++){
+            attachSecondModel=attachSecondModels.get(i);
+
+            Cell cell_1 = getCellInSheet(rowIndex,3);//执行结果
+            Cell cell_2 = getCellInSheet(rowIndex,4);//执行时间
+            Cell cell_3 = getCellInSheet(rowIndex,5);//恢复结果
+            Cell cell_4 = getCellInSheet(rowIndex,6);//恢复时间
+            setCellValue(workbook,cell_1,attachSecondModel.number);
+            setCellValue(workbook,cell_2,attachSecondModel.check_code);
+            setCellValue(workbook,cell_3,attachSecondModel.verison);
+            setCellValue(workbook,cell_4,attachSecondModel.factory);
+            rowIndex++;
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+    public static void setCellValueAtThird(String filePath, String descPath,int rowIndex, List<AttachThreeModel> attachThreeModelList) throws
+            Exception {
+        //列2，3，5，6
+        insureExcelType(filePath);
+        AttachThreeModel attachThreeModel;
+        int collndex_a=0,collndex_b=0;
+        int result=0;
+        for(int i=0;i<attachThreeModelList.size();i++){
+            attachThreeModel=attachThreeModelList.get(i);
+            result=i/6;
+            switch (result){
+                case 0:
+                case 2:
+                    collndex_a=2;
+                    collndex_b=3;
+                    break;
+                case 1:
+                    collndex_a=5;
+                    collndex_b=6;
+                    break;
+
+            }
+            Cell cell_1 = getCellInSheet(rowIndex,collndex_a);//A通道
+            Cell cell_2 = getCellInSheet(rowIndex,collndex_b);//B通道
+            setCellValue(workbook,cell_1,attachThreeModel.a);
+            setCellValue(workbook,cell_2,attachThreeModel.b);
+
+            rowIndex++;
+            if(rowIndex>C.ATTACH_THIRD_ROW_END_1&&result==0) {//项目2
+                    rowIndex=C.ATTACH_THIRD_ROW_BEGIN_1;
+            }
+            if(rowIndex>C.ATTACH_THIRD_ROW_END_1&&result==1){//项目3
+                    rowIndex=C.ATTACH_THIRD_ROW_BEGIN_2;
             }
         }
         try{
@@ -508,6 +603,39 @@ public class POIUtil {
         }
     }
 
+    public static void setCellValueAtFour(String filePath, String descPath,int rowIndex, List<AttachFourModel> attachFourModelList) throws
+            Exception {
+        //列2,3
+        insureExcelType(filePath);
+        AttachFourModel attachFourModel;
+        for(int i=0;i<attachFourModelList.size();i++){
+            attachFourModel=attachFourModelList.get(i);
+
+            Cell cell_1 = getCellInSheet(rowIndex,2);//第一组跳闸mS
+            Cell cell_2 = getCellInSheet(rowIndex,3);//第二组跳闸mS
+            setCellValue(workbook,cell_1,attachFourModel.time_1);
+            setCellValue(workbook,cell_2,attachFourModel.time_2);
+            rowIndex++;
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+
+
 
     public static void setCellValueAtMulCol(String filePath, String descPath, int rowIndex, int[] colIndex, List<String> list) throws Exception {
 
@@ -517,6 +645,36 @@ public class POIUtil {
         for(int j=0;j<colIndex.length;j++){
                 Cell cell=getCellInSheet(rowIndex,colIndex[j]);
                 setCellValue(workbook,cell,list.get(j));
+        }
+        try{
+            if(!FileUtils.isFileExists(descPath)){
+                FileUtils.createOrExistsFile(descPath);
+            }
+            out = new FileOutputStream(descPath);
+            workbook.write(out);
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }finally{
+            try {
+                out.close();
+            }catch(IOException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
+
+    public static void setCellValueAtProcess(String filePath, String descPath, int rowIndex, int colIndex, List<String> list,List<String> skipList) throws Exception {
+
+        insureExcelType(filePath);
+        for(int i=0;i<list.size();i++){
+            if(skipList.contains(rowIndex+"")){
+                rowIndex++;
+                continue;
+            }
+            Cell cell = getCellInSheet(rowIndex,colIndex);//
+            setCellValue(workbook,cell,list.get(i));
+            rowIndex++;
+
         }
         try{
             if(!FileUtils.isFileExists(descPath)){

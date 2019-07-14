@@ -7,6 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
        >
         <TextView
             android:layout_width="wrap_content"
@@ -20,12 +21,12 @@
             android:id="@+id/logout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="6dp"
             android:drawableLeft="@mipmap/tuichu"
             android:text="@string/exit_app"
             android:contentDescription="@string/exit_app"
             style="@style/text_style"
             android:drawablePadding="7dp"
-            android:clickable="true"
             />
 
         <TextView

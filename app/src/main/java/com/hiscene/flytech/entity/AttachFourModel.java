@@ -8,38 +8,15 @@ import com.github.weiss.core.entity.Entity;
  */
 public class AttachFourModel extends Entity {
 
-    //序号
-    public int id;
+    public String time_1;//第一组跳闸
 
-    //装置名称
-    public String name;
-
-    //装置型号
-    public String number;
-
-    //校验码
-    public String check_code;
-
-    //装置版本号
-    public String verison;
-    //生产厂家
-    public String factory;
-
+    public String time_2;//第二组跳闸
 
     public AttachFourModel() {
     }
 
-    public AttachFourModel( int id, String name ) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public AttachFourModel( int id, String name, String number, String check_code, String verison, String factory) {
-        this.id = id;
-        this.name = name;
-        this.number = number;
-        this.check_code = check_code;
-        this.verison = verison;
-        this.factory = factory;
+    public AttachFourModel( String time_1, String time_2 ) {
+        this.time_1 = time_1;
+        this.time_2 = time_2;
     }
 }
