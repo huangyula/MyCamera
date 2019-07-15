@@ -354,7 +354,9 @@ public class ProcessExcel implements IExcel {
         attachFourModelList.clear();
     }
 
+
     public void setSettingList( List<Setting> settingList ) {
+        clearSettingList();
         this.settingList = settingList;
         PROCESS_ROW_BEGIN=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[0];
         PROCESS_ROW_END=StringUtils.strArrayToIntArray(settingList.get(1).start_end.split("\\."))[1];
@@ -376,5 +378,10 @@ public class ProcessExcel implements IExcel {
                 skipList.add(skip);
             }
         }
+    }
+
+    private void clearSettingList(){
+        settingList.clear();
+        skipList.clear();
     }
 }

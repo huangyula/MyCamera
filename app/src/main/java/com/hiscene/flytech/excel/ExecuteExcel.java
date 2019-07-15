@@ -166,6 +166,7 @@ public class ExecuteExcel implements IExcel {
     }
 
     public void setSettingList( List<Setting> settingList ) {
+        clearSettingList();
         this.settingList = settingList;
         C.EXECUTE_BEGIN=StringUtils.strArrayToIntArray(settingList.get(0).start_end.split("\\."))[0];
         C.EXECUTE_END=StringUtils.strArrayToIntArray(settingList.get(0).start_end.split("\\."))[1];
@@ -177,5 +178,10 @@ public class ExecuteExcel implements IExcel {
                 skipList.add(skip);
             }
         }
+    }
+
+    private void clearSettingList(){
+        settingList.clear();
+        skipList.clear();
     }
 }

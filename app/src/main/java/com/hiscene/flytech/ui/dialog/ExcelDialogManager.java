@@ -470,10 +470,22 @@ public class ExcelDialogManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                try {
+                    //读取配置文件
+                    settingList=readSetting();
+                    processAttachStepList=readProcessStep();
+                    excelSteps = ExcelStep.test(settingList,processAttachStepList);
+                }catch (Exception e){
+                    Result result=new Result(C.SETTING_ERROR,"配置文件有错误："+e.getMessage());
+                    EventCenter.getInstance().post(result);
+                }
                 processExcel.read();
                 executeExcel.read();
                 processExcel.svae();
                 executeExcel.svae();
+
+                processExcel.setSettingList(settingList);
+                executeExcel.setSettingList(settingList);
                 //表格加载成功
                 Result result=new Result(C.RESTART_EXCEL,"");
                 EventCenter.getInstance().post(result);
