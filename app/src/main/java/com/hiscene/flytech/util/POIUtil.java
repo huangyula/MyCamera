@@ -482,7 +482,7 @@ public class POIUtil {
                     recover_result="√";
                     break;
                 case -1:
-                    recover_result="";
+                    recover_result="○";
                     break;
             }
             Cell cell_1 = getCellInSheet(rowIndex,2);//执行结果

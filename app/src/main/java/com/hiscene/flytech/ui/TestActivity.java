@@ -328,13 +328,16 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     if(xExportExcelPopup!=null){
                         xExportExcelPopup.dismiss();
                     }
-                    ToastUtils.show("表单已保存至"+C.OUTPUT_PATH+SPUtils.getString(END_TIME)+"文件夹",5000);
+                    ToastUtils.show("表单已保存至"+"/"+getString(R.string.app_name)+"/export/"+SPUtils.getString(END_TIME)+"/文件夹",5000);
 
-//                    excelDialogManager.getCurrentDailog().dismiss();
+
                     if(startEditExcelDialog==null){
                         startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
                     }
                     startEditExcelDialog.show();
+                    if(excelDialogManager.getCurrentDailog()!=null){
+                        excelDialogManager.dismissCurrentDialog();
+                    }
                     break;
                 case C.RESTART_EDIT://准备重新打开表单,重新读取数据
                     xLoadExcelPopup=new XPopup.Builder(TestActivity.this)

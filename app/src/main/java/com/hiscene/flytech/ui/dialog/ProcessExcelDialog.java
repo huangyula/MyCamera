@@ -57,11 +57,6 @@ public class ProcessExcelDialog extends BaseExcelDialog<ProcessModel> {
 
     public ProcessExcelDialog( Context context, ExcelDialogManager excelDialogManager ) {
         super(context, excelDialogManager);
-        //记录作业开始时间
-        if(TextUtils.isEmpty(SPUtils.getString(START_TIME))){
-            SPUtils.put(START_TIME, TimeUtils.getNowTimeString());
-        }
-
     }
 
 

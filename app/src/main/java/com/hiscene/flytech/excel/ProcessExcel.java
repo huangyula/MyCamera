@@ -214,7 +214,7 @@ public class ProcessExcel implements IExcel {
                     results.clear();
                     LogUtils.d(SPUtils.getString(START_TIME));
                     results.add(SPUtils.getString(START_TIME));//作业开始时间
-                    results.add(TimeUtils.getNowTimeString());//作业结束时间
+                    results.add(SPUtils.getString(END_TIME));//作业结束时间
                     POIUtil.setCellValueAtMulCol(path,path,START_TIME_BEGIN,col_array,results);
 
                     //及时刷新文件

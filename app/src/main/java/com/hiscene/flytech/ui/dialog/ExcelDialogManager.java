@@ -38,6 +38,7 @@ import static com.hiscene.flytech.C.OUTPUT_PATH;
 import static com.hiscene.flytech.entity.ExcelStep.readProcessStep;
 import static com.hiscene.flytech.entity.ExcelStep.readSetting;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
+import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
  * @author Minamo
@@ -120,6 +121,11 @@ public class ExcelDialogManager {
 
     public void init() {
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
+        if (PositionUtil.islastStep(pos, excelSteps)) {
+            lastStep();
+        }else {
+            mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
+        }
         if(SPUtils.getBoolean(RECOVERY)){
             new ComfirmDialog(mContext).show();
         }
@@ -133,7 +139,6 @@ public class ExcelDialogManager {
     public void previousStep() {
         LogUtils.d("上一步");
         if(laststep){
-//            recoverExcelDialog.nextStepBtn.setEnabled(true);
             mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
             laststep=false;
         }
@@ -193,7 +198,7 @@ public class ExcelDialogManager {
                     export();
                     return;
                 }
-
+                return;
         }
         pos=PositionUtil.nextStep(pos, excelSteps);
         SPUtils.put(PositionUtil.POSITION,pos);
@@ -201,6 +206,8 @@ public class ExcelDialogManager {
         showExcel(PositionUtil.pos2ExcelStep_ChildStep(pos, excelSteps));
         if (PositionUtil.islastStep(pos, excelSteps)) {
             lastStep();
+        }else {
+            mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.next_operation));
         }
 
     }
@@ -208,7 +215,7 @@ public class ExcelDialogManager {
     /**
      * 最后一步,生成新的表格
      */
-    public void lastStep() {
+    public void  lastStep() {
         laststep=true;
         ToastUtils.show("当前已经是最后一步了");
         mCurrentDailog.nextStepBtn.setText(BaseApp.getAppResources().getString(R.string.export_excel));
@@ -233,8 +240,9 @@ public class ExcelDialogManager {
         userManager.logout();
         SPUtils.put(RECOVERY, true);
         SPUtils.put(PositionUtil.POSITION, pos);
+        dismissCurrentDialog();
         currentExcel=null;
-        CURRENT_DIALOG=-2;
+//        CURRENT_DIALOG=-2;
     }
 
     /**
@@ -269,6 +277,10 @@ public class ExcelDialogManager {
      * @param excelStep
      */
     private void showProcessExcel( ExcelStep excelStep ) {
+        //记录作业开始时间
+        if(TextUtils.isEmpty(SPUtils.getString(START_TIME))){
+            SPUtils.put(START_TIME, TimeUtils.getNowTimeString());
+        }
         if (CollectionUtils.isEmpty(processExcel.processExcelList)) return;
         if (processExcelDialog == null) {
             processExcelDialog = processExcelDialog.newInstance(mContext,this);
@@ -428,6 +440,8 @@ public class ExcelDialogManager {
                 }
                 break;
         }
+        CURRENT_DIALOG=-2;
+        mCurrentDailog=null;
     }
 
 
@@ -469,13 +483,10 @@ public class ExcelDialogManager {
 
     public void reset(){ //重新初始化值
         pos="0.0";
-        CURRENT_DIALOG=-2;
         currentExcel=null;
         firststep=true;
         laststep=false;
-        if(mCurrentDailog!=null){
-            mCurrentDailog.dismiss();
-        }
+        dismissCurrentDialog();
         SPUtils.put(PositionUtil.POSITION,"0.0");
         SPUtils.put(RECOVERY,false);
         SPUtils.put(START_TIME,"");

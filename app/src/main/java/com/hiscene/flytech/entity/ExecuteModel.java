@@ -28,7 +28,7 @@ public class ExecuteModel extends Entity {
     public String recover_date;
 
     public ExecuteModel(String id, String content) {
-        this(id,content,-1,null,-1,null);
+        this(id,content,-1,null,-1,"—");
     }
 
     public ExecuteModel(String id, String content, int excute_result, String execute_date, int recover_result, String recover_date) {
