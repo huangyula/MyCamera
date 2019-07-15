@@ -33,6 +33,7 @@ import com.hiscene.flytech.ui.dialog.ScanLoginDialog;
 import com.hiscene.flytech.ui.dialog.StartEditExcelDialog;
 import com.hiscene.flytech.util.POIUtil;
 import com.hiscene.flytech.util.PositionUtil;
+import com.hiscene.flytech.view.CustomProgressDialog;
 import com.lxj.xpopup.XPopup;
 import com.lxj.xpopup.impl.LoadingPopupView;
 
@@ -90,6 +91,8 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 
     LoadingPopupView xExportExcelPopup;
 
+    CustomProgressDialog progressDialog;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
@@ -100,6 +103,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventCenter.bindContainerAndHandler(this, mEventHandler);
         screenRecorderManager = new ScreenRecorderManager(this);
+        progressDialog=new CustomProgressDialog(this,0);
         if(userManager.isLogin()){
             startEditExcelDialog=StartEditExcelDialog.newInstance(this);
             startEditExcelDialog.show();

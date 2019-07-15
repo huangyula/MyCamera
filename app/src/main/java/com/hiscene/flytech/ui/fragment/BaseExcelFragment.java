@@ -99,18 +99,18 @@ public abstract class BaseExcelFragment<T> extends BaseRxFragment {
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
-        final List<Bitmap> bitmapList=new ArrayList<>();
+//        final List<File> bitmapList=new ArrayList<>();
         List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
         if(CollectionUtils.isEmpty(fileList)){
             ToastUtils.show("暂无资料");
             return;
         }
         Collections.sort(fileList, new FileComparator());
-        for(File file:fileList){
-            LogUtils.d(file.getName());
-            bitmapList.add(ImageUtils.getBitmap(file));
-        }
-        new ShowImagesDialog(getActivity(),bitmapList).show();
+//        for(File file:fileList){
+//            LogUtils.d(file.getName());
+//            fileList.add(ImageUtils.getBitmap(file));
+//        }
+        new ShowImagesDialog(getActivity(),fileList).show();
 
     }
 

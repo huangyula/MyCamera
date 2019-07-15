@@ -32,6 +32,7 @@ import com.hiscene.flytech.util.AnimUtils;
 
 import org.apache.poi.ss.formula.functions.T;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,14 +60,14 @@ public class ShowImagesDialog extends Dialog{
     private View mView;
     private ShowImagesAdapter mAdapter;
     private Context mContext;
-    private List<Bitmap> bitmapList;
+    private List<File> fileList;
     private List<String> mTitles;
     private List<View> mViews;
 
-    public ShowImagesDialog(@NonNull Context context, List<Bitmap> bitmapList) {
+    public ShowImagesDialog(@NonNull Context context, List<File> fileList) {
         super(context, R.style.transparentBgDialog);//R.style.transparentBgDialog
         this.mContext = context;
-        this.bitmapList = bitmapList;
+        this.fileList = fileList;
         initView();
         initData();
     }
@@ -97,7 +98,7 @@ public class ShowImagesDialog extends Dialog{
                 dismiss();
             }
         };
-        for (int i = 0; i < bitmapList.size(); i++) {
+        for (int i = 0; i < fileList.size(); i++) {
             final PhotoView photoView = new PhotoView(mContext);
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             photoView.setLayoutParams(layoutParams);
@@ -113,7 +114,7 @@ public class ShowImagesDialog extends Dialog{
             RequestOptions requestOptions = new RequestOptions();
             requestOptions.placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher);
             Glide.with(mContext)
-                    .load(bitmapList.get(i))
+                    .load(fileList.get(i))
                     .apply(requestOptions)
                     .into(new SimpleTarget<Drawable>() {
                         @Override

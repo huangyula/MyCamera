@@ -101,7 +101,6 @@ public class ExcelDialogManager {
         executeExcel.setSettingList(settingList);
 
 
-
         if (!SPUtils.getBoolean(RECOVERY)) {//重新启动
             processExcel.read();
             executeExcel.read();

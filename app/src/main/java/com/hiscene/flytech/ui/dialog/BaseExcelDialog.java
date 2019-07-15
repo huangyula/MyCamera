@@ -13,8 +13,13 @@ import com.github.weiss.core.utils.LogUtils;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.event.EventCenter;
+import com.hiscene.flytech.ui.TestActivity;
 import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
+import com.hiscene.flytech.view.CustomAlertDialog;
+import com.hiscene.flytech.view.CustomProgressDialog;
 import com.hiscene.flytech.view.ShowImagesDialog;
+import com.lxj.xpopup.XPopup;
+import com.lxj.xpopup.impl.LoadingPopupView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,14 +96,14 @@ public abstract class BaseExcelDialog<T> extends BaseDialog {
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
+        CustomProgressDialog customProgressDialog=new CustomProgressDialog(mContext,0);
+        customProgressDialog.setMessage("正在加载设备资料，请稍后");
+        customProgressDialog.show();
         final List<Bitmap> bitmapList=new ArrayList<>();
         List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
         Collections.sort(fileList, new FileComparator());
-        for(File file:fileList){
-            LogUtils.d(file.getName());
-            bitmapList.add(ImageUtils.getBitmap(file));
-        }
-        new ShowImagesDialog(mContext,bitmapList).show();
+        customProgressDialog.dismiss();
+        new ShowImagesDialog(mContext,fileList).show();
 
     }
 
