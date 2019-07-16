@@ -666,13 +666,12 @@ public class POIUtil {
 
         insureExcelType(filePath);
         for(int i=0;i<list.size();i++){
-            if(skipList.contains(rowIndex+"")){
-                rowIndex++;
-                continue;
-            }
             Cell cell = getCellInSheet(rowIndex,colIndex);//
             setCellValue(workbook,cell,list.get(i));
             rowIndex++;
+            while (skipList.contains(rowIndex+"")){
+                rowIndex++;
+            }
 
         }
         try{

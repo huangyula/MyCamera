@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_marginTop="@dimen/scan_magin_top">
+    android:layout_marginTop="@dimen/scan_magin_top"
+    android:gravity="center">
 
-        <ImageView
-            android:id="@+id/iv_scan"
-            android:layout_width="400dp"
-            android:layout_height="400dp"
-            android:layout_centerInParent="true"
-            android:background="@mipmap/erweimasaomiaodenglu"
-            />
-        <ImageView
-            android:id="@+id/scan_line"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:background="@mipmap/big_orangeline"
-            android:layout_marginTop="18dp"
-            android:layout_alignTop="@id/iv_scan"
-            android:layout_centerHorizontal="true"
-            android:clickable="true"
-            />
-        <TextView
-            android:id="@+id/tv_scan_hint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scan_login_qrcode"
-            android:layout_below="@id/iv_scan"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="@dimen/scan_text_size"
-            android:layout_marginTop="13dp"
-            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/iv_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@mipmap/erweimasaomiaodenglu"
+                    />
+                <ImageView
+                    android:id="@+id/scan_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/big_orangeline"
+                    android:layout_marginTop="18dp"
+                    android:layout_alignTop="@id/iv_scan"
+                    android:layout_centerHorizontal="true"
+                    android:clickable="true"
+                    />
+                <TextView
+                    android:id="@+id/tv_scan_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/scan_login_qrcode"
+                    android:layout_below="@id/iv_scan"
+                    android:layout_centerHorizontal="true"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/scan_text_size"
+                    android:layout_marginTop="13dp"
+                    />
+        </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

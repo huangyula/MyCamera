@@ -40,7 +40,7 @@ import java.util.List;
 import static com.hiscene.flytech.C.EXCEL_WRITE_ERROR;
 import static com.hiscene.flytech.C.OUTPUT_PATH;
 import static com.hiscene.flytech.C.START_TIME_BEGIN;
-import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.EXCEL_END_TIME;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
@@ -96,7 +96,7 @@ public class ExecuteExcel implements IExcel {
     @Override
     public void write() {
         try {
-            String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+C.EXECUTE_FILE;
+            String path= OUTPUT_PATH+SPUtils.getString(EXCEL_END_TIME)+File.separator+C.EXECUTE_FILE;
             POIUtil.setCellValueAtExecute(C.ASSETS_PATH + C.EXECUTE_FILE,path,executeModelList,skipList);
             LogUtils.d("已成功修改表格内容");
             //及时刷新文件

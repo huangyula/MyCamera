@@ -60,7 +60,8 @@ public class ScreenRecorderManager {
     // I-frames
     private static final int IFRAME_INTERVAL = 5; // 10 between
     private int fps = 30;
-    private int bitRate = 800000;
+    private int bitRate = 4800000;
+    private String dstPath;
 
     public ScreenRecorderManager(Activity activity) {
         this.activity = activity;
@@ -70,8 +71,9 @@ public class ScreenRecorderManager {
 
     private ScreenRecorder newRecorder(MediaProjection mediaProjection, VideoEncodeConfig video,
                                        AudioEncodeConfig audio, File output) {
+        dstPath = output.getAbsolutePath();
         ScreenRecorder r = new ScreenRecorder(video, audio,
-                DisplayUtil.getScreenDensityDPI(com.github.weiss.core.utils.Utils.getContext()), mediaProjection, output.getAbsolutePath());
+                1, mediaProjection, output.getAbsolutePath());
         r.setCallback(new ScreenRecorder.Callback() {
             long startTime = 0;
 
@@ -162,6 +164,11 @@ public class ScreenRecorderManager {
         } catch (Exception e) {
             //ignored
         }
+
+        //及时刷新文件
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(new File((dstPath)))); // 需要更新的文件路径
+        App.getAppContext().sendBroadcast(intent);
     }
 
     public void cancelRecorder() {
@@ -210,7 +217,7 @@ public class ScreenRecorderManager {
     }
 
     private static File getSavingDir() {
-        return new File( C.TEMP_PATH+"Recorder"+File.separator);
+        return new File( C.OUTPUT_PATH+"Recorder"+File.separator);
 /*        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
                 "ScreenCaptures");*/
     }

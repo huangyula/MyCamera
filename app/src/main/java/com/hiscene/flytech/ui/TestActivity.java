@@ -47,6 +47,7 @@ import io.reactivex.Observable;
 
 import static com.hiscene.flytech.App.userManager;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.END_TIME;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.EXCEL_END_TIME;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.RECOVERY;
 import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.START_TIME;
 
@@ -66,7 +67,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     public static final String START_SCAN_LOGIN ="START_SCAN_LOGIN" ;
     public static final String HILEIA="HILEIA";
 
-    public boolean success=true;
+    public boolean success=false;
     public boolean isClick=false;//是否点击过表单
     private LifeCycleComponentManager mComponentContainer = new LifeCycleComponentManager();
 
@@ -92,6 +93,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     LoadingPopupView xExportExcelPopup;
 
     CustomProgressDialog progressDialog;
+
 
     @Override
     protected int getLayoutId() {
@@ -207,17 +209,6 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         super.onDestroy();
         mComponentContainer.onDestroy();
         boolean result;
-//        if(excelDialogManager.laststep&&success){
-//            SPUtils.put(RECOVERY, false);
-//            SPUtils.put(START_TIME,"");
-//            SPUtils.put(PositionUtil.POSITION,"0.0");
-//        }else {
-            SPUtils.put(RECOVERY, true);
-            SPUtils.put(PositionUtil.POSITION, excelDialogManager.pos);
-//        }
-
-
-
         if (isLaunchHiLeia) {
             LogUtils.d("isLaunchHiLeia onDestroy");
             isLaunchHiLeia = false;
@@ -273,8 +264,10 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
     public void startEdit() {
         isClick=true;
         if (excelDialogManager != null) {
-         excelDialogManager.init();
-         startEditExcelDialog.dismiss();
+
+            excelDialogManager.init();
+
+            startEditExcelDialog.dismiss();
         cameraView.setVisibility(View.VISIBLE);
         screenRecorderManager.startCaptureIntent();
 //        cameraRecorder.init();
@@ -321,27 +314,25 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                         startEdit();
                     break;
                 case C.EXCEL_WRITE_ERROR:
-                    success=false;
                     if(xExportExcelPopup!=null){
                         xExportExcelPopup.dismiss();
                     }
+                    SPUtils.put(RECOVERY,true);
                     LogUtils.d("文件写入数据出错："+result.msg);
                     break;
                 case C.EXCEL_WRITE_SUCCESS:
-                    success=true;
+                    excelDialogManager.reset();
+                    excelDialogManager=null;
+                    new Thread(() -> excelDialogManager = new ExcelDialogManager(TestActivity.this)).start();
+
                     if(xExportExcelPopup!=null){
                         xExportExcelPopup.dismiss();
                     }
-                    ToastUtils.show("表单已保存至"+"/"+getString(R.string.app_name)+"/export/"+SPUtils.getString(END_TIME)+"/文件夹",5000);
-
-
+                    ToastUtils.show("表单已保存至"+"/"+getString(R.string.app_name)+"/export/"+SPUtils.getString(EXCEL_END_TIME)+"/文件夹",5000);
                     if(startEditExcelDialog==null){
                         startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
                     }
                     startEditExcelDialog.show();
-                    if(excelDialogManager.getCurrentDailog()!=null){
-                        excelDialogManager.dismissCurrentDialog();
-                    }
                     break;
                 case C.RESTART_EDIT://准备重新打开表单,重新读取数据
                     xLoadExcelPopup=new XPopup.Builder(TestActivity.this)
@@ -358,6 +349,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     }
                     excelDialogManager.reset();
                     excelDialogManager.init();
+                    success=false;
                     break;
                 case C.SETTING_ERROR:
                     ToastUtils.show(result.msg);

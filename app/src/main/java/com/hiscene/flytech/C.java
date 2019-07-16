@@ -27,8 +27,8 @@ public class C {
     public static final String OUTPUT_PATH = BASE_PATH + File.separator + "export" + File.separator;
 
     //作业过程表格文件名
-    public static final String PROCESS_FILE = "芬莱作业过程.xlsx";
-    public static final String PROCESS = "芬莱作业过程";
+    public static final String PROCESS_FILE = "作业过程.xlsx";
+    public static final String PROCESS = "作业过程";
 
     //二次措施单表格文件名
     public static final String EXECUTE_READ_FILE="220kV砚后甲线二次措施单-数据读取.xlsx";
@@ -36,7 +36,7 @@ public class C {
     public static final String EXECUTE="220kV砚后甲线二次措施单";
 
    //临时目录下的缓存文件
-    public static final String TEMP_PROCESS_FILE=TEMP_PATH+"芬莱作业过程.json";
+    public static final String TEMP_PROCESS_FILE=TEMP_PATH+"作业过程.json";
     public static final String TEMP_EXCUTE_FILE=TEMP_PATH+"220kV砚后甲线二次措施单.json";
     public static final String TEMP_ATTACH_FIRST_FILE=TEMP_PATH+"附表1.json";
     public static final String TEMP_ATTACH_SECOND_FILE=TEMP_PATH+"附表2.json";

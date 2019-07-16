@@ -56,7 +56,8 @@ import static com.hiscene.flytech.C.PROCESS_FILE;
 import static com.hiscene.flytech.C.PROCESS_ROW_BEGIN;
 import static com.hiscene.flytech.C.PROCESS_ROW_END;
 import static com.hiscene.flytech.C.START_TIME_BEGIN;
-import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.END_TIME;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.END_TIME;
+import static com.hiscene.flytech.ui.dialog.ExcelDialogManager.EXCEL_END_TIME;
 import static com.hiscene.flytech.ui.fragment.ExcelFragmentManager.START_TIME;
 
 /**
@@ -190,7 +191,7 @@ public class ProcessExcel implements IExcel {
                         }
                         resultList.add(result);
                     }
-                    String path= OUTPUT_PATH+SPUtils.getString(END_TIME)+File.separator+PROCESS_FILE;//OUTPUT_PATH+C.PROCESS_FILE
+                    String path= OUTPUT_PATH+SPUtils.getString(EXCEL_END_TIME)+File.separator+PROCESS_FILE;//OUTPUT_PATH+C.PROCESS_FILE
                     POIUtil.setCellValueAtProcess(ASSETS_PATH + C.PROCESS_FILE,path,PROCESS_ROW_BEGIN,6,resultList,skipList);
 
                     //附表1

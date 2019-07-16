@@ -129,7 +129,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:contentDescription="@string/device_number"
+                            android:contentDescription="hf_yes_number"
                             android:gravity="center"
                             android:clickable="true"
                             style="@style/text_style_white"
@@ -147,7 +147,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:contentDescription="@string/check_code"
+                            android:contentDescription="hf_yes_number"
                             android:gravity="center"
                             android:clickable="true"
                             style="@style/text_style_white"/>

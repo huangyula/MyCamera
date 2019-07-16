@@ -80,6 +80,9 @@ public class AssetsUtils {
                 }
             } else {
                 File outFile = new File(dstPath);
+                if(outFile.exists()){
+                    return true;
+                }
                 InputStream is = context.getAssets().open(srcPath);
                 FileOutputStream fos = new FileOutputStream(outFile);
                 byte[] buffer = new byte[1024];

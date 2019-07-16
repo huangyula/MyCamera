@@ -51,6 +51,7 @@ public class ExcelDialogManager {
     public static final String RECOVERY = "Recovery";
     public static final String START_TIME = "START_TIME";//作业开始时间
     public static final String END_TIME = "END_TIME";//作业结束时间
+    public static final String EXCEL_END_TIME="EXCEL_END_TIME";//表单结束时间
 
     private FragmentManager manager;
     //填表格步骤
@@ -167,26 +168,36 @@ public class ExcelDialogManager {
         ExcelStep excelStep=PositionUtil.pos2ExcelStep_ChildStep(pos,excelSteps);
         if(excelStep.style==ExcelStyle.ATTACH_FIRST_EXCEL){
             String number= TextUtils.isEmpty(processExcelDialog.et_number.getText())?"":processExcelDialog.et_number.getText().toString().trim();
-            processExcel.attachFirstModels.get(excelStep.step).result=number;
+            if(!CollectionUtils.isEmpty(processExcel.attachFirstModels)){
+                processExcel.attachFirstModels.get(excelStep.step).result=number;
+            }
+
         }else if(excelStep.style==ExcelStyle.ATTACH_SECOND_EXCEL){//附表二的填写
             String device_version= TextUtils.isEmpty(attachSecondExcelDialog.device_version.getText())?"":attachSecondExcelDialog.device_version.getText().toString();
             String device_number= TextUtils.isEmpty(attachSecondExcelDialog.device_number.getText())?"":attachSecondExcelDialog.device_number.getText().toString();
             String check_code= TextUtils.isEmpty(attachSecondExcelDialog.check_code.getText())?"":attachSecondExcelDialog.check_code.getText().toString();
             String factory= TextUtils.isEmpty(attachSecondExcelDialog.factory.getText())?"":attachSecondExcelDialog.factory.getText().toString();
-            processExcel.attachSecondModelList.get(excelStep.step).verison=device_version;
-            processExcel.attachSecondModelList.get(excelStep.step).number=device_number;
-            processExcel.attachSecondModelList.get(excelStep.step).check_code=check_code;
-            processExcel.attachSecondModelList.get(excelStep.step).factory=factory;
+            if(!CollectionUtils.isEmpty(processExcel.attachSecondModelList)){
+                processExcel.attachSecondModelList.get(excelStep.step).verison=device_version;
+                processExcel.attachSecondModelList.get(excelStep.step).number=device_number;
+                processExcel.attachSecondModelList.get(excelStep.step).check_code=check_code;
+                processExcel.attachSecondModelList.get(excelStep.step).factory=factory;
+            }
         } else if(excelStep.style==ExcelStyle.ATTACH_THREE_EXCEL){//附表三的填写
             String a= TextUtils.isEmpty(attachThreeExcelDialog.et_A.getText())?"":attachThreeExcelDialog.et_A.getText().toString().trim();
             String b= TextUtils.isEmpty(attachThreeExcelDialog.et_B.getText())?"":attachThreeExcelDialog.et_B.getText().toString().trim();
-            processExcel.attachThreeModelList.get(excelStep.step).a=a;
-            processExcel.attachThreeModelList.get(excelStep.step).b=b;
+            if(!CollectionUtils.isEmpty(processExcel.attachThreeModelList)){
+                processExcel.attachThreeModelList.get(excelStep.step).a=a;
+                processExcel.attachThreeModelList.get(excelStep.step).b=b;
+            }
+
         } else if(excelStep.style==ExcelStyle.ATTACH_FOUR_EXCEL){//附表四的填写
             String time_1= TextUtils.isEmpty(attachFourExcelDialog.time_1.getText())?"":attachFourExcelDialog.time_1.getText().toString().trim();
             String time_2= TextUtils.isEmpty(attachFourExcelDialog.time_2.getText())?"":attachFourExcelDialog.time_2.getText().toString().trim();
-            processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;
-            processExcel.attachFourModelList.get(excelStep.step).time_2=time_2;
+            if(!CollectionUtils.isEmpty(processExcel.attachFourModelList)){
+                processExcel.attachFourModelList.get(excelStep.step).time_1=time_1;
+                processExcel.attachFourModelList.get(excelStep.step).time_2=time_2;
+            }
         }
         currentExcel.svae();
 
@@ -225,7 +236,7 @@ public class ExcelDialogManager {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SPUtils.put(END_TIME,TimeUtils.getNowTimeString());
+                SPUtils.put(EXCEL_END_TIME,TimeUtils.getNowTimeString());
                 executeExcel.write();
                 processExcel.write();
             }
@@ -280,6 +291,8 @@ public class ExcelDialogManager {
         if(TextUtils.isEmpty(SPUtils.getString(START_TIME))){
             SPUtils.put(START_TIME, TimeUtils.getNowTimeString());
         }
+        //记录作业结束时间
+        SPUtils.put(END_TIME,TimeUtils.getNowTimeString());
         if (CollectionUtils.isEmpty(processExcel.processExcelList)) return;
         if (processExcelDialog == null) {
             processExcelDialog = processExcelDialog.newInstance(mContext,this);
@@ -478,6 +491,9 @@ public class ExcelDialogManager {
                     Result result=new Result(C.SETTING_ERROR,"配置文件有错误："+e.getMessage());
                     EventCenter.getInstance().post(result);
                 }
+                processExcel = new ProcessExcel();
+                executeExcel = new ExecuteExcel();
+
                 processExcel.read();
                 executeExcel.read();
                 processExcel.svae();
@@ -508,5 +524,7 @@ public class ExcelDialogManager {
     }
 
 
-
+    public void clearAllDialog() {
+        dismissCurrentDialog();
+    }
 }
