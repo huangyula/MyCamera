@@ -42,6 +42,9 @@ import butterknife.OnClick;
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
+import static uk.co.senab.photoview.IPhotoView.DEFAULT_MAX_SCALE;
+import static uk.co.senab.photoview.IPhotoView.DEFAULT_MIN_SCALE;
+
 /**
  * Created by Administrator on 2017/5/3.
  * 嵌套了viewpager的图片浏览
@@ -103,7 +106,7 @@ public class ShowImagesDialog extends Dialog{
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             photoView.setLayoutParams(layoutParams);
             photoView.setOnPhotoTapListener(listener);
-            //点击图片外围（无图片处）监听
+                    //点击图片外围（无图片处）监听
             /**
              photoView.setOnViewTapListener(new OnViewTapListener() {
             @Override public void onViewTap(View view, float x, float y){
@@ -149,11 +152,14 @@ public class ShowImagesDialog extends Dialog{
 
     @OnClick(R.id.pre_picture)
     void prePicture() {
+//        ((PhotoView)mViews.get(mViewPager.getCurrentItem())).setMinimumScale(DEFAULT_MIN_SCALE);
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
     }
 
     @OnClick(R.id.next_picture)
     void nextPicture() {
+
+//        ((PhotoView)mViews.get(mViewPager.getCurrentItem())).setMinimumScale(DEFAULT_MAX_SCALE);
         mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
     }
 

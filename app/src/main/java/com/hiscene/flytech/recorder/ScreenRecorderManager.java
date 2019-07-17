@@ -217,7 +217,7 @@ public class ScreenRecorderManager {
     }
 
     private static File getSavingDir() {
-        return new File( C.OUTPUT_PATH+"Recorder"+File.separator);
+        return new File( C.TEMP_PATH+"Recorder"+File.separator);
 /*        return new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
                 "ScreenCaptures");*/
     }

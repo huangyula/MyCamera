@@ -5,9 +5,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.github.weiss.core.utils.DisplayUtil;
 import com.hiscene.flytech.R;
+import com.hiscene.flytech.ui.dialog.BaseDialog;
 
 
 /**
@@ -16,13 +20,15 @@ import com.hiscene.flytech.R;
  * @author zajo
  */
 public class CustomProgressDialog extends Dialog {
-    CustomProgressDialog dialog;
+    Context mContext;
 
     public CustomProgressDialog( Context context, int theme) {
         super(context, theme);
+        mContext=context;
         setContentView(R.layout.custom_progress_dialog);
         getWindow().getAttributes().gravity = Gravity.CENTER;
         setCancelable(false);
+        setCanceledOnTouchOutside(false);
 
     }
 
@@ -55,18 +61,21 @@ public class CustomProgressDialog extends Dialog {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.KEYCODE_BACK)
-            dismiss();
+            return true;
         return super.onKeyDown(keyCode, event);
     }
 
 
-    public CustomProgressDialog  getInstance( Context context,int theme){
-        if(dialog==null){
-            dialog=new CustomProgressDialog(context,theme);
-        }
-        return dialog;
-
-
+    @Override
+    public void show() {
+        super.show();
+        Window window = getWindow();
+        WindowManager.LayoutParams wl = window.getAttributes();
+        wl.x = 0;
+        wl.y = 0;
+        wl.width = (int) (DisplayUtil.getScreenWidth(mContext));
+        wl.height = (int) (DisplayUtil.getScreenHeight(mContext));
+        wl.gravity = Gravity.CENTER;
+        window.setAttributes(wl);
     }
-
 }

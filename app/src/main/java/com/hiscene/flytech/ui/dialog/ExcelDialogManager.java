@@ -29,6 +29,7 @@ import com.hiscene.flytech.excel.ProcessExcel;
 import com.hiscene.flytech.ui.MainActivity;
 import com.hiscene.flytech.util.PositionUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +53,9 @@ public class ExcelDialogManager {
     public static final String START_TIME = "START_TIME";//作业开始时间
     public static final String END_TIME = "END_TIME";//作业结束时间
     public static final String EXCEL_END_TIME="EXCEL_END_TIME";//表单结束时间
+
+    private static long lastTimeMillis;
+    private static final long MIN_CLICK_INTERVAL = 500;
 
     private FragmentManager manager;
     //填表格步骤
@@ -159,6 +163,10 @@ public class ExcelDialogManager {
      * 下一步
      */
     public void nextStep() {
+        if(!isTimeEnabled()){
+            return;
+        }
+
         //保存上一步数据
         LogUtils.d("下一步");
         if(firststep){
@@ -239,6 +247,8 @@ public class ExcelDialogManager {
                 SPUtils.put(EXCEL_END_TIME,TimeUtils.getNowTimeString());
                 executeExcel.write();
                 processExcel.write();
+                FileUtils.copyDir(C.TEMP_PATH+"Recorder"+ File.separator,OUTPUT_PATH+SPUtils.getString(EXCEL_END_TIME));
+                FileUtils.deleteDir(C.TEMP_PATH+"Recorder");
             }
         }).start();
     }
@@ -518,6 +528,16 @@ public class ExcelDialogManager {
         SPUtils.put(RECOVERY,false);
         SPUtils.put(START_TIME,"");
     }
+
+    protected boolean isTimeEnabled() {
+        long currentTimeMillis = System.currentTimeMillis();
+        if ((currentTimeMillis - lastTimeMillis) > MIN_CLICK_INTERVAL) {
+            lastTimeMillis = currentTimeMillis;
+            return true;
+        }
+        return false;
+    }
+
 
     public Dialog getCurrentDailog() {
         return mCurrentDailog;

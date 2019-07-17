@@ -96,14 +96,16 @@ public abstract class BaseExcelDialog<T> extends BaseDialog {
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
-        CustomProgressDialog customProgressDialog=new CustomProgressDialog(mContext,0);
-        customProgressDialog.setMessage("正在加载设备资料，请稍后");
+        CustomProgressDialog customProgressDialog=new CustomProgressDialog(mContext,R.style.transparentBgDialog);
+        customProgressDialog.setMessage("正在加载设备资料,请稍后");
         customProgressDialog.show();
-        final List<Bitmap> bitmapList=new ArrayList<>();
+//
         List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
         Collections.sort(fileList, new FileComparator());
+//
+        ShowImagesDialog showImagesDialog=new ShowImagesDialog(mContext,fileList);
         customProgressDialog.dismiss();
-        new ShowImagesDialog(mContext,fileList).show();
+        showImagesDialog.show();
 
     }
 

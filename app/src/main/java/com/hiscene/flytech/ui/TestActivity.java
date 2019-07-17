@@ -88,9 +88,9 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 
     ExcelDialogManager excelDialogManager;
     
-    LoadingPopupView xLoadExcelPopup;
-
-    LoadingPopupView xExportExcelPopup;
+//    LoadingPopupView xLoadExcelPopup;
+//
+//    LoadingPopupView xExportExcelPopup;
 
     CustomProgressDialog progressDialog;
 
@@ -105,7 +105,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         EventCenter.bindContainerAndHandler(this, mEventHandler);
         screenRecorderManager = new ScreenRecorderManager(this);
-        progressDialog=new CustomProgressDialog(this,0);
+        progressDialog=new CustomProgressDialog(this,R.style.transparentBgDialog);
         if(userManager.isLogin()){
             startEditExcelDialog=StartEditExcelDialog.newInstance(this);
             startEditExcelDialog.show();
@@ -295,10 +295,15 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     hileia();
                     break;
                 case C.LOADING:
+                    screenRecorderManager.cancelRecorder();
                     LogUtils.d("正在生成文件中");
-                    xExportExcelPopup=new XPopup.Builder(TestActivity.this)
-                            .asLoading("正在生成文件中...");
-                    xExportExcelPopup.show();
+                    if(progressDialog==null){
+                        progressDialog=new CustomProgressDialog(TestActivity.this,R.style.transparentBgDialog);
+                    }
+                    showProgress("正在生成文件中,请稍后");
+//                    xExportExcelPopup=new XPopup.Builder(TestActivity.this)
+//                            .asLoading("正在生成文件中...");
+//                    xExportExcelPopup.show();
                     break;
                 case C.CONTINUE_EDIT:
 
@@ -314,9 +319,7 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                         startEdit();
                     break;
                 case C.EXCEL_WRITE_ERROR:
-                    if(xExportExcelPopup!=null){
-                        xExportExcelPopup.dismiss();
-                    }
+                    hideProgress();
                     SPUtils.put(RECOVERY,true);
                     LogUtils.d("文件写入数据出错："+result.msg);
                     break;
@@ -325,9 +328,10 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     excelDialogManager=null;
                     new Thread(() -> excelDialogManager = new ExcelDialogManager(TestActivity.this)).start();
 
-                    if(xExportExcelPopup!=null){
-                        xExportExcelPopup.dismiss();
-                    }
+                    hideProgress();
+//                    if(xExportExcelPopup!=null){
+//                        xExportExcelPopup.dismiss();
+//                    }
                     ToastUtils.show("表单已保存至"+"/"+getString(R.string.app_name)+"/export/"+SPUtils.getString(EXCEL_END_TIME)+"/文件夹",5000);
                     if(startEditExcelDialog==null){
                         startEditExcelDialog=StartEditExcelDialog.newInstance(TestActivity.this);
@@ -335,18 +339,20 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
                     startEditExcelDialog.show();
                     break;
                 case C.RESTART_EDIT://准备重新打开表单,重新读取数据
-                    xLoadExcelPopup=new XPopup.Builder(TestActivity.this)
-                            .asLoading("正在重新加载表单,请稍后...");
-                    xLoadExcelPopup.show();
+                    showProgress("正在重新加载表单,请稍后...");
+//                    xLoadExcelPopup=new XPopup.Builder(TestActivity.this)
+//                            .asLoading("正在重新加载表单,请稍后...");
+//                    xLoadExcelPopup.show();
                     excelDialogManager.restart();
                     break;
                 case C.RESTART_EXCEL://重新打开表单成功
-                    if(xLoadExcelPopup!=null){
-                        xLoadExcelPopup.dismiss();
-                    }
-                    if(xExportExcelPopup!=null&&xExportExcelPopup.isShow()){
-                        xExportExcelPopup.dismiss();
-                    }
+                    hideProgress();
+//                    if(xLoadExcelPopup!=null){
+//                        xLoadExcelPopup.dismiss();
+//                    }
+//                    if(xExportExcelPopup!=null&&xExportExcelPopup.isShow()){
+//                        xExportExcelPopup.dismiss();
+//                    }
                     excelDialogManager.reset();
                     excelDialogManager.init();
                     success=false;
@@ -381,4 +387,21 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
         }
         return super.dispatchKeyEvent(event);
     }
+
+    public void showProgress( String message ){
+        if(progressDialog==null){
+            progressDialog=new CustomProgressDialog(this,R.style.transparentBgDialog);
+        }
+        progressDialog.setMessage(message);
+        if(!progressDialog.isShowing()){
+            progressDialog.show();
+        }
+    }
+
+    private void hideProgress(){
+        if(progressDialog!=null&&progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
+    }
+
 }

@@ -20,14 +20,14 @@ import java.util.Locale;
 public class RecorderUtils {
 
     public static String getFilePath() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
-        String path = C.OUTPUT_PATH+"Recorder"+File.separator + "Recorder-" + format.format(new Date()) + ".mp4";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        String path = C.TEMP_PATH+"Recorder"+File.separator  + format.format(new Date()) + ".mp4";
         return path;
     }
 
     public static String getScreenRecorderFilePath() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US);
-        String path = C.OUTPUT_PATH+"Recorder"+File.separator + "ScreenRecorder-" + format.format(new Date()) + ".mp4";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        String path = C.TEMP_PATH+"Recorder"+File.separator  + format.format(new Date()) + ".mp4";
         return path;
     }
 }
