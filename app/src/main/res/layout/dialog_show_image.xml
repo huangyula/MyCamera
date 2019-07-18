@@ -16,11 +16,23 @@
         android:paddingTop="18dp"
         android:paddingLeft="26dp"
         android:paddingRight="26dp">
-        <com.hiscene.flytech.view.ShowImagesViewPager
-            android:id="@+id/vp_images"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-             />
+       <ScrollView
+           android:id="@+id/scrollView"
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:scrollbars="vertical">
+           <HorizontalScrollView
+               android:id="@+id/horizontal_scrollview"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:scrollbars="horizontal"
+               >
+               <com.lxj.xpopup.photoview.PhotoView
+                   android:id="@+id/photoview"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content" />
+           </HorizontalScrollView>
+       </ScrollView>
 
         <TextView
             android:id="@+id/pre_picture"

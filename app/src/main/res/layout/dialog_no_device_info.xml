@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/app_padding"
+    >
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/tanchuang"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:padding="5dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/empty"/>
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/text_style_white"
+            android:text="@string/no_device_info"/>
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/close"
+        android:layout_below="@+id/linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@mipmap/button_default"
+        android:text="@string/close"
+        style="@style/text_style_white_bold"
+        android:gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        />
+
+
+</RelativeLayout>

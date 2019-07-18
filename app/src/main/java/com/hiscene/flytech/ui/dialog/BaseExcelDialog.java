@@ -1,31 +1,18 @@
 package com.hiscene.flytech.ui.dialog;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.github.weiss.core.base.BaseRxFragment;
 import com.github.weiss.core.utils.FileUtils;
-import com.github.weiss.core.utils.ImageUtils;
-import com.github.weiss.core.utils.LogUtils;
 import com.hiscene.flytech.C;
 import com.hiscene.flytech.R;
 import com.hiscene.flytech.event.EventCenter;
-import com.hiscene.flytech.ui.TestActivity;
-import com.hiscene.flytech.ui.fragment.ExcelFragmentManager;
-import com.hiscene.flytech.view.CustomAlertDialog;
 import com.hiscene.flytech.view.CustomProgressDialog;
-import com.hiscene.flytech.view.ShowImagesDialog;
-import com.lxj.xpopup.XPopup;
-import com.lxj.xpopup.impl.LoadingPopupView;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -59,6 +46,7 @@ public abstract class BaseExcelDialog<T> extends BaseDialog {
     @BindView(R.id.logout)
     TextView logout;
     protected ExcelDialogManager excelDialogManager;
+
 
 
     public BaseExcelDialog( Context context,ExcelDialogManager excelDialogManager) {
@@ -96,16 +84,24 @@ public abstract class BaseExcelDialog<T> extends BaseDialog {
 
     @OnClick(R.id.device_info)
     protected void deviceInfo(){
-        CustomProgressDialog customProgressDialog=new CustomProgressDialog(mContext,R.style.transparentBgDialog);
-        customProgressDialog.setMessage("正在加载设备资料,请稍后");
-        customProgressDialog.show();
+//        CustomProgressDialog customProgressDialog=new CustomProgressDialog(mContext,R.style.transparentBgDialog);
+//        customProgressDialog.setMessage("正在加载设备资料,请稍后");
+//        customProgressDialog.show();
+
 //
-        List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
-        Collections.sort(fileList, new FileComparator());
+//        List<File> fileList=FileUtils.listFilesInDir(new File(C.FILE_DEVICE_FILE));
+//        Collections.sort(fileList, new FileComparator());
 //
-        ShowImagesDialog showImagesDialog=new ShowImagesDialog(mContext,fileList);
-        customProgressDialog.dismiss();
-        showImagesDialog.show();
+//        ShowImagesDialog showImagesDialog=new ShowImagesDialog(mContext,fileList);
+//        customProgressDialog.dismiss();
+//        showImagesDialog.show();
+
+        //判断是否存在设备资料
+        if(FileUtils.createOrExistsDir(C.FILE_DEVICE_FILE)&&FileUtils.listFilesInDir(C.FILE_DEVICE_FILE).size()>0){
+            new FileSeletorDialog(mContext).show();
+        }else {
+            new NoDeviceInfoDialog(mContext).show();
+        }
 
     }
 

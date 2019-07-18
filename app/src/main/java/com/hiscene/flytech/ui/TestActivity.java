@@ -262,17 +262,17 @@ public class TestActivity extends BaseActivity implements IComponentContainer {
 //    }
 
     public void startEdit() {
-        isClick=true;
         if (excelDialogManager != null) {
 
             excelDialogManager.init();
 
             startEditExcelDialog.dismiss();
-        cameraView.setVisibility(View.VISIBLE);
-        screenRecorderManager.startCaptureIntent();
-//        cameraRecorder.init();
-        isClick=false;
+            cameraView.setVisibility(View.VISIBLE);
+            screenRecorderManager.startCaptureIntent();
+//          cameraRecorder.init();
+            isClick=false;
        }else {
+            isClick=true;
            ToastUtils.show("正在加载表格中,请稍后");
        }
     }

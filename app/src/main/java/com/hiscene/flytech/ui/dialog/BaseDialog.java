@@ -48,7 +48,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * 嵌套了viewpager的图片浏览
  */
 
-public abstract class BaseDialog extends Dialog {
+public abstract class BaseDialog extends Dialog{
     private View mView;
     public Context mContext;
 
